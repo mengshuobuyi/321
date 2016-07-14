@@ -1,0 +1,88 @@
+//
+//  InternalProductListCell.m
+//  wenYao-store
+//
+//  Created by PerryChen on 3/9/16.
+//  Copyright © 2016 carret. All rights reserved.
+//
+
+#import "InternalProductListCell.h"
+#import "InternalProductModel.h"
+@implementation InternalProductListCell
+@dynamic delegate;
+/*
+// Only override drawRect: if you perform custom drawing.
+// An empty implementation adversely affects performance during animation.
+- (void)drawRect:(CGRect)rect {
+    // Drawing code
+}
+*/
+
+- (IBAction)actionEdit:(UIButton *)sender {
+    if ([self.delegate respondsToSelector:@selector(editStackAction:)]) {
+        [self.delegate editStackAction:self.tag];
+    }
+}
+- (void)setCell:(id)data
+{
+    [super setCell:data];
+    InternalProductModel *model = (InternalProductModel *)data;
+    self.productSoldOutLbl.text = @"";
+    self.productStackLbl.text = [NSString stringWithFormat:@"库存%@",model.stock];
+    self.productNameLbl.text = model.name;
+    self.productSpecLbl.text = model.spec;
+    self.productPriceLbl.text = [NSString stringWithFormat:@"￥ %@",model.price];
+    [self.productImgView setImageWithURL:[NSURL URLWithString:model.imgUrl] placeholderImage:[UIImage imageNamed:@"img_goods_default"]];
+    
+    self.productPlaceHolderImgView.hidden = YES;
+    if ([model.status intValue] == 2) {
+        // 上架
+    } else {
+        // 下架
+    }
+    if ([model.stock intValue] == 0) {
+        self.productPlaceHolderImgView.hidden = NO;
+    } else {
+        self.productPlaceHolderImgView.hidden = YES;
+    }
+    if ([model.empScore intValue] == 0) {
+        self.productTipImgView.hidden = YES;
+        self.productTipLabel.hidden = YES;
+        self.productLimitLabel.hidden = YES;
+    } else {
+        self.productTipImgView.hidden = NO;
+        self.productTipLabel.hidden = NO;
+        self.productTipLabel.text = [NSString stringWithFormat:@"销售送%@积分",model.empScore];
+        if (model.empScoreLimit.length == 0) {
+            self.constraintImgTipHeight.constant = 15.0f;
+            self.productLimitLabel.hidden = YES;
+        } else {
+            self.constraintImgTipHeight.constant = 30.0f;
+            self.productLimitLabel.hidden = NO;
+            self.productLimitLabel.text = [NSString stringWithFormat:@"%@",model.empScoreLimit];
+        }
+        [self setNeedsLayout];
+        [self layoutIfNeeded];
+    }
+}
+
+- (void)UIGlobal
+{
+    self.productNameLbl.font = fontSystem(kFontS1);
+    self.productSpecLbl.font = fontSystem(kFontS5);
+    self.productPriceLbl.font = fontSystem(kFontS3);
+    self.productSoldOutLbl.font = fontSystem(kFontS6);
+    self.productStackLbl.font = fontSystem(kFontS5);
+    self.productTipLabel.font = fontSystem(kFontS5);
+    self.productLimitLabel.font = fontSystem(kFontS5);
+    
+    self.productNameLbl.textColor = RGBHex(qwColor6);
+    self.productSpecLbl.textColor = RGBHex(qwColor8);
+    self.productPriceLbl.textColor = RGBHex(qwColor3);
+    self.productSoldOutLbl.textColor = RGBHex(qwColor3);
+    self.productStackLbl.textColor = RGBHex(qwColor8);
+    self.productTipLabel.textColor = RGBHex(qwColor4);
+    self.productLimitLabel.textColor = RGBHex(qwColor4);
+}
+
+@end

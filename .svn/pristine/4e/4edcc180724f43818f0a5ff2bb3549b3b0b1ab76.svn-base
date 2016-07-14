@@ -1,0 +1,354 @@
+//
+//  CircleDetailCell.m
+//  wenYao-store
+//
+//  Created by Yang Yuexia on 15/12/31.
+//  Copyright © 2015年 carret. All rights reserved.
+//
+
+#import "CircleDetailCell.h"
+#import "NSString+WPAttributedMarkup.h"
+#import "CircleModel.h"
+
+@implementation CircleDetailCell
+
+- (void)awakeFromNib
+{
+    // 头像
+    self.headerIcon.layer.cornerRadius = 15;
+    self.headerIcon.layer.masksToBounds = YES;
+    
+    // 设置背景色
+    self.contentBgView.backgroundColor = [UIColor whiteColor];
+    self.topView.backgroundColor = [UIColor whiteColor];
+    self.centerView.backgroundColor = [UIColor whiteColor];
+
+}
+
++ (CGFloat)getCellHeight:(id)data
+{
+    if ([QWGLOBALMANAGER object:data isClass:[TopicListModel class]])
+    {
+        TopicListModel *model = (TopicListModel *)data;
+        
+        NSString *title = model.postTitle;
+        NSString *content = model.postContent;
+        
+        //title
+        CGSize titleSize;
+        if (model.flagTopTeam || model.isHot)
+        {
+            titleSize = [QWGLOBALMANAGER sizeText:[NSString stringWithFormat:@"您好你%@",title] font:fontSystem(17) limitWidth:APP_W-34];
+        }else{
+            titleSize = [QWGLOBALMANAGER sizeText:[NSString stringWithFormat:@"%@",title] font:fontSystem(17) limitWidth:APP_W-34];
+        }
+        
+        //content
+        CGSize contentSize = [QWGLOBALMANAGER sizeText:content font:fontSystem(14) limitWidth:APP_W-34];
+        
+        if ([content isEqualToString:@""] && content) {
+            CGSize size = contentSize;
+            size.height = 1;
+            contentSize = size;
+        }
+        
+        if (titleSize.height > 42) {
+            titleSize.height = 42;
+        }
+        if (contentSize.height > 34) {
+            contentSize.height = 34;
+        }
+        
+        if (model.postImgList.count == 0) { //无图片
+            return 85 + titleSize.height + contentSize.height;
+        }else{ //有图片
+            return 156 + titleSize.height + contentSize.height - 73 + 13 + 2*(APP_W-50)/9;
+        }
+        
+    }
+    return 0;
+}
+
+- (void)UIGlobal
+{
+    [super UIGlobal];
+    self.contentView.backgroundColor = [UIColor clearColor];
+    self.content.lineBreakMode = NSLineBreakByTruncatingTail;
+    
+    self.separatorLine.hidden = YES;
+    
+    self.readNumLabel.backgroundColor = [UIColor clearColor];
+    self.commentNumLabel.backgroundColor = [UIColor clearColor];
+    
+    self.expertBrandLabel.layer.cornerRadius = 4.0;
+    self.expertBrandLabel.layer.masksToBounds = YES;
+    
+    //适配图片宽高
+    self.imageOne_layout_width.constant = (APP_W-50)/3;
+    self.imageTwo_layout_width.constant = (APP_W-50)/3;
+    self.imageThree_layout_width.constant = (APP_W-50)/3;
+    self.imageOne_layout_height.constant = 2*(APP_W-50)/9;
+    self.imageTwo_layout_height.constant = 2*(APP_W-50)/9;
+    self.imageThree_layout_height.constant = 2*(APP_W-50)/9;
+    
+    //头像点击手势
+    self.headerIcon.userInteractionEnabled = YES;
+    UITapGestureRecognizer *tap1 = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapHeaderAction:)];
+    [self.headerIcon addGestureRecognizer:tap1];
+    
+    //name点击手势
+    self.name.userInteractionEnabled = YES;
+    UITapGestureRecognizer *tap2 = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapNameAction:)];
+    [self.name addGestureRecognizer:tap2];
+    
+}
+
+#pragma mark ---- 点击头像或姓名 进入个人主页 ----
+- (void)tapHeaderAction:(UITapGestureRecognizer *)tap
+{
+    QWImageView *imageView = (QWImageView *)tap.view;
+    NSIndexPath *indexPath = imageView.obj;
+    
+    if (self.circleDetailCellDelegate && [self.circleDetailCellDelegate respondsToSelector:@selector(tapHeadericon:)]) {
+        [self.circleDetailCellDelegate tapHeadericon:indexPath];
+    }
+}
+
+- (void)tapNameAction:(UITapGestureRecognizer *)tap
+{
+    QWLabel *imageView = (QWLabel *)tap.view;
+    NSIndexPath *indexPath = imageView.obj;
+    
+    if (self.circleDetailCellDelegate && [self.circleDetailCellDelegate respondsToSelector:@selector(tapHeadericon:)]) {
+        [self.circleDetailCellDelegate tapHeadericon:indexPath];
+    }
+}
+
+#pragma mark ---- 我收藏的帖子 ----
+- (void)myCollectionTopic:(id)data
+{
+    TopicListModel *model = (TopicListModel *)data;
+    
+    [self commonData:model];
+    
+    //姓名 阅读数
+    [self nameAndReadCount:model];
+    
+    //标签
+    if (model.isHot)
+    {
+        //有标签
+        NSString *imageName = @"";
+        if (model.isHot)
+        {
+            //热帖
+            imageName = @"ic_hot";
+        }
+        [self haveTagTitle:model imageName:imageName];
+        
+    }else
+    {
+        //没有 任何标签
+        [self noTagTitle:model];
+    }
+    
+}
+
+#pragma mark ---- 我的发帖列表 ----
+- (void)myPostTopic:(id)data
+{
+    TopicListModel *model = (TopicListModel *)data;
+    
+    [self commonData:model];
+    
+    //姓名 阅读数
+    [self nameAndReadCount:model];
+    
+    //标题 置顶 热门标签
+    NSString *imageName;
+    
+    if (model.flagTopExpert)
+    {
+        //置顶
+        imageName = @"ic_top";
+        [self haveTagTitle:model imageName:imageName];
+        
+    }else if (model.isHot)
+    {
+        //热帖
+        imageName = @"ic_hot";
+        [self haveTagTitle:model imageName:imageName];
+        
+    }else
+    {
+        //no
+        [self noTagTitle:model];
+    }
+}
+
+#pragma mark ---- 设置姓名 阅读数 ----
+- (void)nameAndReadCount:(id)data
+{
+    TopicListModel *model = (TopicListModel *)data;
+    
+    //姓名
+    NSString *name = @"";
+    
+    if (model.flagAnon) {
+        name = @"匿名用户";
+    }else{
+        name = model.nickname;
+    }
+    
+    if (model.posterType == 3 || model.posterType == 4)
+    {
+        //专家
+        self.lvlBgView.hidden = YES;
+        CGSize nameSize = [name sizeWithFont:fontSystem(15) constrainedToSize:CGSizeMake(APP_W-85, CGFLOAT_MAX)];
+        self.name_layout_width.constant = nameSize.width+6;
+        self.name.text = name;
+        
+        NSString *store;
+        NSString *imageName;
+        if (model.posterType == 3) { //药师
+            store = model.brandName;
+            imageName = @"药师";
+        }else if (model.posterType == 4){ //营养师
+            store = @"";
+            imageName = @"营养师";
+        }
+        self.expertLogoLabel.text = StrFromObj(imageName);
+        
+        CGSize brandSize = [store sizeWithFont:fontSystem(12) constrainedToSize:CGSizeMake(APP_W-85-nameSize.width-13, CGFLOAT_MAX)];
+        self.expertBrand_layout_width.constant = brandSize.width+7;
+        if (StrIsEmpty(store)) {
+            self.expertBrandLabel.hidden = YES;
+        }else{
+            self.expertBrandLabel.hidden = NO;
+            self.expertBrandLabel.text = store;
+        }
+        
+    }else
+    {
+        //普通用户 标识显示用户当前等级
+        self.name.text = name;
+        self.expertLogoLabel.hidden = YES;
+        self.expertBrandLabel.hidden = YES;
+        self.lvlBgView.hidden = NO;
+        
+        CGSize size=[name sizeWithFont:fontSystem(15) constrainedToSize:CGSizeMake(APP_W-98, CGFLOAT_MAX)];
+        self.name_layout_width.constant = size.width+3;
+        self.lvlLabel.text = [NSString stringWithFormat:@"V%d",model.mbrLvl];
+    }
+    
+    //阅读数
+    NSString *str1 = [NSString stringWithFormat:@"%d",model.readCount];
+    NSString *str2 = [NSString stringWithFormat:@"%d",model.replyCount];
+    
+    CGSize readSize = [str1 sizeWithFont:fontSystem(12) constrainedToSize:CGSizeMake(APP_W, CGFLOAT_MAX)];
+    CGSize commentSize = [str2 sizeWithFont:fontSystem(12) constrainedToSize:CGSizeMake(APP_W, CGFLOAT_MAX)];
+    
+    self.readNum_layout_width.constant = readSize.width+2;
+    self.commentNum_layout_width.constant = commentSize.width+2;
+    
+    self.readNumLabel.text = str1;
+    self.commentNumLabel.text = str2;
+}
+
+#pragma mark ---- 有标签的标题 ----
+- (void)noTagTitle:(id)data
+{
+    TopicListModel *model = (TopicListModel *)data;
+    
+    CGSize titleSize = [QWGLOBALMANAGER sizeText:[NSString stringWithFormat:@"%@",model.postTitle] font:fontSystem(17) limitWidth:APP_W-30];
+    if (titleSize.height > 42) {
+        titleSize.height = 42;
+    }
+    dispatch_async(dispatch_get_main_queue(), ^{
+        self.title_layout_height.constant = titleSize.height;
+    });
+    self.title.text = model.postTitle;
+}
+
+#pragma mark ---- 无标签的标题 ----
+- (void)haveTagTitle:(id)data imageName:(NSString *)name
+{
+    TopicListModel *model = (TopicListModel *)data;
+    
+    NSDictionary* titleStyle = @{@"thumb":[UIImage imageNamed:name]};
+    self.title.attributedText = [[NSString stringWithFormat:@"<thumb> </thumb>  %@",model.postTitle] attributedStringWithStyleBook:titleStyle];
+    CGSize titleSize = [QWGLOBALMANAGER sizeText:[NSString stringWithFormat:@"你好你%@",model.postTitle] font:fontSystem(17) limitWidth:APP_W-30];
+    if (titleSize.height > 42) {
+        titleSize.height = 42;
+    }
+    dispatch_async(dispatch_get_main_queue(), ^{
+        self.title_layout_height.constant = titleSize.height;
+    });
+}
+
+#pragma mark ---- 基本信息设置 ----
+- (void)commonData:(id)data
+{
+    TopicListModel *model = (TopicListModel *)data;
+    
+    //头像
+    if (model.flagAnon) {
+        [self.headerIcon setImage:[UIImage imageNamed:@"expert_ic_people"]];
+    }else{
+        [self.headerIcon setImageWithURL:[NSURL URLWithString:model.headUrl] placeholderImage:[UIImage imageNamed:@"expert_ic_people"]];
+    }
+    
+    
+    //时间
+    self.time.text = model.postStrDate;
+    
+    //内容
+    self.content.text = model.postContent;
+    NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
+    paragraphStyle.lineSpacing = 3;
+    paragraphStyle.lineBreakMode = NSLineBreakByTruncatingTail;
+    NSDictionary *attributes = @{NSFontAttributeName:fontSystem(14),NSParagraphStyleAttributeName:paragraphStyle};
+    self.content.attributedText = [[NSAttributedString alloc] initWithString:self.content.text attributes:attributes];
+    
+    //图片
+    if (model.postImgList.count == 0)
+    {
+        self.imageOne.image = nil;
+        self.imageTwo.image = nil;
+        self.imageThree.image = nil;
+        self.imageBgView_layout_height.constant = 1;
+        
+    }else if (model.postImgList.count == 1)
+    {
+        [self.imageOne setImageWithURL:[NSURL URLWithString:model.postImgList[0]]];
+        self.imageTwo.image = nil;
+        self.imageThree.image = nil;
+        self.imageBgView_layout_height.constant = 13 + 2*(APP_W-50)/9;
+        
+    }else if (model.postImgList.count == 2)
+    {
+        [self.imageOne setImageWithURL:[NSURL URLWithString:model.postImgList[0]]];
+        [self.imageTwo setImageWithURL:[NSURL URLWithString:model.postImgList[1]]];
+        self.imageThree.image = nil;
+        self.imageBgView_layout_height.constant = 13 + 2*(APP_W-50)/9;
+        
+    }else if (model.postImgList.count == 3)
+    {
+        [self.imageOne setImageWithURL:[NSURL URLWithString:model.postImgList[0]]];
+        [self.imageTwo setImageWithURL:[NSURL URLWithString:model.postImgList[1]]];
+        [self.imageThree setImageWithURL:[NSURL URLWithString:model.postImgList[2]]];
+        self.imageBgView_layout_height.constant = 13 + 2*(APP_W-50)/9;
+    }
+    
+    self.imageOne.contentMode = UIViewContentModeScaleAspectFill;
+    self.imageOne.clipsToBounds = YES;
+    
+    self.imageTwo.contentMode = UIViewContentModeScaleAspectFill;
+    self.imageTwo.clipsToBounds = YES;
+    
+    self.imageThree.contentMode = UIViewContentModeScaleAspectFill;
+    self.imageThree.clipsToBounds = YES;
+    
+}
+
+@end

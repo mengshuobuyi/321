@@ -1,0 +1,136 @@
+//
+//  InternalProductsInClassifyViewController.m
+//  wenYao-store
+//
+//  Created by PerryChen on 7/12/16.
+//  Copyright © 2016 carret. All rights reserved.
+//
+
+#import "InternalProductsInClassifyViewController.h"
+#import "BVReorderTableView.h"
+#import "InternalProductListCell.h"
+#import "InternalProductDetailViewController.h"
+@interface InternalProductsInClassifyViewController ()<UITableViewDelegate, UITableViewDataSource, ReorderTableViewDelegate, ProductlistCellDelegate>
+@property (nonatomic, strong) NSMutableArray *arrProductList;   // 本店商品列表
+@property (weak, nonatomic) IBOutlet UITableView *tbViewContent;
+
+@end
+
+@implementation InternalProductsInClassifyViewController
+static NSString *const InterProIdentifier = @"InternalProductListCell";
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    [self.tbViewContent registerNib:[UINib nibWithNibName:@"InternalProductListCell" bundle:nil] forCellReuseIdentifier:InterProIdentifier];
+    self.tbViewContent.rowHeight = 123.0f;
+    // Do any additional setup after loading the view.
+}
+
+- (void)didReceiveMemoryWarning {
+    [super didReceiveMemoryWarning];
+    // Dispose of any resources that can be recreated.
+}
+
+#pragma mark - UITableView methods
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+    return 1;
+}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    return self.arrProductList.count;
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (self.modelCate.intProType != 2) {
+        InternalProductListCell *cell = [tableView dequeueReusableCellWithIdentifier:InterProIdentifier];
+        if (self.arrProductList.count <= 0 ) {
+            return cell;
+        }
+        if (self.modelCate.intProType == 1) {
+            cell.intProType = 1;
+        } else  {
+            cell.intProType = 0;
+        }
+        InternalProductModel *model = self.arrProductList[indexPath.row];
+        if (AUTHORITY_ROOT) {       // 店长
+            cell.viewEditStock.hidden = NO;
+            cell.productStockBtn.hidden = NO;
+        } else {
+            cell.viewEditStock.hidden = YES;
+            cell.productStockBtn.hidden = YES;
+        }
+        [cell setCell:model];
+        cell.tag = indexPath.row;
+        cell.delegate = self;
+        return cell;
+
+    } else {
+        return [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"CC"];
+    }
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    InternalProductDetailViewController *vc = [[UIStoryboard storyboardWithName:@"InternalProduct" bundle:nil] instantiateViewControllerWithIdentifier:@"InternalProductDetailViewController"];
+        __block InternalProductModel *model = self.arrProductList[indexPath.row];
+        vc.proId = model.proId;
+        vc.updateModelBlock = ^(InternalProductModel *modelNew) {
+        if (modelNew != nil) {
+            [self.arrProductList replaceObjectAtIndex:indexPath.row withObject:modelNew];
+            [self.tbViewContent reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+        }
+    };
+    vc.hidesBottomBarWhenPushed = YES;
+    [self.navigationController pushViewController:vc animated:YES];
+}
+
+-(BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return YES;
+}
+
+
+#pragma mark - UITableview cell delegate
+/**
+ *  修改库存的cell点击代理事件
+ *
+ *  @param index
+ */
+- (void)editStackAction:(NSInteger)index
+{
+    InternalProductModel *model = self.arrProductList[index];
+    model.isShowEditView = NO;
+//    [self showEditStackViewWithIndex:index];
+}
+
+- (void)editCateAction:(NSInteger)index
+{
+    InternalProductModel *model = self.arrProductList[index];
+    model.isShowEditView = NO;
+//    [self performSegueWithIdentifier:@"segueChangeClassify" sender:model];
+}
+
+- (void)editRecoAction:(NSInteger)index
+{
+    InternalProductModel *model = self.arrProductList[index];
+    model.isShowEditView = NO;
+//    [self changeRecoAction:model];
+}
+
+- (void)editViewAction:(NSInteger)index
+{
+    InternalProductModel *model = self.arrProductList[index];
+    model.isShowEditView = !model.isShowEditView;
+    [self.tbViewContent reloadData];
+}
+
+/*
+#pragma mark - Navigation
+
+// In a storyboard-based application, you will often want to do a little preparation before navigation
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    // Get the new view controller using [segue destinationViewController].
+    // Pass the selected object to the new view controller.
+}
+*/
+
+@end

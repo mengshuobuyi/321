@@ -1,0 +1,121 @@
+//
+//  InternalProductModel.h
+//  wenYao-store
+//
+//  店内商品的Model
+//
+//  Created by PerryChen on 3/8/16.
+//  Copyright © 2016 carret. All rights reserved.
+//
+
+#import "BaseModel.h"
+#import "BaseAPIModel.h"
+
+/**
+ *  店内商品model
+ */
+@interface InternalProductModel : BaseAPIModel
+@property (nonatomic, strong) NSString *name;           //名称,品牌,
+@property (nonatomic, strong) NSString *imgUrl;         //图片,
+@property (nonatomic, strong) NSArray  *imgUrls;        //图片集,
+@property (nonatomic, strong) NSString *spec;           //规格,
+@property (nonatomic, strong) NSString *code;           //编码,
+@property (nonatomic, strong) NSString *barcode;        //条形码,
+@property (nonatomic, strong) NSString *factory;        //生产厂家,
+@property (nonatomic, strong) NSString *inPromotion;    //是否有优惠,
+@property (nonatomic, strong) NSString *price;          //价格,
+@property (nonatomic, strong) NSString *stock;          //库存,
+@property (nonatomic, strong) NSString *status;         //商品状态:2.上架3.下架,
+@property (nonatomic, strong) NSString *proId;          //编码,
+@property (nonatomic, strong) NSString *empScore;       //工业品赠送店员积分数,
+@property (nonatomic, strong) NSString *empScoreLimit;  //工业品赠送店员积分数限制
+@property (nonatomic, strong) NSString *isRecommend;    //是否本店推荐
+@property (nonatomic, assign) NSInteger intProType;     //0 是普通分类下商品 ，1 是优惠商品和本店推荐下商品. 2 是套餐商品
+@property (nonatomic, assign) BOOL isShowEditView;      //是否展示编辑页面
+@property (nonatomic, strong) NSArray *productCategories;   //门店商品分类
+@end
+
+/**
+ *  店内商品搜索历史model
+ */
+@interface InternalProductHistoryModel : BaseAPIModel
+@property (nonatomic, strong) NSString *strSearchItem;
+@end
+
+/**
+ *  店内商品列表model
+ */
+@interface InternalProductListModel : BaseAPIModel
+@property (nonatomic, strong) NSString *totalCount;
+@property (nonatomic, strong) NSString *classCount;
+@property (nonatomic, strong) NSArray *list;
+@end
+/**
+ *  套餐列表model
+ */
+@interface InternalPackageListModel : BaseAPIModel
+@property (nonatomic, strong) NSArray *list;
+@end
+@interface InternalPackageDrugListModel : BaseAPIModel
+@property (nonatomic, strong) NSString *packageId;
+@property (nonatomic, strong) NSString *desc;
+@property (nonatomic, strong) NSString *price;
+@property (nonatomic, strong) NSString *reduce;
+@property (nonatomic, strong) NSArray *druglist;
+@end
+@interface InternalPackageDrugModel : BaseAPIModel
+@property (nonatomic, strong) NSString *branchProId;
+@property (nonatomic, strong) NSString *name;
+@property (nonatomic, strong) NSString *spec;
+@property (nonatomic, strong) NSString *imgUrl;
+@property (nonatomic, strong) NSString *price;
+@property (nonatomic, strong) NSString *count;
+@end
+/**
+ *  店内商品类别列表model
+ */
+@interface InternalProductCateListModel : BaseAPIModel
+@property (nonatomic, strong) NSArray *list;
+@property (nonatomic, strong) NSArray *categories;
+@end
+
+/**
+ *  店内商品类别model
+ */
+@interface InternalProductCateModel : BaseAPIModel
+@property (nonatomic, strong) NSString *classifyId;
+@property (nonatomic, strong) NSString *name;
+@property (nonatomic, strong) NSString *classId;
+@property (nonatomic, strong) NSString *className;
+@property (nonatomic, strong) NSString *check;
+@property (nonatomic, strong) NSString *sort;       //是否可以排序
+@property (nonatomic, strong) NSString *proCount;   //商品个数
+@property (nonatomic, strong) NSString *classType;      // 分类类型:1.普通商品 2.套餐3.优惠商品4.本店推荐,
+@property (nonatomic, assign) BOOL isRecommend;     // 是否是推荐
+@property (nonatomic, assign) BOOL isSelected;      // 是否被选择了
+@end
+
+@interface InternalProductQueryQwProductListModel : BaseAPIModel
+@property (nonatomic, strong) NSArray *products;
+@end
+
+@interface InternalProductQueryProductModel : BaseModel
+@property (nonatomic, strong) NSString *proId;
+@property (nonatomic, strong) NSString *proName;
+@property (nonatomic, strong) NSArray *imgUrls;
+@property (nonatomic, strong) NSString *img;
+@property (nonatomic, strong) NSString *spec;
+@property (nonatomic, strong) NSString *factory;
+@property (nonatomic, strong) NSString *branchProId;
+@property (nonatomic, strong) NSString *status;
+@property (nonatomic, strong) NSString *flagForbid;
+@property (nonatomic, strong) NSString *categoryId;
+@property (nonatomic, strong) NSString *categoryName;
+@end
+
+@interface InternalProductSubmitModel : BaseAPIModel
+@property (nonatomic, strong) NSString *result;
+@property (nonatomic, strong) NSString *errorCode;
+@property (nonatomic, strong) NSString *errorDescription;
+//@property (nonatomic, strong) NSString *result;
+@end

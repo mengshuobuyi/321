@@ -1,0 +1,287 @@
+//
+//  EmployInfoViewController.m
+//  wenyao-store
+//
+//  Created by Meng on 15/3/13.
+//  Copyright (c) 2015年 xiezhenghong. All rights reserved.
+//
+
+#import "EmployInfoViewController.h"
+#import "EmployInfoCell.h"
+#import "AppDelegate.h"
+#import "EmployInfoDetailViewController.h"
+#import "SVProgressHUD.h"
+#import "Employee.h"
+#import "EmployeeModel.h"
+#import "EmployeeModelR.h"
+#import "MGSwipeButton.h"
+
+@interface EmployInfoViewController ()<UITableViewDataSource,UITableViewDelegate,MGSwipeTableCellDelegate>
+
+{
+    UIView *_nodataView;
+    UIView *bgView;
+}
+
+@property (nonatomic ,strong) UITableView *tableView;
+
+@property (nonatomic ,strong) NSMutableArray *dataSource;
+
+@end
+
+@implementation EmployInfoViewController
+
+- (instancetype)init
+{
+    if (self = [super init]) {
+        
+    }
+    return self;
+}
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    self.title = @"店员信息";
+    
+    self.dataSource = [NSMutableArray array];
+    [self setUpTableView];
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    if (QWGLOBALMANAGER.currentNetWork != kNotReachable) {
+        [self queryEmployInfo];
+    }else{
+        [self.dataSource removeAllObjects];
+        [self.dataSource addObjectsFromArray:[QWUserDefault getObjectBy:@"EmployInfoViewControllerDataSource"]];
+        if (self.dataSource.count > 0) {
+            if (bgView) {
+                [bgView removeFromSuperview];
+            }
+            [self.tableView reloadData];
+        }else if (self.dataSource.count == 0) {
+            [self showInfoView:kWaring12 image:@"img_network"];
+        }
+    }
+}
+
+- (void)setUpTableView
+{
+    self.tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, APP_W, APP_H-NAV_H) style:UITableViewStylePlain];
+    self.tableView.delegate = self;
+    self.tableView.dataSource = self;
+    self.tableView.scrollEnabled = YES;
+    self.tableView.backgroundColor = [UIColor clearColor];
+    self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+    self.tableView.rowHeight = 50;
+    [self.view addSubview:self.tableView];
+    
+    UIView *foot = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 54)];
+    foot.backgroundColor = [UIColor clearColor];
+    UIView *bg = [[UIView alloc] initWithFrame:CGRectMake(0, 8, APP_W, 46)];
+    [foot addSubview:bg];
+    bg.backgroundColor = [UIColor whiteColor];
+    
+    UIView *xx = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 92, 46)];
+    xx.center = CGPointMake(APP_W/2, 23);
+    [bg addSubview:xx];
+    UIImageView *image = [[UIImageView alloc] initWithFrame:CGRectMake(0, 13, 20, 20)];
+    image.image = [UIImage imageNamed:@"btn_img_add_green"];
+    [xx addSubview:image];
+    UILabel *lab = [[UILabel alloc] initWithFrame:CGRectMake(28, 0, 64, 46)];
+    lab.text = @"添加店员";
+    lab.font = fontSystem(kFontS3);
+    lab.textColor = RGBHex(qwColor1);
+    [xx addSubview:lab];
+    
+    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(addEmployButtonClick)];
+    [bg addGestureRecognizer:tap];
+    
+    self.tableView.tableFooterView = foot;
+    
+}
+
+- (void)queryEmployInfo
+{
+    [Employee employeeQueryWithGroupId:QWGLOBALMANAGER.configure.userToken success:^(id responseObj) {
+        [self.dataSource removeAllObjects];
+        EmployeeQueryListModel *listModel = (EmployeeQueryListModel *)responseObj;
+        [self.dataSource addObjectsFromArray:listModel.list];
+        if (self.dataSource.count > 0) {
+            if (bgView) {
+                [bgView removeFromSuperview];
+            }
+            [QWUserDefault setObject:self.dataSource key:@"EmployInfoViewControllerDataSource"];
+            [self.tableView reloadData];
+        }else if (self.dataSource.count == 0) {
+            [self showNoInfomation];
+        }
+    } failure:^(HttpException *e) {
+        NSLog(@"%@ -> %@",NSStringFromClass([self class]),e);
+    }];
+}
+
+#pragma mark
+#pragma mark UITableViewDelegate DataSource
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
+    return self.dataSource.count;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return 70;
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    
+    static NSString *cellIdentifier = @"cellIdentifer";
+    EmployInfoCell *cell = (EmployInfoCell *)[tableView dequeueReusableCellWithIdentifier:cellIdentifier];
+    if (cell == nil) {
+        cell = [[NSBundle mainBundle] loadNibNamed:@"EmployInfoCell" owner:self options:nil][0];
+    }
+    
+    EmployeeQueryModel *queryModel = self.dataSource[indexPath.row];
+    cell.EmployName.text = queryModel.employeeName;
+    cell.EmployPhoneNumber.text = queryModel.employeeMobile;
+    
+    if ([queryModel.employeeValid isKindOfClass:[NSString class]]) {
+        if ([queryModel.employeeValid isEqualToString:@"N"]) {
+            cell.statuLabel.text = @"账号未开启";
+            [cell.statuLabel setTextColor:RGBHex(qwColor8)];
+        }else if ([queryModel.employeeValid isEqualToString:@"Y"]){
+            cell.statuLabel.text = @"账号已开启";
+            [cell.statuLabel setTextColor:RGBHex(qwColor2)];
+        }
+    }
+//    cell.swipeDelegate = self;
+    
+    return cell;
+}
+
+#pragma mark ---- MGSwipeTableCellDelegate ----
+
+-(NSArray*) swipeTableCell:(MGSwipeTableCell*)cell
+  swipeButtonsForDirection:(MGSwipeDirection)direction
+             swipeSettings:(MGSwipeSettings*)swipeSettings
+         expansionSettings:(MGSwipeExpansionSettings*)expansionSettings;
+{
+    if (direction == MGSwipeDirectionRightToLeft) {
+        return [self createRightButtons:1];
+    }
+    return nil;
+}
+
+-(BOOL) swipeTableCell:(MGSwipeTableCell*)cell tappedButtonAtIndex:(NSInteger)index direction:(MGSwipeDirection)direction fromExpansion:(BOOL)fromExpansion
+{
+    NSIndexPath *indexPath = nil;
+    if (index == 0) {
+        if (QWGLOBALMANAGER.currentNetWork == kNotReachable) {
+            [SVProgressHUD showErrorWithStatus:kWaring33 duration:DURATION_SHORT];
+            return NO;
+        }
+        indexPath = [self.tableView indexPathForCell:cell];
+        EmployeeQueryModel *queryModel = self.dataSource[indexPath.row];
+        [Employee employeeRemoveWithIds:queryModel.employeeId success:^(id responseObj) {
+            if ([responseObj[@"apiStatus"] integerValue] == 0) {
+                [SVProgressHUD showSuccessWithStatus:@"删除成功" duration:DURATION_SHORT];
+                [self.dataSource removeObjectAtIndex:indexPath.row];
+                [QWUserDefault setObject:self.dataSource key:@"EmployInfoViewControllerDataSource"];
+                [self.tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
+                if (self.dataSource.count == 0) {
+                    [self showNoInfomation];
+                }
+            }else{
+                [SVProgressHUD showErrorWithStatus:responseObj[@"apiMessage"] duration:DURATION_SHORT];
+            }
+            
+        } failure:^(HttpException *e) {
+            NSLog(@"%@ -> %@",NSStringFromClass([self class]),e);
+        }];
+
+    }
+    return YES;
+}
+
+-(NSArray *) createRightButtons: (int) number
+{
+    NSMutableArray * result = [NSMutableArray array];
+    NSString* titles[1] = {@"删除"};
+    UIColor * colors[1] = {RGBHex(qwColor3)};
+    for (int i = 0; i < number; ++i)
+    {
+        MGSwipeButton * button = [MGSwipeButton buttonWithTitle:titles[i] backgroundColor:colors[i] callback:^BOOL(MGSwipeTableCell * sender){
+            return YES;
+        }];
+        [result addObject:button];
+    }
+    return result;
+}
+
+
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
+    EmployInfoDetailViewController *addEmploy = [[EmployInfoDetailViewController alloc] initWithNibName:@"EmployInfoDetailViewController" bundle:nil];
+    addEmploy.employQueryModel = self.dataSource[indexPath.row];
+    addEmploy.title = @"编辑店员信息";
+    [self.navigationController pushViewController:addEmploy animated:YES];
+}
+
+- (void)addEmployButtonClick
+{
+    if (QWGLOBALMANAGER.currentNetWork == kNotReachable) {
+        [SVProgressHUD showErrorWithStatus:@"网络异常，请稍后重试!" duration:DURATION_SHORT];
+        return;
+    }
+
+    EmployInfoDetailViewController *addEmploy = [[EmployInfoDetailViewController alloc] initWithNibName:@"EmployInfoDetailViewController" bundle:nil];
+    addEmploy.title = @"添加店员";
+    [self.navigationController pushViewController:addEmploy animated:YES];
+    
+}
+
+- (void)dealloc
+{
+    self.tableView.editing = NO;
+}
+
+- (void)didReceiveMemoryWarning {
+    [super didReceiveMemoryWarning];
+}
+
+- (void)showNoInfomation
+{
+    if (bgView) {
+        [bgView removeFromSuperview];
+        bgView = nil;
+    }
+    bgView = [[UIView alloc] initWithFrame:self.view.bounds];
+    bgView.backgroundColor = RGBHex(qwColor11);
+    
+    UIImageView *image = [[UIImageView alloc] init];
+    if (IS_IPHONE_6) {
+        image.frame = CGRectMake((APP_W-142)/2, 140, 142, 123);
+    }else if (IS_IPHONE_6P){
+        image.frame = CGRectMake((APP_W-142)/2, 170, 142, 123);
+    }else{
+        image.frame = CGRectMake((APP_W-142)/2, 80, 142, 123);
+    }
+    image.image = [UIImage imageNamed:@"img_nogroup_people"];
+    [bgView addSubview:image];
+    
+    UILabel* lable_ = [[UILabel alloc]initWithFrame:RECT(0,image.frame.origin.y+image.frame.size.height-5, APP_W, 30)];
+    lable_.font = fontSystem(kFontS1);
+    lable_.textColor = RGBHex(qwColor8);
+    lable_.textAlignment = NSTextAlignmentCenter;
+    lable_.center = CGPointMake(APP_W/2, lable_.center.y);
+    lable_.text = @"你还没有店员信息，快来添加吧！";
+    [bgView addSubview:lable_];
+    [self.view insertSubview:bgView atIndex:self.view.subviews.count-1];
+}
+
+@end

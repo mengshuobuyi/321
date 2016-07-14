@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="10117" systemVersion="15B42" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" id="iN0-l3-epB" customClass="NutritionTempletView">
+            <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <imageView userInteractionEnabled="NO" alpha="0.55000000000000004" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Qg7-qF-my2">
+                    <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                    <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                </imageView>
+                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="bg_two_new" translatesAutoresizingMaskIntoConstraints="NO" id="RKv-9E-TL1">
+                    <rect key="frame" x="15" y="91" width="290" height="386"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="386" id="r5j-JY-zRy"/>
+                    </constraints>
+                </imageView>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="DPp-FR-Nx4">
+                    <rect key="frame" x="254" y="66" width="66" height="57"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="57" id="EaR-sK-6BZ"/>
+                        <constraint firstAttribute="width" constant="66" id="aF1-il-NSL"/>
+                    </constraints>
+                    <inset key="imageEdgeInsets" minX="17" minY="0.0" maxX="0.0" maxY="0.0"/>
+                    <state key="normal" image="pharmacist_btn_close"/>
+                    <state key="selected" image="pharmacist_btn_close"/>
+                    <state key="highlighted" image="pharmacist_btn_close"/>
+                    <connections>
+                        <action selector="hiddenAction:" destination="iN0-l3-epB" eventType="touchUpInside" id="8J8-kU-5jz"/>
+                    </connections>
+                </button>
+            </subviews>
+            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+            <constraints>
+                <constraint firstAttribute="trailing" secondItem="DPp-FR-Nx4" secondAttribute="trailing" id="6Cc-RW-odq"/>
+                <constraint firstAttribute="bottom" secondItem="Qg7-qF-my2" secondAttribute="bottom" id="Eb5-eO-Ztz"/>
+                <constraint firstItem="Qg7-qF-my2" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="QtL-Gl-QjT"/>
+                <constraint firstItem="RKv-9E-TL1" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="15" id="SQb-H1-Rcy"/>
+                <constraint firstItem="Qg7-qF-my2" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="YUl-g5-0kc"/>
+                <constraint firstAttribute="trailing" secondItem="RKv-9E-TL1" secondAttribute="trailing" constant="15" id="cLv-Ku-HF6"/>
+                <constraint firstAttribute="trailing" secondItem="Qg7-qF-my2" secondAttribute="trailing" id="fwF-uo-Lfi"/>
+                <constraint firstItem="RKv-9E-TL1" firstAttribute="centerY" secondItem="iN0-l3-epB" secondAttribute="centerY" id="nGW-oy-Ep3"/>
+                <constraint firstItem="DPp-FR-Nx4" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" constant="66" id="oSh-5i-yGh"/>
+            </constraints>
+            <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
+            <connections>
+                <outlet property="bgView" destination="Qg7-qF-my2" id="LJt-M8-V1k"/>
+                <outlet property="button_layout_top" destination="oSh-5i-yGh" id="7qL-Hf-ajm"/>
+                <outlet property="hiddenButton" destination="DPp-FR-Nx4" id="egM-7V-Gr8"/>
+                <outlet property="templetImageView" destination="RKv-9E-TL1" id="qmw-XU-ydm"/>
+                <outlet property="templet_layout_height" destination="r5j-JY-zRy" id="hg2-c3-lAw"/>
+            </connections>
+        </view>
+    </objects>
+    <resources>
+        <image name="bg_two_new" width="290" height="385"/>
+        <image name="pharmacist_btn_close" width="35" height="35"/>
+    </resources>
+</document>

@@ -1,0 +1,87 @@
+<html>
+<head>
+<style>
+body {
+	background-color: #FA5858;
+	color: #fff;
+}
+
+input {
+	background-color: #F7D358;
+	width: 300px;
+	padding: 10px;
+	color: #000;
+}
+
+div#content {
+	padding: 20px;
+	background-color: #F7D358;
+	color: #000;
+}
+</style>
+<script type="text/javascript">
+	<!-- ��Щ������Android����javascript���� 	 -->
+	function showAndroidToast(toastmsg) {
+		Android.showToast(toastmsg);
+	}
+	function showAndroidDialog(dialogmsg) {
+		Android.showDialog(dialogmsg);
+	}
+	function moveToScreenTwo() {
+		Android.moveToNextScreen();
+	}
+	<!-- ��Щ������javascript����Android����	-->
+	
+	function showHtmlcallJava(){
+		var str = window.Android.HtmlcallJava();
+		document.getElementById("id_input").value = str;
+		//alert(str);
+	}
+	
+	function showHtmlcallJava2(){
+		var str = window.Android.HtmlcallJava2("NMGB:");
+		document.getElementById("id_input2").value = str; 
+		//alert(str);
+	}
+	
+	function showFromHtml(){
+		document.getElementById("id_input").value = "Java call Html";
+	}
+	
+	function showFromHtml2( param ){
+		document.getElementById("id_input2").value = "Java call Html : " + param; 
+	}
+	
+</script>
+</head>
+<body>
+	<center>
+		<h3>Binding JavaScript code to Android code</h3>
+		<div id="content">When developing a web application that's
+			designed specifically for the WebView in your Android application,
+			you can create interfaces between your JavaScript code and
+			client-side Android code. For example, your JavaScript code can call
+			a method in your Android code to display a Dialog, instead of using
+			JavaScript's alert() function.</div>
+		<div>Here are few examples:</div>
+		<div>
+			<input type="button" value="Make Toast"
+				onClick="showAndroidToast('Toast made by Javascript :)')" /><br />
+				
+			<input type="button" value="Trigger Dialog"
+				onClick="showAndroidDialog('This dialog is triggered by Javascript :)')" /><br />
+				
+			<input type="button" value="Take me to Next Screen"
+				onClick="moveToScreenTwo()" /><br /><br />
+				
+			<div>Other implement Method!!!!</div>
+			<input type="button" value="Telphone Call" onclick="geolocation.getCurrentLocation()" /><br />
+			<input type="button" value="HtmlcallJava2" onclick="showHtmlcallJava2()" /><br />
+			<input id="id_input" style="width: 90%" type="text" value="null" /><br />
+			<input type="button" value="JavacallHtml" onclick="window.Android.JavacallHtml()" /><br />
+			<input id="id_input2" style="width: 90%" type="text" value="null" /><br />
+			<input type="button" value="JavacallHtml2" onclick="Device()" /><br />
+		</div>
+	</center>
+</body>
+</html>

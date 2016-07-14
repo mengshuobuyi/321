@@ -1,0 +1,216 @@
+//
+//  ShippingMethodViewController.m
+//  wenYao-store
+//
+//  Created by Yang Yuexia on 16/5/6.
+//  Copyright © 2016年 carret. All rights reserved.
+//
+
+/*
+    配送方式
+    h5/branch/getBranchPostTips   获取配送方式
+ */
+
+#import "ShippingMethodViewController.h"
+#import "ToStorePickCell.h"
+#import "DoorDeliveryCell.h"
+#import "CityExpressCell.h"
+#import "BranchModel.h"
+#import "EditToStorePickViewController.h"
+#import "EditDoorDeliveryViewController.h"
+#import "Bmmall.h"
+
+@interface ShippingMethodViewController ()<UITableViewDataSource,UITableViewDelegate,ToStorePickCellDelegate,DoorDeliveryCellDelegate,CityExpressCellDelegate>
+
+@property (weak, nonatomic) IBOutlet UITableView *tableView;
+
+@property (strong, nonatomic) ShippingMethodModel *shippingMethodModel;
+
+@property (strong, nonatomic) NSMutableArray *dataList;
+
+@end
+
+@implementation ShippingMethodViewController
+
+- (void)viewDidLoad
+{
+    [super viewDidLoad];
+    
+    self.title = @"配送方式";
+    self.shippingMethodModel = [ShippingMethodModel new];
+    self.dataList = [NSMutableArray array];
+    
+    self.tableView.tableFooterView = [[UIView alloc] init];
+    self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    [self queryInfo];
+}
+
+#pragma mark ---- 获取配送方式 ----
+- (void)queryInfo
+{
+    if (QWGLOBALMANAGER.currentNetWork == kNotReachable) {
+        [SVProgressHUD showErrorWithStatus:kWaring33];
+        return;
+    }
+    
+    NSMutableDictionary *setting = [NSMutableDictionary dictionary];
+    setting[@"token"] = StrFromObj(QWGLOBALMANAGER.configure.userToken);
+    
+    [Bmmall BmmallDeliveryModeWithParams:setting success:^(id obj) {
+        
+        [self.dataList removeAllObjects];
+        ShippingMethodModel *page = [ShippingMethodModel parse:obj Elements:[ShippingMethodPriceModel class] forAttribute:@"deliveryMode"];
+        if ([page.apiStatus integerValue] == 0)
+        {
+            if (!page.supportGetOnsite && !page.supportHomeDelivery && !page.supportExpress) {
+                [self showInfoView:@"暂无配送方式" image:@"ic_img_fail"];
+            }else
+            {
+                self.shippingMethodModel = page;
+                
+                if (page.supportGetOnsite) {
+                    [self.dataList addObject:@"到店取货"];
+                }
+                
+                if (page.supportHomeDelivery) {
+                    [self.dataList addObject:@"送货上门"];
+                }
+                
+                if (page.supportExpress) {
+                    [self.dataList addObject:@"同城快递"];
+                }
+                
+                [self.tableView reloadData];
+            }
+        }else
+        {
+            [SVProgressHUD showErrorWithStatus:page.apiMessage];
+        }
+        
+    } failure:^(HttpException *e) {
+        if (QWGLOBALMANAGER.currentNetWork == kNotReachable){
+            [self showInfoView:kWaring12 image:@"img_network"];
+        }else
+        {
+            if(e.errorCode != -999){
+                if(e.errorCode == -1001){
+                    [self showInfoView:kWarning215N54 image:@"ic_img_fail"];
+                }else{
+                    [self showInfoView:kWarning215N0 image:@"ic_img_fail"];
+                }
+            }
+        }
+    }];
+}
+
+#pragma mark ---- UITableViewDelegate ----
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
+    return self.dataList.count;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    NSString *str = self.dataList[indexPath.row];
+    
+    if ([str isEqualToString:@"到店取货"])
+    {
+        return [ToStorePickCell getCellHeight:self.shippingMethodModel];
+    }else if ([str isEqualToString:@"送货上门"])
+    {
+        return [DoorDeliveryCell getCellHeight:self.shippingMethodModel];
+    }else if ([str isEqualToString:@"同城快递"])
+    {
+        return [CityExpressCell getCellHeight:self.shippingMethodModel];
+    }else
+    {
+        return 0;
+    }
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    NSString *str = self.dataList[indexPath.row];
+    
+    if ([str isEqualToString:@"到店取货"])
+    {
+        ToStorePickCell *cell = [tableView dequeueReusableCellWithIdentifier:@"ToStorePickCell"];
+        [cell setCell:self.shippingMethodModel];
+        if (AUTHORITY_ROOT) {
+            cell.rightIcon.hidden = NO;
+            cell.toStorePickCellDelegate = self;
+            cell.editButton.obj = indexPath;
+        }else{
+            cell.rightIcon.hidden = YES;
+        }
+        return cell;
+        
+    }else if ([str isEqualToString:@"送货上门"])
+    {
+        DoorDeliveryCell *cell = [tableView dequeueReusableCellWithIdentifier:@"DoorDeliveryCell"];
+        [cell setCell:self.shippingMethodModel];
+        if (AUTHORITY_ROOT) {
+            cell.rightIcon.hidden = NO;
+            cell.doorDeliveryCellDelegate = self;
+            cell.editButton.obj = indexPath;
+        }else{
+            cell.rightIcon.hidden = YES;
+        }
+        return cell;
+    }else if ([str isEqualToString:@"同城快递"])
+    {
+        CityExpressCell *cell = [tableView dequeueReusableCellWithIdentifier:@"CityExpressCell"];
+        [cell setCell:self.shippingMethodModel];
+        if (AUTHORITY_ROOT) {
+            cell.rightIcon.hidden = NO;
+            cell.cityExpressCellDelegate = self;
+            cell.editButton.obj = indexPath;
+        }else{
+            cell.rightIcon.hidden = YES;
+        }
+        return cell;
+    }else
+    {
+        return nil;
+    }
+}
+
+#pragma mark ---- 到店取货 ----
+- (void)editToStorePickAction:(NSIndexPath *)indexPath
+{
+    EditToStorePickViewController *vc = [[UIStoryboard storyboardWithName:@"StoreInfo" bundle:nil] instantiateViewControllerWithIdentifier:@"EditToStorePickViewController"];
+    vc.hidesBottomBarWhenPushed = YES;
+    vc.startTimeText = self.shippingMethodModel.openBegin;
+    vc.endTimeText = self.shippingMethodModel.openEnd;
+    vc.postTips = self.dataList;
+    [self.navigationController pushViewController:vc animated:YES];
+}
+
+#pragma mark ---- 送货上门 ----
+- (void)editDoorDeliveryAction:(NSIndexPath *)indexPath
+{
+    EditDoorDeliveryViewController *vc = [[UIStoryboard storyboardWithName:@"StoreInfo" bundle:nil] instantiateViewControllerWithIdentifier:@"EditDoorDeliveryViewController"];
+    vc.hidesBottomBarWhenPushed = YES;
+    [self.navigationController pushViewController:vc animated:YES];
+}
+
+#pragma mark ---- 同城快递 ----
+- (void)editCityExpressAction:(NSIndexPath *)indexPath
+{    
+    EditDoorDeliveryViewController *vc = [[UIStoryboard storyboardWithName:@"StoreInfo" bundle:nil] instantiateViewControllerWithIdentifier:@"EditDoorDeliveryViewController"];
+    vc.hidesBottomBarWhenPushed = YES;
+    [self.navigationController pushViewController:vc animated:YES];
+}
+
+- (void)didReceiveMemoryWarning {
+    [super didReceiveMemoryWarning];
+}
+
+@end

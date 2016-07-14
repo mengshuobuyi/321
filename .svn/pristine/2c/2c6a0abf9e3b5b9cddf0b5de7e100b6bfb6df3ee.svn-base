@@ -1,0 +1,732 @@
+//
+//  CircleDetailViewController.m
+//  wenYao-store
+//
+//  Created by Yang Yuexia on 15/12/31.
+//  Copyright © 2015年 carret. All rights reserved.
+//
+
+#import "CircleDetailViewController.h"
+#import "NSString+WPAttributedMarkup.h"
+#import "LookMasterViewController.h"
+#import "CircleDetailNextViewController.h"
+#import "CircleModel.h"
+#import "Circle.h"
+#import "SendPostViewController.h"
+#import "ForumModel.h"
+#import "EnterExpertViewController.h"
+#import "GUITabScrollView.h"
+
+@interface CircleDetailViewController ()<UITableViewDataSource,UITableViewDelegate,GUITabPagerDataSource, GUITabPagerDelegate>
+{
+    CGFloat rowHeight;  //tableview cell高度
+    int tabIndex;       //选中的tab索引
+    CircleDetailNextViewController *currentViewController;
+}
+
+@property (weak, nonatomic) IBOutlet UIView *tableHeaderView;
+@property (weak, nonatomic) IBOutlet UIImageView *circleIcon;                      //圈子icon
+@property (weak, nonatomic) IBOutlet UILabel *circleName;                          //圈子名称
+@property (weak, nonatomic) IBOutlet UILabel *attentionNum;                        //帖子关注数
+@property (weak, nonatomic) IBOutlet UILabel *isMasterLabel;                       //我是圈主
+@property (weak, nonatomic) IBOutlet UILabel *attentionLabel;                      //关注
+@property (weak, nonatomic) IBOutlet UILabel *cancelAttentionLabel;                //取消关注
+@property (weak, nonatomic) IBOutlet UIButton *attentionButton;                    //关注按钮
+@property (weak, nonatomic) IBOutlet UILabel *circleDesc;                          //圈子简介
+@property (weak, nonatomic) IBOutlet UIImageView *circleDescTransformImage;        //简介翻转图片
+@property (weak, nonatomic) IBOutlet UIButton *postCircleButton;                   //发帖按钮
+@property (weak, nonatomic) IBOutlet UIButton *descButton;                         //圈子简介展开按钮
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *circleDesc_layout_height; //圈子简介高度约束
+
+@property (strong, nonatomic) IBOutlet UIView *imagesContainerView;
+@property (weak, nonatomic) IBOutlet UIImageView *circleMasterOneImage;
+@property (weak, nonatomic) IBOutlet UIImageView *circleMasterTwoImage;
+@property (weak, nonatomic) IBOutlet UIImageView *circleMasterThreeImage;
+@property (weak, nonatomic) IBOutlet UIImageView *circleMasterFourImage;
+@property (weak, nonatomic) IBOutlet UIImageView *circleMasterFiveImage;
+@property (weak, nonatomic) IBOutlet UIView *noCircleMasterTipView;                //无入驻专家提示view
+
+@property (assign, nonatomic) BOOL isSpreadDesc;                                   //圈子简介是否展开
+@property (strong, nonatomic) CircleListModel *circleDetailModel;                  //圈子详情model
+@property (strong, nonatomic) NSMutableArray * sliderTabLists;
+@property (strong, nonatomic) NSMutableArray *viewControllerssss;
+
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *bottomView_layout_height;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *expertImageTwo_layout_space;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *expertImageThree_layout_space;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *expertImageFour_layout_space;
+
+//展开圈子简介
+- (IBAction)headerSpreadAction:(id)sender;
+
+//查看圈主
+- (IBAction)lookCircleMasterAction:(id)sender;
+
+//发帖
+- (IBAction)postTopicAction:(id)sender;
+
+//关注
+- (IBAction)attentionAction:(id)sender;
+
+@end
+
+@implementation CircleDetailViewController
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    
+    [self.view bringSubviewToFront:self.postCircleButton];
+    
+    self.viewControllerssss = [NSMutableArray array];
+    self.sliderTabLists = [NSMutableArray arrayWithObjects:@"全部",@"专家帖",@"热门帖",@"用户帖", nil];
+    self.circleDetailModel = [CircleListModel new];
+    self.isSpreadDesc = NO;
+    
+    self.tableView.backgroundColor = [UIColor clearColor];
+    [self setDataSource:self];
+    [self setDelegate:self];
+    
+    //获取圈子数据
+    [self queryCircleInfo];
+    
+    //下拉刷新
+    __weak CircleDetailViewController *weakSelf = self;
+    [self enableSimpleRefresh:self.tableView block:^(SRRefreshView *sender) {
+        CircleDetailViewController *strongSelf = weakSelf;
+        if (QWGLOBALMANAGER.currentNetWork != kNotReachable)
+        {
+            HttpClientMgr.progressEnabled = NO;
+            [strongSelf queryCircleInfo];
+            // leak fix
+            [strongSelf selectTabbarIndex:strongSelf->tabIndex];
+            [strongSelf refreshPostListWithIndex:strongSelf->tabIndex];
+        }else
+        {
+            [SVProgressHUD showErrorWithStatus:kWaring33 duration:0.8];
+        }
+    }];
+    
+    UITapGestureRecognizer* tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapMaterImageContier:)];
+    [self.imagesContainerView addGestureRecognizer:tapGesture];
+}
+
+- (void)tapMaterImageContier:(UITapGestureRecognizer*)tapGestuer
+{
+    [self lookCircleMasterAction:nil];
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    
+    ((QWBaseNavigationController *)self.navigationController).canDragBack = NO;
+    
+    if (CIRCLE_DETAIL_BYSEND)
+    {
+        //通过发帖返回圈子列表  在看帖列表里加入 新发布的帖子 刷新看帖tab
+        [QWUserDefault setObject:@"KO" key:@"sendPostToCircleDetail"];
+        [self queryCircleInfo];
+        [self selectTabbarIndex:0];
+        [self refreshPostListWithIndex:0];
+    }
+    
+    if (DELETE_POSTTOPIC_SUCCESS)
+    {
+        //从圈子进入帖子详情，删除该帖之后，返回圈子详情，刷新当前tab
+        [QWUserDefault setObject:@"KO" key:@"deletePostTopicSuccess"];
+        [self queryCircleInfo];
+        [self selectTabbarIndex:tabIndex];
+        [self refreshPostListWithIndex:tabIndex];
+    }
+}
+
+- (void)viewWillDisappear:(BOOL)animated
+{
+    [super viewWillDisappear:animated];
+    ((QWBaseNavigationController *)self.navigationController).canDragBack = YES;
+}
+
+- (NSInteger)numberOfViewControllers {
+    return self.sliderTabLists.count;
+}
+
+- (UIViewController<GUITabViewControllerObject> *)viewControllerForIndex:(NSInteger)index
+{
+    CircleDetailNextViewController *vc = self.viewControllerssss[index];
+    vc.delegate = self;
+    CGRect rect = self.view.bounds;
+    rect.size.height -= 44.f;
+    vc.view.frame = rect;
+    return vc;
+}
+
+- (UIScrollView<GUITabScrollViewObject> *)tabScrollView
+{
+    NSMutableArray *arrM = [NSMutableArray array];
+    for (int i = 0; i < self.sliderTabLists.count; i++) {
+        [arrM addObject:[self titleForTabAtIndex:i]];
+    }
+    CGRect frame = self.view.frame;
+    frame.origin.y = 0;
+    frame.size.height = 44.0f;
+    return [[GUITabScrollView alloc] initWithFrame:frame tabTitles:[arrM copy] tabBarHeight:44.0f tabIndicatorHeight:2.0f seperatorHeight:0.5f tabIndicatorColor:RGBHex(qwColor3) seperatorColor:[UIColor lightGrayColor] backgroundColor:[UIColor whiteColor] selectedTabIndex:0 centerSepColor:[UIColor clearColor] scrollable:NO];
+}
+
+- (UIView *)tabPagerHeaderView
+{
+    return self.tableHeaderView;
+}
+
+- (NSString *)titleForTabAtIndex:(NSInteger)index
+{
+    return self.sliderTabLists[index];
+}
+
+/* 代理 */
+#pragma mark - Tab Pager Delegate
+
+- (void)tabPager:(GUITabPagerViewController *)tabPager willTransitionToTabAtIndex:(NSInteger)index {
+    NSLog(@"Will transition from tab %ld to %ld", (long)[self selectedIndex], (long)index);
+    tabIndex = index;
+    [self refreshPostListWithIndex:tabIndex];
+    
+    if (index == 0)
+    {
+        if (self.circleDetailModel.flagGroup)
+        {
+            [QWGLOBALMANAGER statisticsEventId:@"商家圈_全部_出现" withLable:@"圈子" withParams:nil];
+        }else
+        {
+            [QWGLOBALMANAGER statisticsEventId:@"公共圈_全部_出现" withLable:@"圈子" withParams:nil];
+        }
+    }else if (index == 1)
+    {
+        if (self.circleDetailModel.flagGroup)
+        {
+            [QWGLOBALMANAGER statisticsEventId:@"商家圈_专家帖_出现" withLable:@"圈子" withParams:nil];
+        }else
+        {
+            [QWGLOBALMANAGER statisticsEventId:@"公共圈_专家帖_出现" withLable:@"圈子" withParams:nil];
+        }
+    }else if (index == 2)
+    {
+        if (self.circleDetailModel.flagGroup)
+        {
+            [QWGLOBALMANAGER statisticsEventId:@"商家圈_热门帖_出现" withLable:@"圈子" withParams:nil];
+        }else
+        {
+            [QWGLOBALMANAGER statisticsEventId:@"公共圈_热门帖_出现" withLable:@"圈子" withParams:nil];
+        }
+    }else if (index == 3)
+    {
+        if (self.circleDetailModel.flagGroup)
+        {
+            [QWGLOBALMANAGER statisticsEventId:@"商家圈_用户帖_出现" withLable:@"圈子" withParams:nil];
+        }else
+        {
+            [QWGLOBALMANAGER statisticsEventId:@"公共圈_用户帖_出现" withLable:@"圈子" withParams:nil];
+        }
+    }
+}
+
+- (void)tabPager:(GUITabPagerViewController *)tabPager didTransitionToTabAtIndex:(NSInteger)index {
+    NSLog(@"Did transition to tab %ld", (long)index);
+}
+
+#pragma mark - scrollToTop delegate
+
+/* 外部调整scrollToTop的表现 */
+- (void)didScrollToTop:(CircleDetailNextViewController *)vc
+{
+    [UIView animateWithDuration:0.2 animations:^{
+        self.tableView.contentOffset = CGPointZero;
+    }];
+    UIScrollView *sc = (UIScrollView *)vc.view;
+//    sc.bounces  = NO;
+    self.tableView.bounces = NO;
+}
+
+
+#pragma mark ---- 设置界面数组 ----
+- (void)setupSliderViewControllers
+{
+    //请求参数类型：  1看帖  2热门  3专家  4咨询
+    
+    CircleDetailNextViewController *all = [[UIStoryboard storyboardWithName:@"Circle" bundle:nil] instantiateViewControllerWithIdentifier:@"CircleDetailNextViewController"];
+    all.navigationController = self.navigationController;
+    all.flagGroup = self.circleDetailModel.flagGroup;
+    all.title = @"全部";
+    all.requestType = @"1";
+    all.jumpType = @"1";
+    all.sliderTabIndex = @"1";
+    
+    
+    CircleDetailNextViewController *expert = [[UIStoryboard storyboardWithName:@"Circle" bundle:nil] instantiateViewControllerWithIdentifier:@"CircleDetailNextViewController"];
+    expert.navigationController = self.navigationController;
+    expert.flagGroup = self.circleDetailModel.flagGroup;
+    expert.title = @"专家帖";
+    expert.requestType = @"3";
+    expert.jumpType = @"1";
+    expert.sliderTabIndex = @"2";
+    
+    
+    CircleDetailNextViewController *hot = [[UIStoryboard storyboardWithName:@"Circle" bundle:nil] instantiateViewControllerWithIdentifier:@"CircleDetailNextViewController"];
+    hot.navigationController = self.navigationController;
+    hot.flagGroup = self.circleDetailModel.flagGroup;
+    hot.title = @"热门帖";
+    hot.requestType = @"2";
+    hot.jumpType = @"1";
+    hot.sliderTabIndex = @"3";
+    
+    
+    CircleDetailNextViewController *other = [[UIStoryboard storyboardWithName:@"Circle" bundle:nil] instantiateViewControllerWithIdentifier:@"CircleDetailNextViewController"];
+    other.navigationController = self.navigationController;
+    other.flagGroup = self.circleDetailModel.flagGroup;
+    other.title = @"用户帖";
+    other.requestType = @"4";
+    other.jumpType = @"1";
+    other.sliderTabIndex = @"4";
+    
+    
+    currentViewController = all;
+    [self.viewControllerssss addObject:all];
+    [self.viewControllerssss addObject:expert];
+    [self.viewControllerssss addObject:hot];
+    [self.viewControllerssss addObject:other];
+    
+}
+
+#pragma mark ---- 请求圈子数据 ----
+- (void)queryCircleInfo
+{
+    if (QWGLOBALMANAGER.currentNetWork == kNotReachable) {
+        [SVProgressHUD showErrorWithStatus:kWaring33];
+        return;
+    }
+    
+    NSMutableDictionary *setting = [NSMutableDictionary dictionary];
+    setting[@"teamId"] = StrFromObj(self.teamId);
+    setting[@"token"] = StrFromObj(QWGLOBALMANAGER.configure.expertToken);
+    [Circle TeamGetTeamDetailsInfoWithParams:setting success:^(id obj) {
+        
+        self.circleDetailModel = [CircleListModel parse:obj];
+        
+        if ([self.circleDetailModel.apiStatus integerValue] == 0)
+        {
+            //设置headerView
+            [self setUpTableHeaderView];
+            [self setupSliderViewControllers];
+            [self reloadData];
+            [self refreshPostListWithIndex:0];
+        }else
+        {
+            [SVProgressHUD showErrorWithStatus:self.circleDetailModel.apiMessage];
+        }
+        
+    } failure:^(HttpException *e) {
+        if (QWGLOBALMANAGER.currentNetWork == kNotReachable)
+        {
+            [self showInfoView:kWaring12 image:@"img_network"];
+        }else
+        {
+            if(e.errorCode != -999){
+                if(e.errorCode == -1001){
+                    [self showInfoView:kWarning215N54 image:@"ic_img_fail"];
+                }else{
+                    [self showInfoView:kWarning215N0 image:@"ic_img_fail"];
+                }
+            }
+        }
+    }];
+}
+
+#pragma mark ---- 无数据点击事件 ----
+- (void)viewInfoClickAction:(id)sender
+{
+    if (QWGLOBALMANAGER.currentNetWork != kNotReachable) {
+        [self removeInfoView];
+        [self queryCircleInfo];
+    }
+}
+
+#pragma mark ---- 设置headerView ----
+- (void)setUpTableHeaderView
+{
+    //头像
+    self.circleIcon.layer.cornerRadius = 3.0;
+    self.circleIcon.layer.masksToBounds = YES;
+    self.circleIcon.layer.borderWidth = 0.5;
+    self.circleIcon.layer.borderColor = RGBHex(qwColor9).CGColor;
+    [self.circleIcon setImageWithURL:[NSURL URLWithString:self.circleDetailModel.teamLogo] placeholderImage:[UIImage imageNamed:@"bg_tx_circletouxiang"]];
+    
+    //圈子名称
+    self.circleName.text = self.circleDetailModel.teamName;;
+    
+    //圈子关注数
+    self.attentionNum.text = [NSString stringWithFormat:@"%d人关注    %d个帖子",self.circleDetailModel.attnCount,self.circleDetailModel.postCount];
+    
+    //关注按钮
+    if (self.circleDetailModel.flagMaster)
+    {
+        //我是圈主
+        self.attentionLabel.hidden = YES;
+        self.cancelAttentionLabel.hidden = YES;
+        self.isMasterLabel.hidden = NO;
+        self.isMasterLabel.layer.cornerRadius = 4.0;
+        self.isMasterLabel.layer.masksToBounds = YES;
+        self.attentionButton.enabled = NO;
+    }else
+    {
+        if (self.circleDetailModel.flagAttn)
+        {
+            //已经关注，显示取消关注
+            self.cancelAttentionLabel.layer.cornerRadius = 4.0;
+            self.cancelAttentionLabel.layer.masksToBounds = YES;
+            self.cancelAttentionLabel.hidden = NO;
+            self.attentionLabel.hidden = YES;
+            self.isMasterLabel.hidden = YES;
+        }else
+        {
+            //未关注，显示关注
+            self.attentionLabel.layer.cornerRadius = 4.0;
+            self.attentionLabel.layer.masksToBounds = YES;
+            self.attentionLabel.hidden = NO;
+            self.cancelAttentionLabel.hidden = YES;
+            self.isMasterLabel.hidden = YES;
+        }
+    }
+    
+    //圈子简介 （商家圈无简介）
+    if (self.circleDetailModel.flagGroup)
+    {
+        //商家圈无简介
+        self.circleDesc.hidden = YES;
+        self.circleDescTransformImage.hidden = YES;
+        self.descButton.hidden = YES;
+        self.descButton.enabled = NO;
+        
+    }else
+    {
+        //公共圈有简介
+        self.circleDesc.hidden = NO;
+        self.circleDescTransformImage.hidden = NO;
+        self.descButton.hidden = NO;
+        self.descButton.enabled = YES;
+        
+        if (self.circleDetailModel.teamDesc.length > 0) {
+            if(!self.isSpreadDesc)
+            {
+                //图片旋转
+                self.circleDescTransformImage.transform=CGAffineTransformMakeRotation(0);
+                
+                //简介hidden
+                self.circleDesc.hidden = YES;
+                self.circleDesc_layout_height.constant = 1;
+                
+                self.tableHeaderView.frame = CGRectMake(0, 0, APP_W, 161);
+                self.tableView.tableHeaderView = self.tableHeaderView;
+                
+            }else
+            {
+                
+                //图片旋转
+                self.circleDescTransformImage.transform=CGAffineTransformMakeRotation(M_PI);
+                
+                //设置行间距 赋值
+                NSString *desc = self.circleDetailModel.teamDesc;
+                NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
+                paragraphStyle.lineSpacing = 4;
+                paragraphStyle.lineBreakMode = NSLineBreakByTruncatingTail;
+                NSDictionary *attributes = @{NSFontAttributeName:fontSystem(14),NSParagraphStyleAttributeName:paragraphStyle};
+                self.circleDesc.attributedText = [[NSAttributedString alloc] initWithString:desc attributes:attributes];
+                self.circleDesc.hidden = NO;
+                CGSize descSize = [QWGLOBALMANAGER sizeText:desc font:fontSystem(14) limitWidth:APP_W-30];
+                float singleLabelHeight = 15.5;
+                int line = descSize.height/singleLabelHeight;
+                self.circleDesc_layout_height.constant = descSize.height + (line-1)*4 +5;
+                
+                self.tableHeaderView.frame = CGRectMake(0, 0, APP_W, 161 + descSize.height+ (line-1)*4 + 5);
+                self.tableView.tableHeaderView = self.tableHeaderView;
+            }
+        }
+    }
+    
+    //专家头像集合
+    self.circleMasterOneImage.layer.cornerRadius = 20.0;
+    self.circleMasterOneImage.layer.masksToBounds = YES;
+    self.circleMasterTwoImage.layer.cornerRadius = 20.0;
+    self.circleMasterTwoImage.layer.masksToBounds = YES;
+    self.circleMasterThreeImage.layer.cornerRadius = 20.0;
+    self.circleMasterThreeImage.layer.masksToBounds = YES;
+    self.circleMasterFourImage.layer.cornerRadius = 20.0;
+    self.circleMasterFourImage.layer.masksToBounds = YES;
+    self.circleMasterFiveImage.layer.cornerRadius = 20.0;
+    self.circleMasterFiveImage.layer.masksToBounds = YES;
+    
+    self.expertImageTwo_layout_space.constant = (APP_W-280)/4;
+    self.expertImageThree_layout_space.constant = (APP_W-280)/4;
+    self.expertImageFour_layout_space.constant = (APP_W-280)/4;
+    
+    NSArray *arr = self.circleDetailModel.expertUrlList;
+    if (arr)
+    {
+        if (arr.count == 0)
+        {
+            self.circleMasterOneImage.hidden = YES;
+            self.circleMasterTwoImage.hidden = YES;
+            self.circleMasterThreeImage.hidden = YES;
+            self.circleMasterFourImage.hidden = YES;
+            self.circleMasterFiveImage.hidden = YES;
+            self.noCircleMasterTipView.hidden = NO;
+            
+        }else if (arr.count == 1)
+        {
+            self.circleMasterOneImage.hidden = NO;
+            [self.circleMasterOneImage setImageWithURL:[NSURL URLWithString:arr[0]] placeholderImage:[UIImage imageNamed:@"expert_ic_people"]];
+            self.circleMasterTwoImage.hidden = YES;
+            self.circleMasterThreeImage.hidden = YES;
+            self.circleMasterFourImage.hidden = YES;
+            self.circleMasterFiveImage.hidden = YES;
+            self.noCircleMasterTipView.hidden = YES;
+            
+        }else if (arr.count == 2)
+        {
+            
+            self.circleMasterOneImage.hidden = NO;
+            self.circleMasterTwoImage.hidden = NO;
+            [self.circleMasterOneImage setImageWithURL:[NSURL URLWithString:arr[0]] placeholderImage:[UIImage imageNamed:@"expert_ic_people"]];
+            [self.circleMasterTwoImage setImageWithURL:[NSURL URLWithString:arr[1]] placeholderImage:[UIImage imageNamed:@"expert_ic_people"]];
+            self.circleMasterThreeImage.hidden = YES;
+            self.circleMasterFourImage.hidden = YES;
+            self.circleMasterFiveImage.hidden = YES;
+            self.noCircleMasterTipView.hidden = YES;
+            
+        }else if (arr.count == 3)
+        {
+            self.circleMasterOneImage.hidden = NO;
+            self.circleMasterTwoImage.hidden = NO;
+            self.circleMasterThreeImage.hidden = NO;
+            [self.circleMasterOneImage setImageWithURL:[NSURL URLWithString:arr[0]] placeholderImage:[UIImage imageNamed:@"expert_ic_people"]];
+            [self.circleMasterTwoImage setImageWithURL:[NSURL URLWithString:arr[1]] placeholderImage:[UIImage imageNamed:@"expert_ic_people"]];
+            [self.circleMasterThreeImage setImageWithURL:[NSURL URLWithString:arr[2]] placeholderImage:[UIImage imageNamed:@"expert_ic_people"]];
+            self.circleMasterFourImage.hidden = YES;
+            self.circleMasterFiveImage.hidden = YES;
+            self.noCircleMasterTipView.hidden = YES;
+            
+        }else if (arr.count == 4)
+        {
+            self.circleMasterOneImage.hidden = NO;
+            self.circleMasterTwoImage.hidden = NO;
+            self.circleMasterThreeImage.hidden = NO;
+            self.circleMasterFourImage.hidden = NO;
+            [self.circleMasterOneImage setImageWithURL:[NSURL URLWithString:arr[0]] placeholderImage:[UIImage imageNamed:@"expert_ic_people"]];
+            [self.circleMasterTwoImage setImageWithURL:[NSURL URLWithString:arr[1]] placeholderImage:[UIImage imageNamed:@"expert_ic_people"]];
+            [self.circleMasterThreeImage setImageWithURL:[NSURL URLWithString:arr[2]] placeholderImage:[UIImage imageNamed:@"expert_ic_people"]];
+            [self.circleMasterFourImage setImageWithURL:[NSURL URLWithString:arr[3]] placeholderImage:[UIImage imageNamed:@"expert_ic_people"]];
+            self.circleMasterFiveImage.hidden = YES;
+            self.noCircleMasterTipView.hidden = YES;
+            
+        }else if (arr.count == 5)
+        {
+            self.circleMasterOneImage.hidden = NO;
+            self.circleMasterTwoImage.hidden = NO;
+            self.circleMasterThreeImage.hidden = NO;
+            self.circleMasterFourImage.hidden = NO;
+            self.circleMasterFiveImage.hidden = NO;
+            [self.circleMasterOneImage setImageWithURL:[NSURL URLWithString:arr[0]] placeholderImage:[UIImage imageNamed:@"expert_ic_people"]];
+            [self.circleMasterTwoImage setImageWithURL:[NSURL URLWithString:arr[1]] placeholderImage:[UIImage imageNamed:@"expert_ic_people"]];
+            [self.circleMasterThreeImage setImageWithURL:[NSURL URLWithString:arr[2]] placeholderImage:[UIImage imageNamed:@"expert_ic_people"]];
+            [self.circleMasterFourImage setImageWithURL:[NSURL URLWithString:arr[3]] placeholderImage:[UIImage imageNamed:@"expert_ic_people"]];
+            [self.circleMasterFiveImage setImageWithURL:[NSURL URLWithString:arr[4]] placeholderImage:[UIImage imageNamed:@"expert_ic_people"]];
+            self.noCircleMasterTipView.hidden = YES;
+            
+            
+        }else if (arr.count > 5)
+        {
+            self.circleMasterOneImage.hidden = NO;
+            self.circleMasterTwoImage.hidden = NO;
+            self.circleMasterThreeImage.hidden = NO;
+            self.circleMasterFourImage.hidden = NO;
+            self.circleMasterFiveImage.hidden = NO;
+            [self.circleMasterOneImage setImageWithURL:[NSURL URLWithString:arr[0]] placeholderImage:[UIImage imageNamed:@"expert_ic_people"]];
+            [self.circleMasterTwoImage setImageWithURL:[NSURL URLWithString:arr[1]] placeholderImage:[UIImage imageNamed:@"expert_ic_people"]];
+            [self.circleMasterThreeImage setImageWithURL:[NSURL URLWithString:arr[2]] placeholderImage:[UIImage imageNamed:@"expert_ic_people"]];
+            [self.circleMasterFourImage setImageWithURL:[NSURL URLWithString:arr[3]] placeholderImage:[UIImage imageNamed:@"expert_ic_people"]];
+            [self.circleMasterFiveImage setImage:[UIImage imageNamed:@"ic_quqnzixq_more"]];
+            self.noCircleMasterTipView.hidden = YES;
+        }
+    }
+    
+//    self.tableView.tableHeaderView = self.tableHeaderView;
+//    [self.tableView reloadData];
+    
+}
+
+#pragma mark ---- 关注／取消关注 ----
+- (IBAction)attentionAction:(id)sender
+{
+    if (QWGLOBALMANAGER.currentNetWork == kNotReachable) {
+        [SVProgressHUD showErrorWithStatus:kWaring33];
+        return;
+    }
+    
+    if (QWGLOBALMANAGER.configure.silencedFlag) {
+        [SVProgressHUD showErrorWithStatus:@"您已被禁言"];
+        return;
+    }
+    
+    if (self.circleDetailModel.flagGroup) {
+        [QWGLOBALMANAGER statisticsEventId:@"商家圈_关注圈子按键" withLable:@"圈子" withParams:nil];
+    }else
+    {
+        [QWGLOBALMANAGER statisticsEventId:@"公共圈_关注圈子按键" withLable:@"圈子" withParams:nil];
+    }
+    NSString *type;
+    if (self.circleDetailModel.flagAttn)
+    {
+        //取消关注
+        type = @"1";
+    }else
+    {
+        //关注
+        type = @"0";
+    }
+    
+    NSMutableDictionary *setting = [NSMutableDictionary dictionary];
+    setting[@"teamId"] = StrFromObj(self.circleDetailModel.teamId);
+    setting[@"isAttentionTeam"] = StrFromObj(type);
+    setting[@"token"] = StrFromObj(QWGLOBALMANAGER.configure.expertToken);
+    [Circle teamAttentionTeamWithParams:setting success:^(id obj) {
+        
+        if ([obj[@"apiStatus"] integerValue] == 0)
+        {
+            [SVProgressHUD showSuccessWithStatus:obj[@"apiMessage"]];
+            self.circleDetailModel.flagAttn = !self.circleDetailModel.flagAttn;
+            [self setUpTableHeaderView];
+        }else
+        {
+            [SVProgressHUD showErrorWithStatus:obj[@"apiMessage"]];
+        }
+    } failure:^(HttpException *e) {
+        
+    }];
+}
+
+#pragma mark ---- 展开圈子简介 ----
+- (IBAction)headerSpreadAction:(id)sender
+{
+    if(self.isSpreadDesc)
+    {
+        //圈子简介收起
+        self.isSpreadDesc = NO;
+        
+        //图片旋转
+        self.circleDescTransformImage.transform=CGAffineTransformMakeRotation(0);
+        
+        //简介hidden
+        self.circleDesc.hidden = YES;
+        self.circleDesc_layout_height.constant = 1;
+        
+        self.tableHeaderView.frame = CGRectMake(0, 0, APP_W, 161);
+        self.tableView.tableHeaderView = self.tableHeaderView;
+        [self.tableView reloadData];
+        
+    }else
+    {
+        //圈子简介展开
+        self.isSpreadDesc = YES;
+        
+        //图片旋转
+        self.circleDescTransformImage.transform=CGAffineTransformMakeRotation(M_PI);
+        
+        //设置行间距 赋值
+        NSString *desc = self.circleDetailModel.teamDesc;
+        NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
+        paragraphStyle.lineSpacing = 4;
+        paragraphStyle.lineBreakMode = NSLineBreakByTruncatingTail;
+        NSDictionary *attributes = @{NSFontAttributeName:fontSystem(14),NSParagraphStyleAttributeName:paragraphStyle};
+        self.circleDesc.attributedText = [[NSAttributedString alloc] initWithString:desc attributes:attributes];
+        self.circleDesc.hidden = NO;
+        CGSize descSize = [QWGLOBALMANAGER sizeText:desc font:fontSystem(14) limitWidth:APP_W-30];
+        float singleLabelHeight = 15.5;
+        int line = descSize.height/singleLabelHeight;
+        self.circleDesc_layout_height.constant = descSize.height + (line-1)*4 +5;
+        
+        self.tableHeaderView.frame = CGRectMake(0, 0, APP_W, 161 + descSize.height+ (line-1)*4 + 5);
+        self.tableView.tableHeaderView = self.tableHeaderView;
+        [self.tableView reloadData];
+    }
+}
+
+#pragma mark ---- 查看圈主 ----
+- (IBAction)lookCircleMasterAction:(id)sender
+{
+    if (self.circleDetailModel.expertUrlList.count > 0)
+    {
+        if (self.circleDetailModel.flagGroup)
+        {
+            [QWGLOBALMANAGER statisticsEventId:@"商家圈_入驻专家头像" withLable:@"圈子" withParams:nil];
+        }
+        else
+        {
+            [QWGLOBALMANAGER statisticsEventId:@"公共圈_入驻专家头像" withLable:@"圈子" withParams:nil];
+        }
+        
+        EnterExpertViewController *vc = [[UIStoryboard storyboardWithName:@"EnterExpert" bundle:nil] instantiateViewControllerWithIdentifier:@"EnterExpertViewController"];
+        vc.hidesBottomBarWhenPushed = YES;
+        vc.teamId = self.teamId;
+        vc.teamName = self.circleDetailModel.teamName;
+        vc.flagGroup = self.circleDetailModel.flagGroup;
+        [self.navigationController pushViewController:vc animated:YES];
+    }
+}
+
+#pragma mark ---- 发帖 ----
+- (IBAction)postTopicAction:(id)sender
+{
+    if (QWGLOBALMANAGER.configure.silencedFlag) {
+        [SVProgressHUD showErrorWithStatus:@"您已被禁言"];
+        return;
+    }
+    
+    if (self.circleDetailModel.flagGroup)
+    {
+        [QWGLOBALMANAGER statisticsEventId:@"商家圈_发帖按键" withLable:@"圈子" withParams:nil];
+    }else
+    {
+        [QWGLOBALMANAGER statisticsEventId:@"公共圈_发帖按键" withLable:@"圈子" withParams:nil];
+    }
+    
+    QWCircleModel *model = [QWCircleModel new];
+    [model buildWithCircleListModel:self.circleDetailModel];
+
+    SendPostViewController* sendPostVC = [[UIStoryboard storyboardWithName:@"Forum" bundle:nil] instantiateViewControllerWithIdentifier:@"SendPostViewController"];
+    sendPostVC.hidesBottomBarWhenPushed = YES;
+    sendPostVC.needChooseCircle = NO;
+    sendPostVC.sendCircle = model;
+    
+    if (self.circleDetailModel.flagGroup) {
+        sendPostVC.isStoreCircle = YES;
+    }
+    
+    [self.navigationController pushViewController:sendPostVC animated:YES];
+}
+
+#pragma mark ---- 刷新帖子列表 ----
+- (void)refreshPostListWithIndex:(int)index
+{
+    self.tableView.footerNoDataText = @"已显示全部内容";
+    [self.tableView.footer setDiseaseCanLoadMore:YES];
+    
+    currentViewController = self.viewControllerssss[index];
+    currentViewController.teamId = self.teamId;
+    [currentViewController currentViewSelected:^(CGFloat height) {
+        
+    }];
+}
+
+- (void)didReceiveMemoryWarning {
+    [super didReceiveMemoryWarning];
+}
+
+@end

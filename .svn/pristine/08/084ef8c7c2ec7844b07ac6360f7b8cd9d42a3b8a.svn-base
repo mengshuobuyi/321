@@ -1,0 +1,35 @@
+//
+//  InternalProductListCell.h
+//  wenYao-store
+//
+//  Created by PerryChen on 3/9/16.
+//  Copyright © 2016 carret. All rights reserved.
+//
+
+#import "QWBaseCell.h"
+
+@protocol ProductlistCellDelegate <NSObject>
+
+- (void)editStackAction:(NSInteger)index;
+
+@end
+
+@interface InternalProductListCell : QWBaseCell
+@property (weak, nonatomic) IBOutlet UILabel *productSoldOutLbl;        // 售出label
+@property (weak, nonatomic) IBOutlet UILabel *productStackLbl;          // 库存label
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *constraintImgTipHeight;
+
+@property (weak, nonatomic) IBOutlet UILabel *productNameLbl;           
+@property (weak, nonatomic) IBOutlet UILabel *productSpecLbl;
+@property (weak, nonatomic) IBOutlet UILabel *productPriceLbl;
+@property (weak, nonatomic) IBOutlet UIImageView *productImgView;
+@property (weak, nonatomic) IBOutlet UIImageView *productPlaceHolderImgView;
+@property (weak, nonatomic) IBOutlet UIButton *productStockBtn;
+@property (weak, nonatomic) IBOutlet UIView *viewEditStock;
+@property (weak, nonatomic) IBOutlet UIImageView *productTipImgView;
+@property (weak, nonatomic) IBOutlet UILabel *productTipLabel;
+@property (weak, nonatomic) IBOutlet UILabel *productLimitLabel;
+
+@property (weak, nonatomic) id<ProductlistCellDelegate> delegate;
+- (IBAction)actionEdit:(UIButton *)sender;
+@end

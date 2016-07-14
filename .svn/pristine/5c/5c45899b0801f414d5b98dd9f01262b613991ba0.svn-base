@@ -1,0 +1,151 @@
+//
+//  DoorDeliveryCell.m
+//  wenYao-store
+//
+//  Created by Yang Yuexia on 16/5/6.
+//  Copyright © 2016年 carret. All rights reserved.
+//
+
+#import "DoorDeliveryCell.h"
+#import "ExpertModel.h"
+
+@implementation DoorDeliveryCell
+
++ (CGFloat)getCellHeight:(id)data
+{
+    ShippingMethodDetailModel *model = (ShippingMethodDetailModel *)data;
+    
+    if (StrIsEmpty(model.manTip))
+    {
+        //没有免费配送
+        return 215 + 24*(model.rules.count-4);
+    }else
+    {
+        //有免费配送
+         return 215+24*(model.rules.count-3);
+    }
+    return 1;
+}
+
+- (void)UIGlobal
+{
+    [super UIGlobal];
+    self.contentView.backgroundColor = [UIColor clearColor];
+    self.separatorLine.hidden = YES;
+}
+
+- (void)setCell:(id)data
+{
+    [super setCell:data];
+    
+    ShippingMethodDetailModel *model = (ShippingMethodDetailModel *)data;
+    
+    //配送时间
+    self.timeLabel.text = model.timeSliceTip;
+    
+    //起送价
+    self.sendPriceLabel.text = model.feeTip;
+    
+    if (StrIsEmpty(model.manTip))
+    {
+        //没有免费配送
+        
+        self.freePriceTip.hidden = YES;
+        self.freePriceLabel.hidden = YES;
+        
+        if (model.rules.count == 0)
+        {
+            self.sendRuleTip.hidden = YES;
+            self.sendRuleOne.hidden = YES;
+            self.sendRuleTwo.hidden = YES;
+            self.sendRuleThree.hidden = YES;
+            
+        }else if (model.rules.count == 1)
+        {
+            self.sendRuleTip.hidden = NO;
+            self.sendRuleOne.hidden = NO;
+            self.sendRuleTwo.hidden = YES;
+            self.sendRuleThree.hidden = YES;
+            self.sendRuleOne.text = model.rules[0];
+            
+        }else if (model.rules.count == 2)
+        {
+            self.sendRuleTip.hidden = NO;
+            self.sendRuleOne.hidden = NO;
+            self.sendRuleTwo.hidden = NO;
+            self.sendRuleThree.hidden = YES;
+            self.sendRuleOne.text = model.rules[0];
+            self.sendRuleTwo.text = model.rules[1];
+            
+        }else if (model.rules.count == 3)
+        {
+            self.sendRuleTip.hidden = NO;
+            self.sendRuleOne.hidden = NO;
+            self.sendRuleTwo.hidden = NO;
+            self.sendRuleThree.hidden = NO;
+            self.sendRuleOne.text = model.rules[0];
+            self.sendRuleTwo.text = model.rules[1];
+            self.sendRuleThree.text = model.rules[2];
+        }
+        
+    }else
+    {
+        //有免费配送
+        
+        self.freePriceTip.hidden = NO;
+        self.freePriceLabel.hidden = NO;
+        self.freePriceLabel.text = model.manTip;
+        
+        if (model.rules.count == 0)
+        {
+            self.sendRuleTip.hidden = YES;
+            self.sendRuleOne.hidden = YES;
+            self.sendRuleTwo.hidden = YES;
+            self.sendRuleThree.hidden = YES;
+            self.freeOne_layout_top.constant = 104;
+            self.freeTwo_layout_top.constant = 104;
+            
+        }else if (model.rules.count == 1)
+        {
+            self.sendRuleTip.hidden = NO;
+            self.sendRuleOne.hidden = NO;
+            self.sendRuleTwo.hidden = YES;
+            self.sendRuleThree.hidden = YES;
+            self.sendRuleOne.text = model.rules[0];
+            self.freeOne_layout_top.constant = 129;
+            self.freeTwo_layout_top.constant = 129;
+            
+        }else if (model.rules.count == 2)
+        {
+            self.sendRuleTip.hidden = NO;
+            self.sendRuleOne.hidden = NO;
+            self.sendRuleTwo.hidden = NO;
+            self.sendRuleThree.hidden = YES;
+            self.sendRuleOne.text = model.rules[0];
+            self.sendRuleTwo.text = model.rules[1];
+            self.freeOne_layout_top.constant = 153;
+            self.freeTwo_layout_top.constant = 153;
+            
+        }else if (model.rules.count == 3)
+        {
+            self.sendRuleTip.hidden = NO;
+            self.sendRuleOne.hidden = NO;
+            self.sendRuleTwo.hidden = NO;
+            self.sendRuleThree.hidden = NO;
+            self.sendRuleOne.text = model.rules[0];
+            self.sendRuleTwo.text = model.rules[1];
+            self.sendRuleThree.text = model.rules[2];
+            self.freeOne_layout_top.constant = 177;
+            self.freeTwo_layout_top.constant = 177;
+        }
+    }
+    
+}
+
+- (IBAction)editDoorDeliveryAction:(id)sender
+{
+    if (self.doorDeliveryCellDelegate && [self.doorDeliveryCellDelegate respondsToSelector:@selector(editDoorDeliveryAction)]) {
+        [self.doorDeliveryCellDelegate editDoorDeliveryAction];
+    }
+}
+@end

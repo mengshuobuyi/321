@@ -1,0 +1,402 @@
+//
+//  StoreModel.h
+//  APP
+//
+//  Created by qwfy0006 on 15/3/17.
+//  Copyright (c) 2015年 carret. All rights reserved.
+//
+
+#import "BaseModel.h"
+#import "BaseAPIModel.h"
+
+@interface StoreModel : BaseAPIModel
+
+@end
+
+
+//快捷注册
+@interface StoreCodeModel : BaseAPIModel
+@property(strong,nonatomic)NSString *groupId;
+@end
+
+//快捷注册
+@interface BranchGroupModel : BaseAPIModel
+@property(strong,nonatomic)NSString *name;
+@property(strong,nonatomic)NSString *groupCode;
+@property(strong,nonatomic)NSString *address;
+@property(strong,nonatomic)NSString *url;
+@property(strong,nonatomic)NSString *accType;
+@property(strong,nonatomic)NSString *longitude;
+@property(strong,nonatomic)NSString *latitude;
+@property(strong,nonatomic)NSString *cityName;
+@property(strong,nonatomic)NSString *countryName;
+@property(strong,nonatomic)NSString *provinceName;
+@property(strong,nonatomic)NSString *sequence;
+@end
+
+
+
+
+
+
+//商家登录成功地信息
+@interface StoreUserInfoModel : BaseAPIModel
+@property (strong, nonatomic) NSString          *branchId;
+@property (strong, nonatomic) NSString          *branchName;
+@property (strong, nonatomic) NSString          *passport;
+@property (strong, nonatomic) NSString          *token;
+@property (strong, nonatomic) NSString          *branchImgUrl;
+@property (strong, nonatomic) NSString          *type;  //2药店店长，3药店店员
+@property (strong, nonatomic) NSString          *mobile;
+@property (strong, nonatomic) NSString          *remark;
+@property (strong, nonatomic) NSString          *shortName;
+@property (strong, nonatomic) NSString          *approveStatus;  // 门店信息审核状态。1.待审核, 2.审核不通过, 3.审核通过 4.未提交审核
+@property (strong, nonatomic) NSString          *symbol ;// 门店唯一标识代码
+// 强化积分相关
+@property (strong, nonatomic) NSString *currScore;
+@property (strong, nonatomic) NSString *yesterdayScore;
+@property (strong, nonatomic) NSString *rank;
+@property (strong, nonatomic) NSString *firstLoginEver;
+@property (strong, nonatomic) NSString *firstLoginToday;
+@property (strong, nonatomic) NSString *name;
+
+@end
+
+////登录失败的信息
+//@interface FailLoginModel : StoreModel
+//
+//@property (strong, nonatomic) NSString          *mobile;
+//@property (strong, nonatomic) NSString          *remark;
+//@property (strong, nonatomic) NSString          *status;
+//
+//@end
+
+@interface CreditEnhanceInfoModel : BaseModel
+@property (nonatomic, strong) NSNumber *currScore;
+@property (nonatomic, strong) NSNumber *yesterdayScore;
+@property (nonatomic, strong) NSNumber *rank;
+@property (nonatomic, strong) NSNumber *firstLoginEver;
+@property (nonatomic, strong) NSNumber *firstLoginToday;
+@property (nonatomic, strong) NSDate *lastUpdateDate;
+@end
+
+//机构信息的tag  model
+@interface StoreGroupTag : StoreModel
+
+@property (strong, nonatomic) NSString          *key;
+@property (strong, nonatomic) NSString          *tag;
+
+@end
+
+//查询机构详细信息
+@interface StoreGroupDetail : StoreModel
+
+@property (strong, nonatomic) NSString          *accType;
+@property (strong, nonatomic) NSString          *accountId;
+@property (strong, nonatomic) NSString          *address;
+@property (strong, nonatomic) NSString          *appStatus;
+//@property (strong, nonatomic) NSString          *avgStar;
+@property (strong, nonatomic) NSArray           *branchTagList;
+@property (strong, nonatomic) NSString          *city;
+@property (strong, nonatomic) NSString          *cityName;
+@property (strong, nonatomic) NSString          *contactName;
+@property (strong, nonatomic) NSString          *country;
+@property (strong, nonatomic) NSString          *countryName;
+@property (strong, nonatomic) NSString          *desc;
+@property (strong, nonatomic) NSString          *groupCode;
+@property (strong, nonatomic) NSString          *id;
+@property (strong, nonatomic) NSString          *latitude;
+@property (strong, nonatomic) NSString          *longitude;
+@property (strong, nonatomic) NSString          *name;
+@property (strong, nonatomic) NSString          *parentId;
+@property (strong, nonatomic) NSString          *phone;
+@property (strong, nonatomic) NSString          *province;
+@property (strong, nonatomic) NSString          *provinceName;
+@property (strong, nonatomic) NSString          *shortName;
+@property (strong, nonatomic) NSString          *star;
+@property (strong, nonatomic) NSString          *status;
+@property (strong, nonatomic) NSString          *tel;
+@property (strong, nonatomic) NSString          *url;
+@property (strong, nonatomic) NSString          *isStar;
+
+@property (strong, nonatomic) NSString          *bizBegin;
+@property (strong, nonatomic) NSString          *bizEnd;
+@property (strong, nonatomic) NSString          *mshopStar;
+
+@end
+
+
+
+
+@interface CertifiListModel : StoreModel
+
+@property (nonatomic ,strong) NSNumber *groupType;
+@property (nonatomic ,strong) NSArray *certifiList;
+
+@end
+
+
+@interface CertifiModel : StoreModel
+
+@property (nonatomic ,strong) NSString *businessArea;
+@property (nonatomic ,strong) NSString *businessPractice;
+@property (nonatomic ,strong) NSString *businessScope;
+@property (nonatomic ,strong) NSString *businessType;
+@property (nonatomic ,strong) NSString *certName;
+@property (nonatomic ,strong) NSString *certifno;
+@property (nonatomic ,strong) NSString *createDate;
+@property (nonatomic ,strong) NSString *creator;
+@property (nonatomic ,strong) NSString *desc;
+@property (nonatomic ,strong) NSString *detailAddr;
+@property (nonatomic ,strong) NSString *etpName;
+@property (nonatomic ,strong) NSString *fax;
+@property (nonatomic ,strong) NSString *flag;
+@property (nonatomic ,strong) NSString *groupId;
+@property (nonatomic ,strong) NSString *id;
+@property (nonatomic ,strong) NSString *imgName;
+@property (nonatomic ,strong) NSString *isValid;
+@property (nonatomic ,strong) NSString *lawPerson;
+@property (nonatomic ,strong) NSString *linkman;
+@property (nonatomic ,strong) NSString *openDate;
+@property (nonatomic ,strong) NSString *openOrg;
+@property (nonatomic ,strong) NSString *postCode;
+@property (nonatomic ,strong) NSString *sortNo;
+@property (nonatomic ,strong) NSString *status;
+@property (nonatomic ,strong) NSString *tel;
+@property (nonatomic ,strong) NSString *typeId;
+@property (nonatomic ,strong) NSString *updateDate;
+@property (nonatomic ,strong) NSString *updater;
+@property (nonatomic ,strong) NSString *validEndDate;
+@property (nonatomic ,strong) NSString *validResult;
+@property (nonatomic ,strong) NSString *validStartDate;
+@property (nonatomic ,strong) NSString *valueName;
+
+@end
+
+@interface CertifiApproveModel : StoreModel
+
+@property (nonatomic ,strong) NSString *certifno;
+@property (nonatomic ,strong) NSString *endTime;
+@property (nonatomic ,strong) NSString *groupId;
+@property (nonatomic ,strong) NSString *id;
+@property (nonatomic ,strong) NSString *status;
+@property (nonatomic ,strong) NSString *typeId;
+@property (nonatomic ,strong) NSString *uid;
+@property (nonatomic ,strong) NSString *url;
+@property (nonatomic ,strong) NSString *valueName;
+
+@end
+
+@interface StoreTagModel : BaseModel
+@property (strong, nonatomic) NSString * key;
+@property (strong, nonatomic) NSString * tag;
+@end
+
+@interface QueryCertifiPage : BaseAPIModel
+@property (strong, nonatomic) NSString *groupType;
+@property (strong, nonatomic) NSArray *certifiList;
+@end
+
+@interface QueryCertifiModel : BaseModel
+@property (strong, nonatomic) NSString *sortNo;
+@property (strong, nonatomic) NSString *isValid;
+@property (strong, nonatomic) NSString *desc;
+@property (strong, nonatomic) NSString *createDate;
+@property (strong, nonatomic) NSString *creator;
+@property (strong, nonatomic) NSString *updateDate;
+@property (strong, nonatomic) NSString *updater;
+@property (strong, nonatomic) NSString *fax;
+@property (strong, nonatomic) NSString *tel;
+@property (strong, nonatomic) NSString *linkman;
+@property (strong, nonatomic) NSString *postCode;
+@property (strong, nonatomic) NSString *detailAddr;
+@property (strong, nonatomic) NSString *businessArea;
+@property (strong, nonatomic) NSString *businessPractice;
+@property (strong, nonatomic) NSString *businessType;
+@property (strong, nonatomic) NSString *openDate;
+@property (strong, nonatomic) NSString *openOrg;
+@property (strong, nonatomic) NSString *validStartDate;
+@property (strong, nonatomic) NSString *validEndDate;
+@property (strong, nonatomic) NSString *lawPerson;
+@property (strong, nonatomic) NSString *businessScope;
+@property (strong, nonatomic) NSString *certifno;
+@property (strong, nonatomic) NSString *etpName;
+@property (strong, nonatomic) NSString *typeId;
+@property (strong, nonatomic) NSString *groupId;
+@property (strong, nonatomic) NSString *id;
+@property (strong, nonatomic) NSString *valueName;
+@property (strong, nonatomic) NSString *imgName;
+@property (strong, nonatomic) NSString *flag;
+@property (strong, nonatomic) NSString *validResult;
+@property (strong, nonatomic) NSString *status;
+@end
+
+
+@interface StoreApproveListModel : StoreModel
+
+@property (nonatomic ,strong) NSArray *list;
+
+@end
+
+@interface StoreApproveModel  : BaseModel
+
+@property (nonatomic ,strong) NSString *approveRemark;
+@property (nonatomic ,strong) NSNumber *approveStatus;
+@property (nonatomic ,strong) NSString *approveTime;
+@property (nonatomic ,strong) NSString *approver;
+@property (nonatomic ,strong) NSString *columnName;
+@property (nonatomic ,strong) NSNumber *createTime;
+@property (nonatomic ,strong) NSString *groupId;
+@property (nonatomic ,strong) NSString *icid;
+@property (nonatomic ,strong,setter=aaaaad:,getter=adaad) NSString *newValue;
+@property (nonatomic ,strong) NSString *oldValue;
+
+@end
+
+@interface CheckTokenModel : BaseAPIModel
+@property (nonatomic ,strong) NSString *approveStatus;
+@property (nonatomic ,strong) NSString *token;
+@property (nonatomic ,strong) NSString *type;
+@property (nonatomic, strong) NSString *branchId;
+// 强化积分相关
+@property (nonatomic, strong) NSString *currScore;
+@property (nonatomic, strong) NSString *yesterdayScore;
+@property (nonatomic, strong) NSString *rank;
+@property (nonatomic, strong) NSString *firstLoginEver;
+@property (nonatomic, strong) NSString *firstLoginToday;
+@end
+
+@interface CheckExpertTokenModel : BaseAPIModel
+@property (nonatomic ,strong) NSString *authStatus; //1:待认证, 2:已认证, 3:认证不通过, 4:认证中
+@property (assign, nonatomic) BOOL silencedFlag;    //是否禁言。 N:否，Y:是
+@end
+
+@interface MyRecommendListModel : BaseAPIModel
+@property (nonatomic, strong) NSArray* myRecommends;                // 推荐人列表
+@end
+
+@interface MyRecommendModel : NSObject
+@property (nonatomic, strong) NSString* avatar;                     // 头像
+@property (nonatomic, strong) NSString* mobile;                     // 号码
+@property (nonatomic, strong) NSString* nick;                       // 昵称
+@property (nonatomic, strong) NSString* userName;                   // 用户名
+@property (nonatomic, strong) NSString* inviteTime;                 // 推荐时间
+@property (nonatomic, assign) NSInteger socre;                      // 积分奖励
+@end
+
+@interface BookProductListModel : BaseAPIModel
+@property (nonatomic, assign) NSInteger totalAmount;                // 总记录数
+@property (nonatomic, strong) NSArray* list;                        // 顾客预定商品列表
+@end
+
+@interface BookProductModel : BaseModel
+@property (nonatomic, strong) NSString* id;                         // 预定记录ID
+@property (nonatomic, strong) NSString* actId;                      // 厂商活动ID
+@property (nonatomic, strong) NSString* actCode;                    // 厂商活动编号
+@property (nonatomic, strong) NSString* actTitle;                   // 厂商活动标题
+@property (nonatomic, strong) NSString* ftyName;                    // 所属厂家名称
+@property (nonatomic, strong) NSString* mobile;                     // 预定人手机号码
+@property (nonatomic, strong) NSString* name;                       // 预定人姓名
+@property (nonatomic, strong) NSString* gender;                     // 预定人性别(M:男, F:女)
+@property (nonatomic, strong) NSString* empMobile;                  // 推荐人(店员)手机
+@property (nonatomic, strong) NSString* empId;                      // 推荐人(店员)ID
+@property (nonatomic, assign) NSInteger channel;                    // 预定渠道(1:APP, 2:M站, 3:WX)
+@property (nonatomic, strong) NSString* bookTime;                   // 预定时间
+@end
+
+@interface ServiceTelModel : BaseAPIModel
+@property (nonatomic,strong) NSArray *list;
+@end
+
+@interface ActNoticeListModel : BaseAPIModel
+@property (nonatomic,strong) NSArray *list;
+@end
+
+@interface NoticeModel : BaseAPIModel
+@property (nonatomic,strong) NSString *content;
+@property (nonatomic,strong) NSString *noticeId;
+@property (nonatomic,strong) NSString *title;
+@end
+
+
+@interface ActNoticeModel : NSObject
+
+@property (nonatomic, strong) NSString* id;                         // 活动ID,
+@property (nonatomic, strong) NSString* title;                      // 活动标题
+@property (nonatomic, strong) NSString* content;                    // 活动内容
+@property (nonatomic, strong) NSString* beginDate;                  // 活动开始时间
+@property (nonatomic, strong) NSString* endDate;                    // 活动结束时间
+@property (nonatomic, strong) NSString* applyDate;                  // 报名截止时间
+@property (nonatomic, assign) NSInteger actStatus;                  // 活动状态：1报名中、2已截止、3进行中、4已结束
+
+@end
+
+@interface BannerInfoListModel : BaseAPIModel
+
+@property (nonatomic,strong) NSArray *list;
+
+@end
+
+
+@interface BannerInfoModel : BaseAPIModel
+
+@property (nonatomic, strong) NSString       *type;     //（1:外链 2:优惠活动 3:咨询 4:品牌展示 5:门店 6:专题 7:优惠券 8:商品 9:常规）,
+@property (nonatomic, strong) NSString       *name;
+@property (nonatomic, strong) NSString       *imgUrl;
+@property (nonatomic, strong) NSString       *content;  //链接地址/优惠活动id/优惠券id/优惠商品的优惠id,
+@property (nonatomic, strong) NSString       *branchId; //门店id（只有type为2的时候用到）
+@property (nonatomic, strong) NSString       *groupId;  //商家id（只有type为7的时候用到）,
+@property (nonatomic, strong) NSString       *proId;    //商品id（只有type为8的时候用到）
+
+@end
+
+@interface TrainListModel : BaseAPIModel
+@property (nonatomic, strong) NSArray        *trainList;    // 培训(生意经)列表
+@end
+
+@interface TrainModel : BaseModel
+@property (nonatomic, strong) NSString  *trainId;               // 培训ID
+@property (nonatomic, strong) NSString  *bizCode;               // 业务编码
+@property (nonatomic, assign) NSInteger type;                   // 分类（1:问卷, 2:生意经, 3:工业品, 4:版本说明
+@property (nonatomic, strong) NSString *title;                  // 标题
+@property (nonatomic, strong) NSString *tag;                    // 标签
+@property (nonatomic, strong) NSString *icon;                   // 图标
+@property (nonatomic, strong) NSString *content;                // 培训内容
+@property (nonatomic, assign) NSInteger readCount;              // 阅读数
+@property (nonatomic, assign) NSInteger joinCount;              // 参与数
+@property (nonatomic, assign) NSInteger score;                  // 奖励积分
+@property (nonatomic, assign) BOOL      flagTop;                // 是否置顶(Y/N)
+@property (nonatomic, assign) BOOL      flagfinis;              // 任务是否完成(Y/N)
+@property (nonatomic, strong) NSString *publishDate;            // 上线时间
+@end
+
+@interface ProductSalesListModel : BaseAPIModel
+@property (nonatomic, strong) NSArray        *list;             // 商品销售统计集合
+@end
+
+@interface ProductStatiticsModel : BaseModel
+@property (nonatomic, strong) NSString  *proId;                 // 商品id
+@property (nonatomic, strong) NSString  *proName;               // 显示名字
+@property (nonatomic, strong) NSString  *imgUrl;                // 图片地址
+@property (nonatomic, strong) NSString  *spec;                  // 规格
+@property (nonatomic, strong) NSString  *factory;               // 厂家
+@property (nonatomic, strong) NSString  *quantity;              // 数量
+@end
+
+@interface StoreUserSignModel : BaseAPIModel
+@property (nonatomic, assign) NSInteger rewardScore;        // 本次获得积分
+@property (nonatomic, assign) NSInteger rewardGrowth;       // 本次获得成长值
+@property (nonatomic, assign) NSInteger score;              // 总积分
+@property (nonatomic, assign) NSInteger growth;             // 总成长值
+@property (nonatomic, assign) BOOL      upgrade;            // 是否升级
+@property (nonatomic, assign) NSInteger level;              // 当前等级
+@end
+
+@interface PayMentPageModel : BaseAPIModel
+@property (strong, nonatomic) NSArray * pay;                 //支持支付方式
+@end
+
+@interface PayMentListModel : BaseAPIModel
+@property (nonatomic, strong) NSString  *payKey;  //支付方式【onsite：当面支付；online：在线支付】,
+@property (nonatomic, strong) NSString  *payDesc; //支付方式描述【onsite：当面支付；online：在线支付】
+@end

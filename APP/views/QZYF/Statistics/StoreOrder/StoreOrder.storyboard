@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9531" systemVersion="15C50" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="C8j-gX-b1i">
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9529"/>
+    </dependencies>
+    <scenes>
+        <!--Navigation Controller-->
+        <scene sceneID="wWN-kp-ycw">
+            <objects>
+                <navigationController id="C8j-gX-b1i" sceneMemberID="viewController">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="uoB-K9-oAU">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <connections>
+                        <segue destination="Ody-Mu-C8N" kind="push" id="eDn-x4-qLF"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="NbV-wD-qmB" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-254.40000000000001" y="355"/>
+        </scene>
+        <!--订单统计-->
+        <scene sceneID="odi-V1-lg7">
+            <objects>
+                <viewController storyboardIdentifier="StoreOrderQueryViewController" automaticallyAdjustsScrollViewInsets="NO" id="Ody-Mu-C8N" customClass="StoreOrderQueryViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="wyK-Lj-RGv"/>
+                        <viewControllerLayoutGuide type="bottom" id="zIn-Ll-lxd"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="6Av-SX-N2Y">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="44" sectionHeaderHeight="18" sectionFooterHeight="18" translatesAutoresizingMaskIntoConstraints="NO" id="eeN-T4-o3F">
+                                <rect key="frame" x="0.0" y="64" width="320" height="460"/>
+                                <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
+                                <view key="tableHeaderView" contentMode="scaleToFill" id="oX8-BM-BzQ">
+                                    <rect key="frame" x="0.0" y="0.0" width="320" height="143"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                    <subviews>
+                                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Tel-BZ-3Vu" customClass="MARStatisticsDateView">
+                                            <rect key="frame" x="0.0" y="0.0" width="320" height="135"/>
+                                            <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        </view>
+                                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="t5q-eM-YcO">
+                                            <rect key="frame" x="0.0" y="135" width="320" height="8"/>
+                                            <color key="backgroundColor" red="0.92549019607843142" green="0.94117647058823528" blue="0.94509803921568625" alpha="1" colorSpace="calibratedRGB"/>
+                                            <constraints>
+                                                <constraint firstAttribute="height" constant="8" id="mw5-bu-KNp"/>
+                                            </constraints>
+                                        </view>
+                                    </subviews>
+                                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                    <constraints>
+                                        <constraint firstItem="t5q-eM-YcO" firstAttribute="top" secondItem="Tel-BZ-3Vu" secondAttribute="bottom" id="30X-IS-mwo"/>
+                                        <constraint firstAttribute="trailing" secondItem="Tel-BZ-3Vu" secondAttribute="trailing" id="4yV-Go-QUa"/>
+                                        <constraint firstAttribute="height" priority="200" constant="135" id="Kah-eQ-Gr1"/>
+                                        <constraint firstItem="Tel-BZ-3Vu" firstAttribute="top" secondItem="oX8-BM-BzQ" secondAttribute="top" id="Oax-fI-oCI"/>
+                                        <constraint firstItem="t5q-eM-YcO" firstAttribute="leading" secondItem="oX8-BM-BzQ" secondAttribute="leading" id="VQ9-dg-6ol"/>
+                                        <constraint firstAttribute="bottom" secondItem="t5q-eM-YcO" secondAttribute="bottom" id="Wr6-83-b2E"/>
+                                        <constraint firstAttribute="trailing" secondItem="t5q-eM-YcO" secondAttribute="trailing" id="gZx-ls-pHD"/>
+                                        <constraint firstItem="Tel-BZ-3Vu" firstAttribute="leading" secondItem="oX8-BM-BzQ" secondAttribute="leading" id="yXW-kx-LMd"/>
+                                    </constraints>
+                                </view>
+                                <prototypes>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="hzB-TR-yfH">
+                                        <rect key="frame" x="0.0" y="192.5" width="320" height="44"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="hzB-TR-yfH" id="5Uu-Hc-JGf">
+                                            <rect key="frame" x="0.0" y="0.0" width="320" height="43.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                </prototypes>
+                                <connections>
+                                    <outlet property="dataSource" destination="Ody-Mu-C8N" id="yXc-Hz-fcE"/>
+                                    <outlet property="delegate" destination="Ody-Mu-C8N" id="bFY-nu-Tkk"/>
+                                </connections>
+                            </tableView>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ZDN-Mi-vai">
+                                <rect key="frame" x="0.0" y="524" width="320" height="44"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="订单总数 --" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1PS-B6-LU0">
+                                        <rect key="frame" x="45" y="13" width="73" height="17"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                        <color key="textColor" red="0.20000000000000001" green="0.20000000000000001" blue="0.20000000000000001" alpha="1" colorSpace="calibratedRGB"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="订单总额 --" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="GpS-ol-VXs">
+                                        <rect key="frame" x="202" y="13" width="73" height="17"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                        <color key="textColor" red="0.20000000000000001" green="0.20000000000000001" blue="0.20000000000000001" alpha="1" colorSpace="calibratedRGB"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                </subviews>
+                                <color key="backgroundColor" red="0.98039215686274506" green="0.98039215686274506" blue="0.98039215686274506" alpha="1" colorSpace="calibratedRGB"/>
+                                <constraints>
+                                    <constraint firstItem="1PS-B6-LU0" firstAttribute="centerY" secondItem="ZDN-Mi-vai" secondAttribute="centerY" id="7An-u1-uSI"/>
+                                    <constraint firstAttribute="height" constant="44" id="Gpr-bd-Wjo"/>
+                                    <constraint firstItem="1PS-B6-LU0" firstAttribute="leading" secondItem="ZDN-Mi-vai" secondAttribute="leading" constant="45" id="RRa-Ep-MJ7"/>
+                                    <constraint firstItem="GpS-ol-VXs" firstAttribute="centerY" secondItem="ZDN-Mi-vai" secondAttribute="centerY" id="Y7B-Jq-i01"/>
+                                    <constraint firstAttribute="trailing" secondItem="GpS-ol-VXs" secondAttribute="trailing" constant="45" id="fIR-O6-2fo"/>
+                                </constraints>
+                            </view>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="eeN-T4-o3F" firstAttribute="leading" secondItem="6Av-SX-N2Y" secondAttribute="leading" id="3A3-FP-eBm"/>
+                            <constraint firstAttribute="trailing" secondItem="ZDN-Mi-vai" secondAttribute="trailing" id="4o7-23-Fdk"/>
+                            <constraint firstAttribute="trailing" secondItem="eeN-T4-o3F" secondAttribute="trailing" id="LOw-rE-vgm"/>
+                            <constraint firstAttribute="bottom" secondItem="ZDN-Mi-vai" secondAttribute="bottom" id="PWE-j7-BHk"/>
+                            <constraint firstItem="ZDN-Mi-vai" firstAttribute="top" secondItem="eeN-T4-o3F" secondAttribute="bottom" id="QQo-yb-DqG"/>
+                            <constraint firstItem="ZDN-Mi-vai" firstAttribute="leading" secondItem="6Av-SX-N2Y" secondAttribute="leading" id="TGp-1S-wZ2"/>
+                            <constraint firstItem="eeN-T4-o3F" firstAttribute="top" secondItem="wyK-Lj-RGv" secondAttribute="bottom" id="eeD-SR-5AZ"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" title="订单统计" id="nf8-oK-Jhg"/>
+                    <connections>
+                        <outlet property="hrLIneView" destination="t5q-eM-YcO" id="d2b-nY-2rM"/>
+                        <outlet property="statisticsDateView" destination="Tel-BZ-3Vu" id="kzG-w2-rVe"/>
+                        <outlet property="tableHeaderView" destination="oX8-BM-BzQ" id="sfP-w8-adk"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="155-ea-5Pg" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="156" y="355"/>
+        </scene>
+    </scenes>
+</document>

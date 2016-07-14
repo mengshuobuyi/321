@@ -1,0 +1,112 @@
+//
+//  Bmmall.m
+//  wenYao-store
+//
+//  Created by Yang Yuexia on 16/7/11.
+//  Copyright © 2016年 carret. All rights reserved.
+//
+
+#import "Bmmall.h"
+
+@implementation Bmmall
+
+/**
+ *    获取门店配送方式
+ *
+ */
++ (void)BmmallDeliveryModeWithParams:(NSDictionary *)param
+                             success:(void(^)(id obj))success
+                             failure:(void(^)(HttpException * e))failure
+{
+    [HttpClientMgr get:BmmallDeliveryMode params:param success:^(id responseObj) {
+        if (success) {
+            success(responseObj);
+        }
+    } failure:^(HttpException *e) {
+        if (failure) {
+            failure(e);
+        }
+    }];
+}
+
+
+/**
+ *    编辑配送方式 到店取货
+ *
+ */
++ (void)BmmallDeliveryOnsiteWithParams:(NSDictionary *)param
+                               success:(void(^)(id obj))success
+                               failure:(void(^)(HttpException * e))failure
+{
+    [HttpClientMgr post:BmmallDeliveryOnsite params:param success:^(id responseObj) {
+        if (success) {
+            success(responseObj);
+        }
+    } failure:^(HttpException *e) {
+        if (failure) {
+            failure(e);
+        }
+    }];
+}
+
+
+/**
+ *    编辑配送方式 送货上门
+ *
+ */
++ (void)BmmallDeliveryHomeWithParams:(NSDictionary *)param
+                             success:(void(^)(id obj))success
+                             failure:(void(^)(HttpException * e))failure
+{
+    [HttpClientMgr post:BmmallDeliveryHome params:param success:^(id responseObj) {
+        if (success) {
+            success(responseObj);
+        }
+    } failure:^(HttpException *e) {
+        if (failure) {
+            failure(e);
+        }
+    }];
+}
+
+
+/**
+ *    编辑配送方式 同城快递
+ *
+ */
++ (void)BmmallDeliveryExpressWithParams:(NSDictionary *)param
+                                success:(void(^)(id obj))success
+                                failure:(void(^)(HttpException * e))failure
+{
+    [HttpClientMgr post:BmmallDeliveryExpress params:param success:^(id responseObj) {
+        if (success) {
+            success(responseObj);
+        }
+    } failure:^(HttpException *e) {
+        if (failure) {
+            failure(e);
+        }
+    }];
+}
+
+
+/**
+ *    获取门店支付方式
+ *
+ */
++ (void)BmmallPayModeWithParams:(NSDictionary *)param
+                        success:(void(^)(id obj))success
+                        failure:(void(^)(HttpException * e))failure
+{
+    [HttpClientMgr post:BmmallPayMode params:param success:^(id responseObj) {
+        if (success) {
+            success(responseObj);
+        }
+    } failure:^(HttpException *e) {
+        if (failure) {
+            failure(e);
+        }
+    }];
+}
+
+@end

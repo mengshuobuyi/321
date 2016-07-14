@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="7531" systemVersion="14A389" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7520"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="UserCenterCell" rowHeight="46" id="Onm-fV-42u" customClass="UserCenterCell">
+            <rect key="frame" x="0.0" y="0.0" width="320" height="46"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="Onm-fV-42u" id="Dmn-Sq-Mi4">
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="MJT-uY-oby" customClass="QWLabel">
+                        <rect key="frame" x="44" y="12" width="123" height="21"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="123" id="Kzu-YD-mF0"/>
+                            <constraint firstAttribute="height" constant="21" id="cT2-4Q-tAe"/>
+                        </constraints>
+                        <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                        <color key="textColor" red="0.20000000000000001" green="0.20000000000000001" blue="0.20000000000000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="90w-4J-2GB" customClass="QWImageView">
+                        <rect key="frame" x="284" y="19" width="8" height="8"/>
+                        <color key="backgroundColor" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="8" id="eS5-JW-Hqw"/>
+                            <constraint firstAttribute="width" constant="8" id="v9l-FW-VSl"/>
+                        </constraints>
+                    </imageView>
+                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="icon_rightArrow" translatesAutoresizingMaskIntoConstraints="NO" id="SZW-bm-ZoC">
+                        <rect key="frame" x="292" y="16" width="13" height="13"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="13" id="3Bk-Iq-MYs"/>
+                            <constraint firstAttribute="height" constant="13" id="tRw-yR-pzg"/>
+                        </constraints>
+                    </imageView>
+                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Sst-VM-hk3" customClass="QWImageView">
+                        <rect key="frame" x="15" y="13" width="19" height="19"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="19" id="Bhw-sw-5Jf"/>
+                            <constraint firstAttribute="width" constant="19" id="NpS-Qz-PBM"/>
+                        </constraints>
+                    </imageView>
+                </subviews>
+                <constraints>
+                    <constraint firstItem="Sst-VM-hk3" firstAttribute="top" secondItem="Dmn-Sq-Mi4" secondAttribute="top" constant="13" id="0dQ-Ag-rQW"/>
+                    <constraint firstItem="Sst-VM-hk3" firstAttribute="leading" secondItem="Dmn-Sq-Mi4" secondAttribute="leading" constant="15" id="IrT-zd-UE0"/>
+                    <constraint firstItem="SZW-bm-ZoC" firstAttribute="top" secondItem="Dmn-Sq-Mi4" secondAttribute="top" constant="16" id="RHB-Xn-KSX"/>
+                    <constraint firstItem="SZW-bm-ZoC" firstAttribute="leading" secondItem="90w-4J-2GB" secondAttribute="trailing" id="U8z-Pw-hhh"/>
+                    <constraint firstItem="MJT-uY-oby" firstAttribute="top" secondItem="Dmn-Sq-Mi4" secondAttribute="top" constant="12" id="WOI-W7-a34"/>
+                    <constraint firstItem="MJT-uY-oby" firstAttribute="leading" secondItem="Sst-VM-hk3" secondAttribute="trailing" constant="10" id="a4A-D7-IgC"/>
+                    <constraint firstAttribute="trailing" secondItem="SZW-bm-ZoC" secondAttribute="trailing" constant="15" id="dlz-5e-NhW"/>
+                    <constraint firstItem="90w-4J-2GB" firstAttribute="top" secondItem="Dmn-Sq-Mi4" secondAttribute="top" constant="19" id="jd0-ZV-QVE"/>
+                </constraints>
+            </tableViewCellContentView>
+            <connections>
+                <outlet property="budge" destination="90w-4J-2GB" id="mUO-fa-kIp"/>
+                <outlet property="icon" destination="Sst-VM-hk3" id="t9g-PN-01k"/>
+                <outlet property="title" destination="MJT-uY-oby" id="3hZ-Re-zSZ"/>
+            </connections>
+            <point key="canvasLocation" x="524" y="225"/>
+        </tableViewCell>
+    </objects>
+    <resources>
+        <image name="icon_rightArrow" width="13" height="13"/>
+    </resources>
+</document>

@@ -1,0 +1,179 @@
+//
+//  ShippingMethodViewController.m
+//  wenYao-store
+//
+//  Created by Yang Yuexia on 16/5/6.
+//  Copyright © 2016年 carret. All rights reserved.
+//
+
+/*
+    配送方式
+    h5/branch/getBranchPostTips   获取配送方式
+ */
+
+#import "ShippingMethodViewController.h"
+#import "ToStorePickCell.h"
+#import "DoorDeliveryCell.h"
+#import "CityExpressCell.h"
+#import "Branch.h"
+#import "ExpertModel.h"
+
+@interface ShippingMethodViewController ()<UITableViewDataSource,UITableViewDelegate,ToStorePickCellDelegate,DoorDeliveryCellDelegate,CityExpressCellDelegate>
+
+@property (weak, nonatomic) IBOutlet UITableView *tableView;
+
+@property (strong, nonatomic) ShippingMethodPageModel *shippingPageModel;
+
+@end
+
+@implementation ShippingMethodViewController
+
+- (void)viewDidLoad
+{
+    [super viewDidLoad];
+    
+    self.title = @"配送方式";
+    self.shippingPageModel = [ShippingMethodPageModel new];
+    
+    self.tableView.tableFooterView = [[UIView alloc] init];
+    self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+    
+    [self queryInfo];
+}
+
+#pragma mark ---- 获取配送方式 ----
+- (void)queryInfo
+{
+    if (QWGLOBALMANAGER.currentNetWork == kNotReachable) {
+        [SVProgressHUD showErrorWithStatus:kWaring33];
+        return;
+    }
+    
+    NSMutableDictionary *setting = [NSMutableDictionary dictionary];
+    setting[@"token"] = StrFromObj(QWGLOBALMANAGER.configure.userToken);
+    [Branch BranchGetBranchPostTipsWithParams:setting success:^(id obj) {
+        
+        ShippingMethodPageModel *page = [ShippingMethodPageModel parse:obj Elements:[ShippingMethodDetailModel class] forAttribute:@"postTips"];
+        if ([page.apiStatus integerValue] == 0)
+        {
+            if (page.postTips && page.postTips.count > 0)
+            {
+                self.shippingPageModel = page;
+                [self.tableView reloadData];
+            }else
+            {
+                [self showInfoView:@"暂无配送方式" image:@"ic_img_fail"];
+            }
+        }else
+        {
+            [SVProgressHUD showErrorWithStatus:page.apiMessage];
+        }
+    } failure:^(HttpException *e) {
+        if (QWGLOBALMANAGER.currentNetWork == kNotReachable){
+            [self showInfoView:kWaring12 image:@"img_network"];
+        }else
+        {
+            if(e.errorCode != -999){
+                if(e.errorCode == -1001){
+                    [self showInfoView:kWarning215N54 image:@"ic_img_fail"];
+                }else{
+                    [self showInfoView:kWarning215N0 image:@"ic_img_fail"];
+                }
+            }
+        }
+    }];
+}
+
+#pragma mark ---- UITableViewDelegate ----
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
+    return self.shippingPageModel.postTips.count;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    ShippingMethodDetailModel *model = self.shippingPageModel.postTips[indexPath.row];
+    
+    if ([model.title isEqualToString:@"到店取货"])
+    {
+        return [ToStorePickCell getCellHeight:model];
+    }else if ([model.title isEqualToString:@"送货上门"])
+    {
+        return [DoorDeliveryCell getCellHeight:model];
+    }else if ([model.title isEqualToString:@"同城快递"])
+    {
+        return [CityExpressCell getCellHeight:model];
+    }else
+    {
+        return 0;
+    }
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    ShippingMethodDetailModel *model = self.shippingPageModel.postTips[indexPath.row];
+    
+    if ([model.title isEqualToString:@"到店取货"])
+    {
+        ToStorePickCell *cell = [tableView dequeueReusableCellWithIdentifier:@"ToStorePickCell"];
+        [cell setCell:model];
+        if (AUTHORITY_ROOT) {
+            cell.rightIcon.hidden = NO;
+            cell.toStorePickCellDelegate = self;
+        }else{
+            cell.rightIcon.hidden = YES;
+        }
+        return cell;
+        
+    }else if ([model.title isEqualToString:@"送货上门"])
+    {
+        DoorDeliveryCell *cell = [tableView dequeueReusableCellWithIdentifier:@"DoorDeliveryCell"];
+        [cell setCell:model];
+        if (AUTHORITY_ROOT) {
+            cell.rightIcon.hidden = NO;
+            cell.doorDeliveryCellDelegate = self;
+        }else{
+            cell.rightIcon.hidden = YES;
+        }
+        return cell;
+    }else if ([model.title isEqualToString:@"同城快递"])
+    {
+        CityExpressCell *cell = [tableView dequeueReusableCellWithIdentifier:@"CityExpressCell"];
+        [cell setCell:model];
+        if (AUTHORITY_ROOT) {
+            cell.rightIcon.hidden = NO;
+            cell.cityExpressCellDelegate = self;
+        }else{
+            cell.rightIcon.hidden = YES;
+        }
+        return cell;
+    }else
+    {
+        return nil;
+    }
+}
+
+#pragma mark ---- 到店取货 ----
+- (void)editToStorePickAction
+{
+    
+}
+
+#pragma mark ---- 送货上门 ----
+- (void)editDoorDeliveryAction
+{
+    
+}
+
+#pragma mark ---- 同城快递 ----
+- (void)editCityExpressAction
+{
+    
+}
+
+- (void)didReceiveMemoryWarning {
+    [super didReceiveMemoryWarning];
+}
+
+@end

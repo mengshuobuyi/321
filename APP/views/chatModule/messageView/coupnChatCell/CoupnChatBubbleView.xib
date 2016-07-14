@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="8191" systemVersion="14F1021" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES">
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="8154"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" id="Weo-Vw-yB2" customClass="CoupnChatBubbleView">
+            <rect key="frame" x="0.0" y="0.0" width="192" height="99"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="YwZ-JA-lM6">
+                    <rect key="frame" x="12" y="8" width="163" height="84"/>
+                    <subviews>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="营销活动标题" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="E9U-4G-Iy8" customClass="QWLabel">
+                            <rect key="frame" x="0.0" y="1" width="163" height="19"/>
+                            <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                            <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="VXW-s4-A1N" customClass="QWImageView">
+                            <rect key="frame" x="0.0" y="25" width="55" height="55"/>
+                            <constraints>
+                                <constraint firstAttribute="width" constant="55" id="hHQ-m3-lym"/>
+                                <constraint firstAttribute="height" constant="55" id="jeD-40-wfc"/>
+                            </constraints>
+                        </imageView>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="营销活动内容营销活动内容营销活动内容营销活动内容营销活动内容营销活动内容营销活动内容营销活动内容营销活动内容" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zXq-kc-hpP" customClass="QWLabel">
+                            <rect key="frame" x="60" y="21" width="102" height="63"/>
+                            <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="63" id="7AF-Me-itk"/>
+                            </constraints>
+                            <fontDescription key="fontDescription" type="system" pointSize="13"/>
+                            <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                    </subviews>
+                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                    <constraints>
+                        <constraint firstAttribute="bottom" secondItem="VXW-s4-A1N" secondAttribute="bottom" constant="4" id="26L-JP-OPA"/>
+                        <constraint firstItem="E9U-4G-Iy8" firstAttribute="top" secondItem="YwZ-JA-lM6" secondAttribute="top" constant="1" id="3gG-8Q-N9C"/>
+                        <constraint firstAttribute="trailing" secondItem="zXq-kc-hpP" secondAttribute="trailing" constant="1" id="5pO-bn-UGL"/>
+                        <constraint firstItem="E9U-4G-Iy8" firstAttribute="leading" secondItem="YwZ-JA-lM6" secondAttribute="leading" id="I9m-WX-sgV"/>
+                        <constraint firstAttribute="trailing" secondItem="E9U-4G-Iy8" secondAttribute="trailing" id="Nih-vD-Pi9"/>
+                        <constraint firstItem="zXq-kc-hpP" firstAttribute="leading" secondItem="VXW-s4-A1N" secondAttribute="trailing" constant="5" id="bAe-p8-cv9"/>
+                        <constraint firstItem="VXW-s4-A1N" firstAttribute="leading" secondItem="YwZ-JA-lM6" secondAttribute="leading" id="dPE-Jy-OyR"/>
+                        <constraint firstAttribute="bottom" secondItem="zXq-kc-hpP" secondAttribute="bottom" id="nP9-0J-aX1"/>
+                        <constraint firstItem="zXq-kc-hpP" firstAttribute="top" secondItem="E9U-4G-Iy8" secondAttribute="bottom" constant="1" id="oI5-D2-asA"/>
+                    </constraints>
+                </view>
+            </subviews>
+            <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+            <constraints>
+                <constraint firstItem="YwZ-JA-lM6" firstAttribute="top" secondItem="Weo-Vw-yB2" secondAttribute="top" constant="8" id="Gdf-Je-6Zi"/>
+                <constraint firstAttribute="bottom" secondItem="YwZ-JA-lM6" secondAttribute="bottom" constant="7" id="OhA-t3-ddH"/>
+                <constraint firstItem="YwZ-JA-lM6" firstAttribute="leading" secondItem="Weo-Vw-yB2" secondAttribute="leading" constant="12" id="cR2-d7-mXq"/>
+                <constraint firstAttribute="trailing" secondItem="YwZ-JA-lM6" secondAttribute="trailing" constant="17" id="nkl-pP-3wg"/>
+            </constraints>
+            <nil key="simulatedStatusBarMetrics"/>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <connections>
+                <outlet property="coupnContent" destination="zXq-kc-hpP" id="d2k-n3-iM9"/>
+                <outlet property="coupnImage" destination="VXW-s4-A1N" id="ww3-ee-XBa"/>
+                <outlet property="coupnTitle" destination="E9U-4G-Iy8" id="OEo-EM-wQm"/>
+                <outlet property="leftCon" destination="cR2-d7-mXq" id="lTV-G7-UKZ"/>
+                <outlet property="rightCon" destination="nkl-pP-3wg" id="Yd9-dn-fC4"/>
+            </connections>
+            <point key="canvasLocation" x="230" y="212.5"/>
+        </view>
+    </objects>
+</document>

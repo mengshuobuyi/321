@@ -1,0 +1,260 @@
+//
+//  CircleModel.h
+//  wenYao-store
+//
+//  Created by Yang Yuexia on 16/1/8.
+//  Copyright © 2016年 carret. All rights reserved.
+//
+
+#import "BaseAPIModel.h"
+
+@interface CircleModel : BaseAPIModel
+
+@end
+
+@interface TopicListArrayModel : BaseAPIModel
+@property (strong, nonatomic) NSArray *postInfoList;    //帖子列表
+@end
+
+@interface HotCirclePageModel : BaseAPIModel
+@property (strong, nonatomic) NSArray * teamList;       //推荐圈子,
+@property (strong, nonatomic) NSArray * noticePushList; //公告,
+@property (strong, nonatomic) NSArray * postInfoList;   //热帖列表
+@property (strong, nonatomic) NSString * teamId;        //圈子Id,
+@property (strong, nonatomic) NSString * teamName;      //圈子名称,
+@property (assign, nonatomic) int expertType;           //专家类型(1:药师, 2:营养师),
+@property (strong, nonatomic) NSString * groupId;       //商家Id
+@end
+
+@interface HotCircleTopModel : BaseAPIModel
+@property (strong, nonatomic) NSString * teamId;        //圈子ID,
+@property (strong, nonatomic) NSString * teamName;      //圈子名称,
+@property (strong, nonatomic) NSString * teamDesc;      //圈子描述,
+@property (strong, nonatomic) NSString * teamLogo ;     //圈子Logo,
+@property (assign, nonatomic) int postCount ;           //帖子数,
+@property (assign, nonatomic) int attnCount;            //关注人数,
+@property (assign, nonatomic) int master;               //专家圈主数,
+@property (assign, nonatomic) BOOL flagPhar ;           //是否有药师,
+@property (assign, nonatomic) BOOL flagDietitian ;      //是否有营养师,
+@property (assign, nonatomic) BOOL flagRecommend ;      //是否推荐,
+@property (assign, nonatomic) BOOL flagMaxMaster;       //是否达到圈主上限,
+@property (assign, nonatomic) BOOL flagMaster ;         //是否圈主,
+@property (assign, nonatomic) BOOL flagAttn ;           //是否关注
+@end
+
+@interface HotCircleNoticeModel : BaseAPIModel
+@property (strong, nonatomic) NSString * noticeId;       //通知编号,
+@property (strong, nonatomic) NSString * noticeTitle ;   //标题,
+@property (assign, nonatomic) int columnType ;           //栏目分类（1:外链 、10:帖子）,
+@property (strong, nonatomic) NSString * noticeContent ; //类型内容
+@end
+
+//帖子列表model
+@interface TopicListModel : BaseAPIModel
+@property (strong, nonatomic) NSString * postId;        //帖子ID
+@property (strong, nonatomic) NSString * postTitle;     //帖子标题
+@property (strong, nonatomic) NSString * posterId;      //发帖人
+@property (assign, nonatomic) int posterType;           //发帖人类型(1:普通用户, 2:马甲, 3:药师, 4:营养师)
+@property (strong, nonatomic) NSDate * postDate;        //发帖时间
+@property (strong, nonatomic) NSString * postStrDate;   //显示的发帖时间差,
+@property (strong, nonatomic) NSString * teamId;        //圈子ID
+@property (strong, nonatomic) NSString * teamName;      //圈子名称
+@property (strong, nonatomic) NSString * headUrl;       //头像
+@property (strong, nonatomic) NSString * nickname;      //昵称
+@property (assign, nonatomic) int mbrLvl;               //用户等级
+@property (strong, nonatomic) NSString * brandName;     //专家品牌名称
+@property (assign, nonatomic) int readCount;            //阅读数
+@property (assign, nonatomic) int replyCount;           //回复数
+@property (assign, nonatomic) int upVoteCount;          //点赞数
+@property (assign, nonatomic) int collectCount;         //收藏数
+@property (assign, nonatomic) int shareCount;           //分享数
+@property (assign, nonatomic) BOOL flagTopHot;          //是否热议置顶
+@property (assign, nonatomic) BOOL flagTopTeam;         //是否圈内置顶
+@property (assign, nonatomic) BOOL flagTopExpert;       //是否专家置顶
+@property (assign, nonatomic) BOOL isHot;               //是否热帖
+@property (assign, nonatomic) BOOL flagReply;           //是否已回复
+@property (strong, nonatomic) NSDate * postHotDate;     //成为热帖时间
+@property (strong, nonatomic) NSString * postStatus;    //帖子状态(1:草稿箱/待发布, 2:已发布, 3已删除/取消发布)
+@property (strong, nonatomic) NSString * postContent;   //帖子内容概述
+@property (strong, nonatomic) NSArray * postImgList;    //帖子图片链接（List集合）
+@property (assign, nonatomic) BOOL flagAnon;            //是否匿名,
+@property (assign, nonatomic) BOOL groupShowFlag;       //是否显示本商家外的商家品牌
+@end
+
+@interface CircleMasterPageModel : BaseAPIModel
+@property (assign, nonatomic) BOOL masterFlag;          //是否圈主(True:是圈主，false:非圈主),
+@property (assign, nonatomic) BOOL applyFlag;           //是否未申请(True:未申请，false:已申请),
+@property (strong, nonatomic) NSArray * mbrInfoList;    //圈主列表
+@end
+
+@interface CircleFunsPageModel : BaseAPIModel
+@property (strong, nonatomic) NSArray *expertList;      //粉丝列表
+@end
+
+//圈主列表
+@interface CircleMaserlistModel : BaseAPIModel
+@property (strong, nonatomic) NSString * id;            //编号
+@property (assign, nonatomic) int sex;                  //性别,
+@property (strong, nonatomic) NSString * nickName;      //昵称
+//@property (strong, nonatomic) NSString * name;        //姓名
+@property (strong, nonatomic) NSString * headImageUrl;  //用户头像
+@property (strong, nonatomic) NSString * groupName;     //商户/品牌名称
+@property (assign, nonatomic) int postCount;            //帖子数
+@property (assign, nonatomic) int replyCount;           //回复数
+@property (assign, nonatomic) int mbrLvl;               //用户等级
+@property (assign, nonatomic) int upVoteCount;          //点赞数
+@property (assign, nonatomic) int attnCount;            //关注数
+@property (assign, nonatomic) int userType;             //用户类型
+@property (strong, nonatomic) NSString * expertise;     //擅长领域
+@property (assign, nonatomic) BOOL isAttnFlag;          //是否关注圈子
+@property (assign, nonatomic) BOOL isMaster;            //是否圈主
+@property (assign, nonatomic) BOOL silencedFlag;
+@end
+
+@interface CircleListPageModel : BaseAPIModel
+@property (strong, nonatomic) NSArray *teamInfoList;    //圈子数组
+@end
+
+@interface CircleAttenPageModel : BaseAPIModel
+@property (strong, nonatomic) NSArray *teamList;        //我的圈子列表,
+@property (strong, nonatomic) NSArray *attnTeamList;    //我关注的圈子列表
+@end
+
+@interface AllCirrclePageModel : BaseAPIModel
+@property (strong, nonatomic) NSArray *myTeamList;      //我的圈子列表,
+@property (strong, nonatomic) NSArray *attnTeamList;    //已关注的圈子列表,
+@property (strong, nonatomic) NSArray *teamList;        //推荐圈子列表(未关注圈的公共圈列表)
+@end
+
+//圈子详细信息
+@interface CircleListModel : BaseAPIModel
+@property (strong, nonatomic) NSString * teamId;       //圈子ID,
+@property (strong, nonatomic) NSString * teamName;     //圈子名称,
+@property (strong, nonatomic) NSString * teamDesc;     //圈子描述,
+@property (strong, nonatomic) NSString * teamLogo;     //圈子Logo,
+@property (strong, nonatomic) NSArray  * imgUrlList;     //圈主头像集合
+@property (assign, nonatomic) int postCount;           //帖子数,
+@property (assign, nonatomic) int attnCount;           //关注人数,
+@property (assign, nonatomic) int master;              //专家圈主数,
+@property (assign, nonatomic) BOOL flagPhar;           //是否有药师,
+@property (assign, nonatomic) BOOL flagDietitian;      //是否有营养师,
+@property (assign, nonatomic) BOOL flagRecommend;      //是否推荐,
+@property (assign, nonatomic) BOOL flagMaxMaster;      //是否达到圈主上限,
+@property (assign, nonatomic) BOOL flagMaster;         //是否圈主,
+@property (assign, nonatomic) BOOL flagAttn;           //是否关注
+@property (strong, nonatomic) NSString *groupId;       //商家Id  (全部接口用，id非空，则为商家圈)
+@property (assign, nonatomic) BOOL flagGroup;          //是否商家圈, （圈子详情信息使用）
+@property (strong, nonatomic) NSArray *expertUrlList;  //专家头像集合
+@property (assign, nonatomic) BOOL  myGroupFlag;       //是否本商家圈
+@property (assign, nonatomic) int allCircleType;       //1我的圈子  2我关注的圈子   3推荐圈子
+@property (assign, nonatomic) BOOL flagAttenMaster;    //我关注的圈子 是否是圈主（非接口返回字段）
+@end
+
+@interface CircleReplayPageModel : BaseAPIModel
+@property (strong, nonatomic) NSArray * postReplyList; //回复列表
+@end
+
+//我的回帖
+@interface CircleReplayListModel : BaseAPIModel
+@property (strong, nonatomic) NSString * id;            //回复ID,
+@property (strong, nonatomic) NSString * replier;       //回帖人,
+@property (assign, nonatomic) int mbrLvl;               //【冗余】用户等级,
+@property (strong, nonatomic) NSString * brandName;     //【冗余】专家品牌名称,
+@property (strong, nonatomic) NSString * headUrl;       //【冗余】头像,
+@property (strong, nonatomic) NSString * nickName;      //【冗余】昵称,
+@property (assign, nonatomic) int replierType;          //回帖人类型(1:普通用户, 2:马甲, 3:药师, 4:营养师),
+@property (strong, nonatomic) NSString * content;       //回复内容,
+@property (strong, nonatomic) NSString * postId;        //帖子ID,
+@property (strong, nonatomic) NSString * postTitle;     //【冗余】贴子标题,
+@property (strong, nonatomic) NSString * replyId;       //引用的回复ID,
+@property (strong, nonatomic) NSString * replyContent;  //【冗余】引用回复内容,
+@property (assign, nonatomic) int upVoteCount;          //点赞数,
+@property (assign, nonatomic) int floor;                //楼层,
+@property (assign, nonatomic) BOOL flagPoster;          //是否楼主(Y/N),
+@property (assign, nonatomic) int status;               //状态(1:有效, 2:隐藏),
+@property (strong, nonatomic) NSString * createDate;    //回复时间
+@end
+
+@interface GoodFieldPageModel : BaseAPIModel
+@property (strong, nonatomic) NSArray * skilledFieldList;  //擅长领域集合
+@end
+
+//擅长领域
+@interface GoodFieldModel : BaseAPIModel
+@property (strong, nonatomic) NSString * id;            //擅长领域Id,
+@property (strong, nonatomic) NSString * dicValue;      //擅长领域
+@end
+
+@interface ExpertMemInfoModel : BaseAPIModel
+@property (strong, nonatomic) NSString * id;            //编号,
+@property (assign, nonatomic) int sex;                  //性别,
+@property (strong, nonatomic) NSString * nickName;      //昵称,
+@property (strong, nonatomic) NSString * name;          //姓名,
+@property (strong, nonatomic) NSString * headImageUrl;  //用户头像,
+@property (strong, nonatomic) NSString * groupName;     //商户品牌名称,
+@property (assign, nonatomic) int postCount;            //帖子数,
+@property (assign, nonatomic) int replyCount;           //回复数,
+@property (assign, nonatomic) int mbrLvl;               //用户等级 ,
+@property (assign, nonatomic) int upVoteCount;          //点赞数,
+@property (assign, nonatomic) int attnCount;            //关注数,
+@property (assign, nonatomic) int userType;             //用户类型,
+@property (strong, nonatomic) NSString * expertise;     //擅长领域,
+@property (strong, nonatomic) NSString * endCertRegist; //注册证到期日期
+@property (assign, nonatomic) BOOL silencedFlag;
+@property (assign, nonatomic) BOOL onlineFlag;          //专家上下线
+@property (strong, nonatomic) NSString * certExpert;    //专家证件(药师证、营养师证),
+@property (strong, nonatomic) NSString * certRegist;    //注册证/挂靠证明
+@end
+
+@interface TeamMessagePageModel : BaseAPIModel
+@property (strong, nonatomic) NSArray * msglist;        //消息Id
+@property (strong, nonatomic) NSString *lastTimestamp;
+@end
+
+@interface TeamMessageModel : BaseAPIModel
+@property (strong, nonatomic) NSString * id;            //消息Id,
+@property (assign, nonatomic) int msgClass;             //消息分类(1:评论 2:赞 (鲜花) 3:＠我的 99：系统消息),
+@property (assign, nonatomic) int msgType;              //消息类型(1:评论 2:回复 3:我收藏的帖子有专家回复4:赞(获得鲜花) 5:＠我的 6:删除帖子 7:删除评论 8:举报 9:帐号安全 10:审核通过(认证)1:审核通过(圈子) 12:审核未通过 13:圈主移除 14:圈子下线 15:圈子上线 16:用户禁言 17:用户解禁 18:专家禁言 19:专家解禁 20:帖子恢复,21:审核失败 22:圈主指派,23意见反馈
+@property (strong, nonatomic) NSString * msgTitle;      //消息标题,
+@property (strong, nonatomic) NSString * msgContent;    //消息内容,
+@property (strong, nonatomic) NSString * mbrId;         //消息接收人ID,
+@property (assign, nonatomic) int mbrType;              //消息接收人类型(1:普通用户, 2:马甲, 3:专家),
+@property (strong, nonatomic) NSString * sourceId ;      //消息来源帖子ID,
+@property (strong, nonatomic) NSString * replyId ;      //消息来源回复ID,
+@property (strong, nonatomic) NSString * sourceTitle ;  //【冗余】消息来源标题,
+@property (strong, nonatomic) NSString * sourceOwner ;  //【冗余】消息来源所属用户名称,
+@property (assign, nonatomic) int sourceOwnerType;      //消息来源所属用户类型(1:普通用户, 2:马甲, 3:药师, 4:营养师),
+@property (strong, nonatomic) NSString * sourceContent; //消息来源内容
+@property (assign, nonatomic) int sourceType;           //消息来源类型（1:圈子, 2:帖子, 3:评论）,
+@property (assign, nonatomic) BOOL flagRead ;           //是否已读,
+@property (strong, nonatomic) NSString * createDate ;   //创建时间
+@end
+
+@interface TeamFlowerPageModel : BaseAPIModel
+@property (strong, nonatomic) NSArray * zanList;        //点赞用户列表
+@end
+
+@interface CheckStoreStatuModel : BaseAPIModel
+@property (assign, nonatomic) int type;                 //类型：1.未开通微商药房 2.社会药房 3.开通微商药房
+@property (strong, nonatomic) NSString *city;           //城市
+@end
+
+@interface EnterExpertPageModel : BaseAPIModel
+@property (strong, nonatomic) NSArray * attnExpertaList;    //我关注的专家集合,
+@property (strong, nonatomic) NSArray * expertList;         //推荐专家集合
+@end
+
+@interface EnterExpertListModel : BaseAPIModel
+@property (strong, nonatomic) NSString * id;                //编号,
+@property (strong, nonatomic) NSString * sex;               //性别(0:男, 1:女, -1:null或空),
+@property (strong, nonatomic) NSString * nickName;          //昵称,
+@property (strong, nonatomic) NSString * headImageUrl;      //用户头像,
+@property (strong, nonatomic) NSString * groupId;           //商户/品牌Id,
+@property (strong, nonatomic) NSString * groupName;         //商户/品牌名称,
+@property (assign, nonatomic) int userType;                 //用户类型,
+@property (strong, nonatomic) NSString * expertise;         //擅长领域,
+@property (assign, nonatomic) BOOL onlineFlag;              //专家是否在线
+@property (assign, nonatomic) int expertType;               //专家类型(1:药师, 2:营养师)
+@end
+
+

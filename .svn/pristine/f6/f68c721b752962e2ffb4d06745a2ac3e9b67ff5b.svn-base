@@ -1,0 +1,301 @@
+//
+//  FindAccOrPwdOneViewController.m
+//  wenYao-store
+//
+//  Created by YYX on 15/8/18.
+//  Copyright (c) 2015年 carret. All rights reserved.
+//
+
+#import "FindAccOrPwdOneViewController.h"
+#import "Mbr.h"
+#import "FindAccOrPwdTwoViewController.h"
+#import "Branch.h"
+#import "Store.h"
+
+@interface FindAccOrPwdOneViewController ()<UITextFieldDelegate>
+
+// 手机号
+@property (weak, nonatomic) IBOutlet UITextField *phoneTextField;
+
+// 验证码
+@property (weak, nonatomic) IBOutlet UITextField *codeTextField;
+
+// 获取验证码
+@property (weak, nonatomic) IBOutlet UIButton *getCodeButton;
+
+@property (weak, nonatomic) IBOutlet UILabel *getCodeLabel;
+
+// 下一步
+@property (weak, nonatomic) IBOutlet UIButton *nextStepButton;
+
+// 发送验证码
+- (IBAction)sendVerifyCodeAction:(id)sender;
+
+// 下一步
+- (IBAction)nextStepAction:(id)sender;
+
+@end
+
+@implementation FindAccOrPwdOneViewController
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    
+    self.title = @"找回密码";
+    
+    self.getCodeButton.userInteractionEnabled = YES;
+    [self ConfigureCodeButtonWith:@"发送验证码" color:RGBHex(qwColor1)];
+    
+    self.nextStepButton.layer.cornerRadius = 3.0;
+    self.nextStepButton.layer.masksToBounds = YES;
+    [self configureNextButtonGray];
+    
+    self.phoneTextField.keyboardType = UIKeyboardTypePhonePad;
+    self.codeTextField.keyboardType = UIKeyboardTypePhonePad;
+    self.phoneTextField.delegate = self;
+    self.codeTextField.delegate = self;
+    self.phoneTextField.tag = 1;
+    self.codeTextField.tag = 2;
+    
+    [self.phoneTextField addTarget:self action:@selector(textFieldDidChange:) forControlEvents:UIControlEventEditingChanged];
+    [self.codeTextField addTarget:self action:@selector(textFieldDidChange:) forControlEvents:UIControlEventEditingChanged];
+    
+    [self.phoneTextField setValue:RGBHex(qwColor9) forKeyPath:@"_placeholderLabel.textColor"];
+    [self.codeTextField setValue:RGBHex(qwColor9) forKeyPath:@"_placeholderLabel.textColor"];
+}
+
+#pragma mark ---- 下一步按钮置灰 ----
+
+- (void)configureNextButtonGray
+{
+    self.nextStepButton.enabled = NO;
+    [self.nextStepButton setBackgroundColor:RGBHex(qwColor9)];
+    [self.nextStepButton setBackgroundImage:nil forState:UIControlStateNormal];
+}
+
+#pragma mark ---- 下一步按钮高亮 ----
+
+- (void)ConfigureNextButtonBlue
+{
+    self.nextStepButton.enabled = YES;
+    [self.nextStepButton setBackgroundImage:[UIImage imageNamed:@"btn_login_notmal"] forState:UIControlStateNormal];
+    [self.nextStepButton setBackgroundImage:[UIImage imageNamed:@"btn_login_click"] forState:UIControlStateHighlighted];
+    [self.nextStepButton setBackgroundImage:[UIImage imageNamed:@"btn_login_click"] forState:UIControlStateSelected];
+}
+
+#pragma mark ---- 获取验证码 ui 改变 ----
+
+- (void)ConfigureCodeButtonWith:(NSString *)title color:(UIColor *)color
+{
+    dispatch_async(dispatch_get_main_queue(),
+                   ^{
+                       self.getCodeLabel.text = title;
+                       self.getCodeLabel.textColor = color;
+                       self.getCodeLabel.layer.borderColor = color.CGColor;
+                       self.getCodeLabel.layer.borderWidth = 0.5;
+                       self.getCodeLabel.layer.cornerRadius = 2.0;
+                       [self.getCodeLabel setNeedsDisplay];
+                   });
+    
+}
+
+#pragma mark ---- 键盘down ----
+
+- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
+{
+    [self.view endEditing:YES];
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    
+    [self.navigationController setNavigationBarHidden:NO animated:YES];
+    
+    if (QWGLOBALMANAGER.getForgetPasswordCd>0) {
+        [self ConfigureCodeButtonWith:[NSString stringWithFormat:@"验证码(%d)s",QWGLOBALMANAGER.getForgetPasswordCd] color:RGBHex(qwColor9)];
+    }else{
+        [self ConfigureCodeButtonWith:@"发送验证码" color:RGBHex(qwColor1)];
+    }
+}
+
+#pragma mark ---- 监听文本变化 ----
+
+- (void)textFieldDidChange:(UITextField *)textField
+{
+    UITextField *textView = textField;
+    NSString *lang = [[textView textInputMode] primaryLanguage]; // 键盘输入模式
+    if ([lang isEqualToString:@"zh-Hans"]) { // 简体中文输入，包括简体拼音，健体五笔，简体手写
+        UITextRange *selectedRange = [textView markedTextRange];
+        //获取高亮部分
+        UITextPosition *position = [textView positionFromPosition:selectedRange.start offset:0];
+        // 没有高亮选择的字，则对已输入的文字进行字数统计和限制
+        if (!position) {
+            [self judgeTextFieldTextChange:textField];
+        }
+        // 有高亮选择的字符串，则暂不对文字进行统计和限制
+        else{
+        }
+    }
+    // 中文输入法以外的直接对其统计限制即可，不考虑其他语种情况
+    else{
+        [self judgeTextFieldTextChange:textField];
+    }
+}
+
+- (void)judgeTextFieldTextChange:(UITextField *)textField
+{
+    UITextField *textView = textField;
+    NSString *toBeString = textView.text;
+    
+    int maxNum;
+    
+    if (textView.tag == 1) {//手机号码
+        maxNum = 13;
+    }else if (textView.tag == 2){//验证码
+        maxNum = 6;
+    }
+    
+    if (toBeString.length > maxNum) {
+        textView.text = [toBeString substringToIndex:maxNum];
+    }
+    
+    if ([QWGLOBALMANAGER isTelPhoneNumber:self.phoneTextField.text] && self.codeTextField.text.length > 0) {
+        [self ConfigureNextButtonBlue];
+    }else{
+        [self configureNextButtonGray];
+    }
+
+}
+
+#pragma mark ---- 计时器执行方法 ----
+
+- (void)reGetVerifyCodeControl:(NSInteger)count
+{
+    if (count == 0) {
+        self.getCodeButton.userInteractionEnabled = YES;
+        [self ConfigureCodeButtonWith:@"发送验证码" color:RGBHex(qwColor1)];
+    }else{
+        self.getCodeButton.userInteractionEnabled = NO;
+        [self ConfigureCodeButtonWith:[NSString stringWithFormat:@"验证码(%ld)s",(long)count] color:RGBHex(qwColor9)];
+        
+    }
+}
+
+- (void)getNotifType:(Enum_Notification_Type)type data:(id)data target:(id)obj
+{
+    if(type == NotiCountDonwForgetPassword) {
+        [self reGetVerifyCodeControl:[data integerValue]];
+    }
+}
+
+- (void)didReceiveMemoryWarning {
+    [super didReceiveMemoryWarning];
+    
+}
+
+#pragma mark ---- 发送验证码 ----
+
+- (IBAction)sendVerifyCodeAction:(id)sender
+{
+    if (QWGLOBALMANAGER.currentNetWork == kNotReachable) {
+        [SVProgressHUD showErrorWithStatus:@"网络未连接，请重试" duration:0.8f];
+        return;
+    }
+    if (self.phoneTextField.text.length == 0) {
+        [SVProgressHUD showErrorWithStatus:Kwarning220N69 duration:0.8];
+        return;
+    }
+    
+    if (![QWGLOBALMANAGER isTelPhoneNumber:self.phoneTextField.text]) {
+        [SVProgressHUD showErrorWithStatus:Kwarning220N70 duration:0.8];
+        return;
+    }
+    
+    //检测用户手机是否注册
+    MobileValidModelR *model = [MobileValidModelR new];
+    model.mobile = self.phoneTextField.text;
+    [Store MobileValidWithParams:model success:^(id obj) {
+        
+        if ([obj[@"apiStatus"] intValue] == 0) {
+            
+            [SVProgressHUD showErrorWithStatus:Kwarning220N82 duration:DURATION_SHORT];
+            
+        }else{
+            
+            [QWGLOBALMANAGER startForgetPasswordVerifyCode:self.phoneTextField.text];
+        }
+        
+    } failure:^(HttpException *e) {
+        
+    }];
+
+}
+
+#pragma mark ---- 下一步 ----
+
+- (IBAction)nextStepAction:(id)sender
+{
+    self.nextStepButton.enabled = NO;
+    [self.view endEditing:YES];
+    
+    if (QWGLOBALMANAGER.currentNetWork == kNotReachable) {
+        [SVProgressHUD showErrorWithStatus:@"网络未连接，请重试" duration:0.8f];
+        self.nextStepButton.enabled = YES;
+        return;
+    }
+    
+    if (self.codeTextField.text.length == 0) {
+        [SVProgressHUD showErrorWithStatus:@"请输入验证码" duration:DURATION_SHORT];
+        self.nextStepButton.enabled = YES;
+        return;
+    }
+    //  如果验证码正确,那么就跳转
+    
+    //先校验验证码
+    ValidVerifyCodeModelR *validModelR = [[ValidVerifyCodeModelR alloc] init];
+    validModelR.mobile = self.phoneTextField.text;
+    validModelR.code = self.codeTextField.text;
+    validModelR.type = @5;
+    [Mbr ValidVerifyCodeWithParam:validModelR success:^(id responseObj) {
+        self.nextStepButton.enabled = YES;
+        StoreModel *model=responseObj;
+        if([model.apiStatus intValue]==0){
+            
+            // 通过手机号获取账号
+            
+            NSMutableDictionary *setting=[NSMutableDictionary dictionary];
+            setting[@"mobile"] = StrFromObj([self.phoneTextField.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]]);
+            [Branch PassportBranchGetAccountByMobileWithParams:setting success:^(id obj) {
+                
+                if ([obj[@"apiStatus"] integerValue] == 0) {
+                    
+                                        
+                    FindAccOrPwdTwoViewController *vc = [[UIStoryboard storyboardWithName:@"FindAccOrPwd" bundle:nil] instantiateViewControllerWithIdentifier:@"FindAccOrPwdTwoViewController"];
+                    vc.hidesBottomBarWhenPushed = YES;
+                    vc.account = obj[@"accountName"];
+                    vc.mobile = self.phoneTextField.text;
+                    vc.accountType = obj[@"type"];
+                    [self.navigationController pushViewController:vc animated:YES];
+                    
+                }else
+                {
+                    [SVProgressHUD showErrorWithStatus:obj[@"apiMessage"] duration:0.8];
+                }
+                
+            } failure:^(HttpException *e) {
+                
+            }];
+            
+            
+        }else{
+            [SVProgressHUD showErrorWithStatus:model.apiMessage duration:DURATION_SHORT];
+        }
+    } failure:^(HttpException *e) {
+        self.nextStepButton.enabled = YES;
+        
+    }];
+    
+    
+}
+@end

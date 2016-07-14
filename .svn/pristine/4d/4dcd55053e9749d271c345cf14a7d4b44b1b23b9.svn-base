@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="8191" systemVersion="15A284" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES">
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="8154"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner">
+            <connections>
+                <outlet property="proName" destination="Z4X-i6-r7w" id="uBb-OH-0dT"/>
+                <outlet property="productImage" destination="sRj-If-nms" id="6f6-rr-CPR"/>
+                <outlet property="spec" destination="CsE-jG-cTr" id="qw8-uI-qt3"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="AddProductCell" rowHeight="104" id="43F-Lu-hu0" customClass="SlowAddProductTableViewCell">
+            <rect key="frame" x="0.0" y="0.0" width="320" height="104"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="43F-Lu-hu0" id="dS7-9F-H2K">
+                <rect key="frame" x="0.0" y="0.0" width="320" height="103"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="O4W-t4-vlo">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="103"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="商品名称" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Z4X-i6-r7w" customClass="QWLabel">
+                                <rect key="frame" x="133" y="12" width="182" height="19"/>
+                                <animations/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="19" id="6lU-x5-0pk"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                <color key="textColor" red="0.20000000000000001" green="0.20000000000000001" blue="0.20000000000000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <button opaque="NO" tag="11" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="I4R-lD-wej">
+                                <rect key="frame" x="133" y="62" width="30" height="30"/>
+                                <animations/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="30" id="apT-1m-Ihu"/>
+                                    <constraint firstAttribute="width" constant="30" id="cjG-Ro-5W3"/>
+                                </constraints>
+                                <state key="normal" backgroundImage="number_btn_subtract_noClick">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="deleteButton:" destination="43F-Lu-hu0" eventType="touchUpInside" id="6Ne-sf-oHm"/>
+                                </connections>
+                            </button>
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="line" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="4bB-Gp-rir">
+                                <rect key="frame" x="168" y="62" width="48" height="30"/>
+                                <animations/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="48" id="hvH-q5-LbH"/>
+                                    <constraint firstAttribute="height" constant="30" id="iE7-GX-Fgi"/>
+                                </constraints>
+                                <color key="textColor" red="0.20000000000000001" green="0.20000000000000001" blue="0.20000000000000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                <textInputTraits key="textInputTraits"/>
+                            </textField>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="img_goods_default" translatesAutoresizingMaskIntoConstraints="NO" id="sRj-If-nms" customClass="QWImageView">
+                                <rect key="frame" x="60" y="12" width="61" height="61"/>
+                                <animations/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="61" id="33H-PQ-KxN"/>
+                                    <constraint firstAttribute="height" constant="61" id="4Pd-JJ-8x8"/>
+                                </constraints>
+                            </imageView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="商品规格" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="CsE-jG-cTr" customClass="QWLabel">
+                                <rect key="frame" x="133" y="39" width="182" height="15"/>
+                                <animations/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="15" id="ity-h7-ytS"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                                <color key="textColor" red="0.59999999999999998" green="0.59999999999999998" blue="0.59999999999999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <button opaque="NO" tag="10" contentMode="scaleAspectFit" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="csh-KL-AaZ">
+                                <rect key="frame" x="0.0" y="10" width="60" height="83"/>
+                                <animations/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="60" id="Hfv-Tx-IME"/>
+                                </constraints>
+                                <state key="normal" image="img_noChoice">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="isCheckButton:" destination="43F-Lu-hu0" eventType="touchUpInside" id="uiY-yV-6XM"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" tag="12" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="nmG-ZW-mb9">
+                                <rect key="frame" x="221" y="62" width="30" height="30"/>
+                                <animations/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="30" id="I5r-lV-a2I"/>
+                                    <constraint firstAttribute="height" constant="30" id="a58-dH-RrE"/>
+                                </constraints>
+                                <state key="normal" backgroundImage="number_btn_add_noClick">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="addButton:" destination="43F-Lu-hu0" eventType="touchUpInside" id="8db-d6-feY"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <animations/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="Z4X-i6-r7w" firstAttribute="leading" secondItem="sRj-If-nms" secondAttribute="trailing" constant="12" id="0il-Wb-RxN"/>
+                            <constraint firstItem="nmG-ZW-mb9" firstAttribute="leading" secondItem="4bB-Gp-rir" secondAttribute="trailing" constant="5" id="CHJ-aS-Z5c"/>
+                            <constraint firstItem="CsE-jG-cTr" firstAttribute="top" secondItem="Z4X-i6-r7w" secondAttribute="bottom" constant="8" id="Cbz-ks-GCQ"/>
+                            <constraint firstItem="4bB-Gp-rir" firstAttribute="leading" secondItem="I4R-lD-wej" secondAttribute="trailing" constant="5" id="LrJ-LX-hNN"/>
+                            <constraint firstItem="I4R-lD-wej" firstAttribute="leading" secondItem="sRj-If-nms" secondAttribute="trailing" constant="12" id="TI4-pA-5YJ"/>
+                            <constraint firstItem="4bB-Gp-rir" firstAttribute="top" secondItem="CsE-jG-cTr" secondAttribute="bottom" constant="8" id="WEb-zR-51X"/>
+                            <constraint firstItem="csh-KL-AaZ" firstAttribute="top" secondItem="O4W-t4-vlo" secondAttribute="top" constant="10" id="WOH-RK-STh"/>
+                            <constraint firstItem="CsE-jG-cTr" firstAttribute="leading" secondItem="sRj-If-nms" secondAttribute="trailing" constant="12" id="Zs8-nU-x47"/>
+                            <constraint firstAttribute="trailing" secondItem="Z4X-i6-r7w" secondAttribute="trailing" constant="5" id="aP6-MI-qwp"/>
+                            <constraint firstItem="csh-KL-AaZ" firstAttribute="leading" secondItem="O4W-t4-vlo" secondAttribute="leading" id="byD-vl-9RR"/>
+                            <constraint firstItem="sRj-If-nms" firstAttribute="leading" secondItem="csh-KL-AaZ" secondAttribute="trailing" id="dfe-A6-a2R"/>
+                            <constraint firstAttribute="trailing" secondItem="CsE-jG-cTr" secondAttribute="trailing" constant="5" id="fcq-Lr-Hsy"/>
+                            <constraint firstItem="Z4X-i6-r7w" firstAttribute="top" secondItem="O4W-t4-vlo" secondAttribute="top" constant="12" id="h2m-bD-yB5"/>
+                            <constraint firstItem="nmG-ZW-mb9" firstAttribute="top" secondItem="CsE-jG-cTr" secondAttribute="bottom" constant="8" id="lrc-bg-BUR"/>
+                            <constraint firstAttribute="bottom" secondItem="csh-KL-AaZ" secondAttribute="bottom" constant="10" id="qMx-hc-eH7"/>
+                            <constraint firstItem="sRj-If-nms" firstAttribute="top" secondItem="O4W-t4-vlo" secondAttribute="top" constant="12" id="sLW-ej-aqq"/>
+                            <constraint firstItem="I4R-lD-wej" firstAttribute="top" secondItem="CsE-jG-cTr" secondAttribute="bottom" constant="8" id="uYW-Ky-DTd"/>
+                        </constraints>
+                    </view>
+                </subviews>
+                <animations/>
+                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                <constraints>
+                    <constraint firstAttribute="trailing" secondItem="O4W-t4-vlo" secondAttribute="trailing" id="6Vo-Ug-8YM"/>
+                    <constraint firstAttribute="bottom" secondItem="O4W-t4-vlo" secondAttribute="bottom" id="Yhv-qD-Dqp"/>
+                    <constraint firstItem="O4W-t4-vlo" firstAttribute="top" secondItem="dS7-9F-H2K" secondAttribute="top" id="Z4F-nD-rdi"/>
+                    <constraint firstItem="O4W-t4-vlo" firstAttribute="leading" secondItem="dS7-9F-H2K" secondAttribute="leading" id="sJN-dK-RCt"/>
+                </constraints>
+            </tableViewCellContentView>
+            <animations/>
+            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+            <connections>
+                <outlet property="addButton" destination="nmG-ZW-mb9" id="ghw-EK-OwO"/>
+                <outlet property="checkBox" destination="csh-KL-AaZ" id="WLf-aF-MRI"/>
+                <outlet property="deleButton" destination="I4R-lD-wej" id="kgf-42-Si5"/>
+                <outlet property="proName" destination="Z4X-i6-r7w" id="usf-pk-2TM"/>
+                <outlet property="productImage" destination="sRj-If-nms" id="c9O-Ng-YUi"/>
+                <outlet property="spec" destination="CsE-jG-cTr" id="Trc-w6-ZUC"/>
+                <outlet property="textField" destination="4bB-Gp-rir" id="ADI-sS-8Bk"/>
+            </connections>
+            <point key="canvasLocation" x="216" y="218"/>
+        </tableViewCell>
+    </objects>
+    <resources>
+        <image name="img_goods_default" width="80" height="80"/>
+        <image name="img_noChoice" width="24" height="24"/>
+        <image name="number_btn_add_noClick" width="30" height="30"/>
+        <image name="number_btn_subtract_noClick" width="30" height="30"/>
+    </resources>
+</document>

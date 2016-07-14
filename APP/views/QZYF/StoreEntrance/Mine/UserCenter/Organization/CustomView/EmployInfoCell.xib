@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="8191" systemVersion="14F27" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="8154"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <tableViewCell contentMode="scaleToFill" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" rowHeight="70" id="KGk-i7-Jjw" customClass="EmployInfoCell">
+            <rect key="frame" x="0.0" y="0.0" width="320" height="70"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="KGk-i7-Jjw" id="H2p-sc-9uM">
+                <rect key="frame" x="0.0" y="0.0" width="287" height="69.5"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="店员" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9V0-nL-6No">
+                        <rect key="frame" x="10" y="10" width="276" height="20"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="20" id="C8C-vL-Lib"/>
+                        </constraints>
+                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                        <color key="textColor" red="0.20000000000000001" green="0.20000000000000001" blue="0.20000000000000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="07g-ft-B9o">
+                        <rect key="frame" x="10" y="40" width="276" height="20"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="20" id="FQ6-5u-63Z"/>
+                        </constraints>
+                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                        <color key="textColor" red="0.20000000000000001" green="0.20000000000000001" blue="0.20000000000000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="账号已开启" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5qG-Po-CYe">
+                        <rect key="frame" x="214" y="24" width="77" height="21"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="21" id="1DM-ch-eAf"/>
+                            <constraint firstAttribute="width" constant="77" id="BeK-K9-1pf"/>
+                        </constraints>
+                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                        <color key="textColor" red="0.20000000000000001" green="0.20000000000000001" blue="0.20000000000000001" alpha="1" colorSpace="calibratedRGB"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                </subviews>
+                <constraints>
+                    <constraint firstAttribute="bottomMargin" secondItem="07g-ft-B9o" secondAttribute="bottom" constant="1" id="5hb-6h-rXc"/>
+                    <constraint firstAttribute="trailingMargin" secondItem="9V0-nL-6No" secondAttribute="trailing" constant="-7" id="6VB-1N-cJT"/>
+                    <constraint firstAttribute="trailingMargin" secondItem="07g-ft-B9o" secondAttribute="trailing" constant="-7" id="AJc-cV-bhB"/>
+                    <constraint firstItem="9V0-nL-6No" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leadingMargin" constant="2" id="CDc-Qs-81p"/>
+                    <constraint firstItem="07g-ft-B9o" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leadingMargin" constant="2" id="FIG-Qk-NPE"/>
+                    <constraint firstAttribute="trailingMargin" secondItem="5qG-Po-CYe" secondAttribute="trailing" constant="-12" id="YwJ-0V-mpP"/>
+                    <constraint firstItem="9V0-nL-6No" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="topMargin" constant="2" id="dNg-u8-PPd"/>
+                    <constraint firstAttribute="centerY" secondItem="5qG-Po-CYe" secondAttribute="centerY" id="kkR-VG-z24"/>
+                </constraints>
+            </tableViewCellContentView>
+            <connections>
+                <outlet property="EmployName" destination="9V0-nL-6No" id="zRY-pA-dMz"/>
+                <outlet property="EmployPhoneNumber" destination="07g-ft-B9o" id="Kpw-VC-u9C"/>
+                <outlet property="statuLabel" destination="5qG-Po-CYe" id="P24-qd-D7j"/>
+            </connections>
+            <point key="canvasLocation" x="220" y="128"/>
+        </tableViewCell>
+    </objects>
+</document>

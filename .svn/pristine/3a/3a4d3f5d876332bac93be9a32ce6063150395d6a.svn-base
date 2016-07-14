@@ -1,0 +1,530 @@
+//
+//  MineViewController.m
+//  wenYao-store
+//
+//  Created by Yang Yuexia on 15/12/29.
+//  Copyright © 2015年 carret. All rights reserved.
+//
+
+#import "MineViewController.h"
+#import "MineCell.h"
+#import "ExpertSetMainViewController.h"
+#import "MyPostTopicViewController.h"
+#import "MyBackTopicViewController.h"
+#import "NSString+WPAttributedMarkup.h"
+#import "MyInfomationViewController.h"
+#import "MyFunsViewController.h"
+#import "MyFollowCircleViewController.h"
+#import "MyFollowExpertViewController.h"
+#import "MyCollectionTopicViewController.h"
+#import "CircleModel.h"
+#import "Circle.h"
+#import "MyPostDraftViewController.h"
+#import "SendPostHistoryViewController.h"
+#import "Mbr.h"
+#import "ExpertInfoViewController.h"
+
+@interface MineViewController ()<UITableViewDelegate,UITableViewDataSource>
+
+@property (weak, nonatomic) IBOutlet UITableView *tableView;
+@property (strong, nonatomic) IBOutlet UIView *tableHeaderView;
+@property (weak, nonatomic) IBOutlet UIView *tableHeaderBg;
+
+@property (weak, nonatomic) IBOutlet UIImageView *headerIcon;
+@property (weak, nonatomic) IBOutlet UILabel *name;
+@property (weak, nonatomic) IBOutlet UILabel *storeName;
+@property (weak, nonatomic) IBOutlet UILabel *funsLabel;
+@property (weak, nonatomic) IBOutlet UILabel *flowerLabel;
+
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *storeName_layout_width;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *storeName_layout_height;
+
+@property (strong, nonatomic) NSArray *dataList;
+@property (strong, nonatomic) NSArray *imageList;
+@property (strong, nonatomic) ExpertMemInfoModel *infoModel;
+@property (strong, nonatomic) UIImageView *rightRedPoint;
+
+//粉丝
+- (IBAction)myFuns:(id)sender;
+
+//关注的圈子
+- (IBAction)attentionCircle:(id)sender;
+
+//关注的专家
+- (IBAction)attentionExpert:(id)sender;
+
+//我的收藏
+- (IBAction)myCollection:(id)sender;
+
+@end
+
+@implementation MineViewController
+
+- (void)viewDidLoad
+{
+    [super viewDidLoad];
+    
+    self.title = @"我的";
+    [QWGLOBALMANAGER statisticsEventId:@"我的页面_出现" withLable:@"圈子" withParams:nil];
+    
+    self.dataList = @[@[@"我的发帖",@"我的回帖",@"草稿箱"],@[@"是否上线",@"设置"]];
+    self.imageList = @[@[@"ic_fatie",@"ic_huitie",@"ic_draftbox"],@[@"my_ic_online",@"ic_img_set"]];
+    self.infoModel = [ExpertMemInfoModel new];
+    
+    self.tableView.tableFooterView = [[UIView alloc] init];
+    self.tableView.tableHeaderView = self.tableHeaderView;
+    self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+    
+    //设置导航栏消息盒子
+    [self setUpRightItem];
+    
+    //头像点击事件
+    self.headerIcon.userInteractionEnabled = YES;
+    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(clickHeaderIcon)];
+    [self.headerIcon addGestureRecognizer:tap];
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    [self queryInfo];
+}
+
+#pragma mark ---- 获取用户信息 ----
+- (void)queryInfo
+{
+    if (QWGLOBALMANAGER.currentNetWork == kNotReachable) {
+        [SVProgressHUD showErrorWithStatus:kWaring33];
+        return;
+    }
+    
+    NSMutableDictionary *setting = [NSMutableDictionary dictionary];
+    setting[@"token"] = StrFromObj(QWGLOBALMANAGER.configure.expertToken);
+    setting[@"tokenFlag"] = @"Y";
+    [Circle TeamMyInfoWithParams:setting success:^(id obj) {
+        
+        ExpertMemInfoModel *model = [ExpertMemInfoModel parse:obj];
+        if ([model.apiStatus integerValue] == 0)
+        {
+            self.infoModel = model;
+            QWGLOBALMANAGER.configure.expertNickName = model.nickName;
+            QWGLOBALMANAGER.configure.expertAvatarUrl = model.headImageUrl;
+            QWGLOBALMANAGER.configure.expertType = model.userType;
+            [QWGLOBALMANAGER saveAppConfigure];
+            
+            [self setUpTopUI];
+            [self.tableView reloadData];
+        }else
+        {
+            [SVProgressHUD showErrorWithStatus:model.apiMessage];
+        }
+    } failure:^(HttpException *e) {
+        
+    }];
+    
+}
+
+#pragma mark ---- 设置用户的基本信息 ----
+- (void)setUpTopUI
+{
+    //头像
+    self.headerIcon.layer.cornerRadius = 32;
+    self.headerIcon.layer.masksToBounds = YES;
+    [self.headerIcon setImageWithURL:[NSURL URLWithString:self.infoModel.headImageUrl] placeholderImage:[UIImage imageNamed:@"expert_ic_people"]];
+    
+    //姓名
+    NSString *name = self.infoModel.nickName;
+    NSString *logoName = @"";
+    if (self.infoModel.userType == 3) { //药师
+        logoName = @"药师";
+    }else if (self.infoModel.userType == 4){ //营养师
+        logoName = @"营养师";
+    }
+    NSString *str = [NSString stringWithFormat:@"%@ %@",name,logoName];
+    NSMutableAttributedString *nameAttributedStr = [[NSMutableAttributedString alloc]initWithString:str];
+    NSRange range1 = [[nameAttributedStr string]rangeOfString:logoName];
+    [nameAttributedStr addAttribute:NSFontAttributeName
+                           value:fontSystem(kFontS4)
+                           range:range1];
+    [nameAttributedStr addAttribute:NSForegroundColorAttributeName
+                           value:RGBHex(qwColor2)
+                           range:range1];
+    self.name.attributedText = nameAttributedStr;
+    
+    //所属商家
+    self.storeName.layer.cornerRadius = 4.0;
+    self.storeName.layer.masksToBounds = YES;
+    if (self.infoModel.userType == 3)
+    {
+        //药师
+        if (!StrIsEmpty(self.infoModel.groupName))
+        {
+            CGSize brandSize = [self.infoModel.groupName sizeWithFont:fontSystem(12) constrainedToSize:CGSizeMake(APP_W, CGFLOAT_MAX)];
+            self.storeName_layout_width.constant = brandSize.width+7;
+            self.storeName.text = self.infoModel.groupName;
+
+            CGRect frame = self.tableHeaderView.frame;
+            frame.size.width = 203;
+            self.tableHeaderView.frame = frame;
+        }else
+        {
+            self.storeName.hidden = YES;
+            self.storeName_layout_height.constant = 0.1;
+            CGRect frame = self.tableHeaderView.frame;
+            frame.size.height = 203-21;
+            self.tableHeaderView.frame = frame;
+        }
+        
+    }else if (self.infoModel.userType == 4)
+    {
+        //营养师
+        self.storeName.hidden = YES;
+        self.storeName_layout_height.constant = 0.1;
+        CGRect frame = self.tableHeaderView.frame;
+        frame.size.height = 203-21;
+        self.tableHeaderView.frame = frame;
+    }
+    
+    //粉丝
+    NSString *str1 = [NSString stringWithFormat:@"粉丝 %d",self.infoModel.attnCount];
+    NSMutableAttributedString *AttributedStr1 = [[NSMutableAttributedString alloc]initWithString:str1];
+    [AttributedStr1 addAttribute:NSFontAttributeName
+                          value:fontSystem(kFontS1)
+                          range:NSMakeRange(3, str1.length-3)];
+    self.funsLabel.attributedText = AttributedStr1;
+    
+    //鲜花
+    NSString *str2 = [NSString stringWithFormat:@"鲜花 %d",self.infoModel.upVoteCount];
+    NSMutableAttributedString *AttributedStr2 = [[NSMutableAttributedString alloc]initWithString:str2];
+    [AttributedStr2 addAttribute:NSFontAttributeName
+                          value:fontSystem(kFontS1)
+                          range:NSMakeRange(3, str2.length-3)];
+    self.flowerLabel.attributedText = AttributedStr2;
+    
+    self.tableView.tableHeaderView = self.tableHeaderView;
+    [self.tableView reloadData];
+}
+
+#pragma mark ---- 设置导航栏右侧按钮 ----
+- (void)setUpRightItem
+{
+    UIBarButtonItem *fixed = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace target:nil action:nil];
+    fixed.width = -17;
+    
+    UIView *bg = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 50, 44)];
+    bg.backgroundColor = [UIColor clearColor];
+    
+    UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
+    btn.frame = CGRectMake(0, -1, 50, 44);
+    [btn setImage:[UIImage imageNamed:@"icon_news"] forState:UIControlStateNormal];
+    [btn setImage:[UIImage imageNamed:@"icon_news_click"] forState:UIControlStateHighlighted];
+    [btn addTarget:self action:@selector(jumpIntoInfoVC) forControlEvents:UIControlEventTouchUpInside];
+    [bg addSubview:btn];
+    
+    self.rightRedPoint = [[UIImageView alloc] initWithFrame:CGRectMake(35, 8, 7, 7)];
+    self.rightRedPoint.image = [UIImage imageNamed:@"img_redDot"];
+    self.rightRedPoint.hidden = YES;
+    [bg addSubview:self.rightRedPoint];
+    
+    if (QWGLOBALMANAGER.configure.expertCommentRed || QWGLOBALMANAGER.configure.expertFlowerRed || QWGLOBALMANAGER.configure.expertAtMineRed || QWGLOBALMANAGER.configure.expertSystemInfoRed) {
+        self.rightRedPoint.hidden = NO;
+    }
+    
+    UIBarButtonItem *item = [[UIBarButtonItem alloc] initWithCustomView:bg];
+    self.navigationItem.rightBarButtonItems = @[fixed,item];
+}
+
+
+#pragma mark ---- UITableViewDelegate ----
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+{
+    return self.dataList.count;
+}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
+    NSArray *arr = self.dataList[section];
+    return arr.count;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return 45;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
+{
+    return 6;
+}
+
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
+{
+    UIView *vi = [[UIView alloc] initWithFrame:CGRectMake(0, 0, APP_W, 6)];
+    vi.backgroundColor = [UIColor clearColor];
+    return vi;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section
+{
+    return 0.1;
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    MineCell *cell = [tableView dequeueReusableCellWithIdentifier:@"MineCell"];
+    cell.title.text = self.dataList[indexPath.section][indexPath.row];
+    cell.imgView.image = [UIImage imageNamed:self.imageList[indexPath.section][indexPath.row]];
+    cell.number.text = @"";
+    
+    NSArray *sectionArr = self.dataList[indexPath.section];
+    if (indexPath.row == sectionArr.count-1) {
+        cell.separatorLine.hidden = YES;
+    }
+    
+    cell.isOnlineSwitch.on = self.infoModel.onlineFlag;
+    [cell.isOnlineSwitch addTarget:self action:@selector(isOnlineAction:) forControlEvents:UIControlEventValueChanged];
+    if (indexPath.section == 1 && indexPath.row == 0)
+    {
+        cell.isOnlineSwitch.hidden = NO;
+        cell.rightArrowImageView.hidden = YES;
+    }else
+    {
+        cell.isOnlineSwitch.hidden = YES;
+        cell.rightArrowImageView.hidden = NO;
+    }
+    
+    return cell;
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    
+    if (indexPath.section == 0 && indexPath.row == 0)
+    {
+        //我的发帖
+        if (QWGLOBALMANAGER.configure.silencedFlag) {
+            [SVProgressHUD showErrorWithStatus:@"您已被禁言"];
+            return;
+        }
+        
+        [QWGLOBALMANAGER statisticsEventId:@"我的_我的发帖" withLable:@"圈子" withParams:nil];
+        
+        MyPostTopicViewController *vc = [[UIStoryboard storyboardWithName:@"Mine" bundle:nil] instantiateViewControllerWithIdentifier:@"MyPostTopicViewController"];
+        vc.hidesBottomBarWhenPushed = YES;
+        [self.navigationController pushViewController:vc animated:YES];
+        
+    }else if (indexPath.section == 0 && indexPath.row == 1)
+    {
+        //我的回帖
+        if (QWGLOBALMANAGER.configure.silencedFlag) {
+            [SVProgressHUD showErrorWithStatus:@"您已被禁言"];
+            return;
+        }
+        
+        [QWGLOBALMANAGER statisticsEventId:@"我的_我的回帖" withLable:@"圈子" withParams:nil];
+        
+        MyBackTopicViewController *vc = [[UIStoryboard storyboardWithName:@"Mine" bundle:nil] instantiateViewControllerWithIdentifier:@"MyBackTopicViewController"];
+        vc.hidesBottomBarWhenPushed = YES;
+        [self.navigationController pushViewController:vc animated:YES];
+        
+    }else if (indexPath.section == 0 && indexPath.row == 2)
+    {
+        //草稿箱
+        if (QWGLOBALMANAGER.configure.silencedFlag) {
+            [SVProgressHUD showErrorWithStatus:@"您已被禁言"];
+            return;
+        }
+        
+        [QWGLOBALMANAGER statisticsEventId:@"我的_草稿箱" withLable:@"圈子" withParams:nil];
+        
+        MyPostDraftViewController* draftsVC = [[MyPostDraftViewController alloc] init];
+        draftsVC.hidesBottomBarWhenPushed = YES;
+        [self.navigationController pushViewController:draftsVC animated:YES];
+        
+    }else if (indexPath.section == 1 && indexPath.row == 1)
+    {
+        //设置
+        
+        [QWGLOBALMANAGER statisticsEventId:@"我的_设置" withLable:@"圈子" withParams:nil];
+        
+        ExpertSetMainViewController *vc = [[UIStoryboard storyboardWithName:@"Mine" bundle:nil] instantiateViewControllerWithIdentifier:@"ExpertSetMainViewController"];
+        vc.hidesBottomBarWhenPushed = YES;
+        [self.navigationController pushViewController:vc animated:YES];
+    }
+}
+
+#pragma mark ---- 进入消息页面 ----
+- (void)jumpIntoInfoVC
+{
+    ExpertInfoViewController *vc = [[ExpertInfoViewController alloc] init];
+    vc.hidesBottomBarWhenPushed = YES;
+    [self.navigationController pushViewController:vc animated:YES];
+}
+
+#pragma mark ---- 点击头像进入个人资料 ----
+- (void)clickHeaderIcon
+{
+    [QWGLOBALMANAGER statisticsEventId:@"我的_头像" withLable:@"圈子" withParams:nil];
+    
+    MyInfomationViewController *vc = [[UIStoryboard storyboardWithName:@"MyInfomation" bundle:nil] instantiateViewControllerWithIdentifier:@"MyInfomationViewController"];
+    vc.hidesBottomBarWhenPushed = YES;
+    if (self.infoModel.userType == 3) {
+        vc.expertType = @"1";
+    }else if (self.infoModel.userType == 4){
+        vc.expertType = @"2";
+    }
+    vc.headerUrl = self.infoModel.headImageUrl;
+    vc.nickName = self.infoModel.nickName;
+    vc.goodField = self.infoModel.expertise;
+    vc.groupName = self.infoModel.groupName;
+    vc.groupStatu = self.infoModel.endCertRegist;
+    vc.registerUrl = self.infoModel.certRegist;
+    [self.navigationController pushViewController:vc animated:YES];
+}
+
+#pragma mark ---- 我的粉丝 ----
+- (IBAction)myFuns:(id)sender
+{
+    if (QWGLOBALMANAGER.configure.silencedFlag) {
+        [SVProgressHUD showErrorWithStatus:@"您已被禁言"];
+        return;
+    }
+    
+    MyFunsViewController *vc = [[UIStoryboard storyboardWithName:@"MyFuns" bundle:nil] instantiateViewControllerWithIdentifier:@"MyFunsViewController"];
+    vc.hidesBottomBarWhenPushed = YES;
+    [self.navigationController pushViewController:vc animated:YES];
+}
+
+#pragma mark ---- 关注的圈子 ----
+- (IBAction)attentionCircle:(id)sender
+{
+    if (QWGLOBALMANAGER.configure.silencedFlag) {
+        [SVProgressHUD showErrorWithStatus:@"您已被禁言"];
+        return;
+    }
+    
+    MyFollowCircleViewController *vc = [[UIStoryboard storyboardWithName:@"MyFollow" bundle:nil] instantiateViewControllerWithIdentifier:@"MyFollowCircleViewController"];
+    vc.hidesBottomBarWhenPushed = YES;
+    [self.navigationController pushViewController:vc animated:YES];
+}
+
+#pragma mark ---- 关注的专家 ----
+- (IBAction)attentionExpert:(id)sender
+{
+    if (QWGLOBALMANAGER.configure.silencedFlag) {
+        [SVProgressHUD showErrorWithStatus:@"您已被禁言"];
+        return;
+    }
+    
+    MyFollowExpertViewController *vc = [[UIStoryboard storyboardWithName:@"MyFollowExpert" bundle:nil] instantiateViewControllerWithIdentifier:@"MyFollowExpertViewController"];
+    vc.hidesBottomBarWhenPushed = YES;
+    vc.jumpType = 1;
+    [self.navigationController pushViewController:vc animated:YES];
+}
+
+#pragma mark ---- 我的收藏 ----
+- (IBAction)myCollection:(id)sender
+{
+    [QWGLOBALMANAGER statisticsEventId:@"我的_我的收藏" withLable:@"圈子" withParams:nil];
+    
+    MyCollectionTopicViewController *vc = [[UIStoryboard storyboardWithName:@"MyCollectionTopic" bundle:nil] instantiateViewControllerWithIdentifier:@"MyCollectionTopicViewController"];
+    vc.hidesBottomBarWhenPushed = YES;
+    [self.navigationController pushViewController:vc animated:YES];
+}
+
+#pragma mark ---- 是否上线 ----
+- (void)isOnlineAction:(UISwitch *)changeSwitch
+{
+    if (QWGLOBALMANAGER.currentNetWork == kNotReachable) {
+        [SVProgressHUD showErrorWithStatus:kWaring33];
+        return;
+    }
+    
+    [QWGLOBALMANAGER statisticsEventId:@"我的_是否上线" withLable:@"圈子" withParams:nil];
+    
+    
+    NSMutableDictionary *setting = [NSMutableDictionary dictionary];
+    setting[@"token"] = StrFromObj(QWGLOBALMANAGER.configure.expertToken);
+    if (self.infoModel.onlineFlag)
+    {
+        //下线
+        setting[@"onlineFlag"] = @"N";
+    }else
+    {
+        //上线
+        setting[@"onlineFlag"] = @"Y";
+    }
+    
+    [Mbr MbrExpertUpdateOnlineFlagWithParams:setting success:^(id DFUserModel) {
+        BaseAPIModel *model = [BaseAPIModel parse:DFUserModel];
+        if ([model.apiStatus integerValue] == 0) {
+            
+            if (QWGLOBALMANAGER.currentNetWork == kNotReachable) {
+                [SVProgressHUD showErrorWithStatus:kWaring33];
+                return;
+            }
+            
+            NSMutableDictionary *setting = [NSMutableDictionary dictionary];
+            setting[@"token"] = StrFromObj(QWGLOBALMANAGER.configure.expertToken);
+            setting[@"tokenFlag"] = @"Y";
+            [Circle TeamMyInfoWithParams:setting success:^(id obj) {
+                
+                ExpertMemInfoModel *model = [ExpertMemInfoModel parse:obj];
+                if ([model.apiStatus integerValue] == 0)
+                {
+                    self.infoModel = model;
+                }else
+                {
+                    [SVProgressHUD showErrorWithStatus:model.apiMessage];
+                }
+            } failure:^(HttpException *e) {
+                
+            }];
+        }else{
+            
+        }
+    } failure:^(HttpException *e) {
+        
+    }];
+}
+
+#pragma mark ---- 接收通知 ----
+- (void)getNotifType:(Enum_Notification_Type)type data:(id)data target:(id)obj
+{
+    if (NotifCircleMessage == type)
+    {
+        //圈子消息小红点
+        NSDictionary *dd=data;
+        if (dd[@"messageType"])
+        {
+            int type = [dd[@"messageType"] integerValue];
+            if (type == 1 || type == 2 || type == 3 || type == 99)
+            {
+                self.rightRedPoint.hidden = NO;
+            }
+        }
+    }else if (NotifKickOff == type)
+    {
+        [QWGLOBALMANAGER postNotif:NotifQuitOut data:nil object:nil];
+        [QWGLOBALMANAGER saveAppConfigure];
+        [QWGLOBALMANAGER clearExpertAccountInformation];
+        [QWUserDefault setBool:NO key:APP_LOGIN_STATUS];
+        
+        if (QWGLOBALMANAGER.configure.expertIsSetPwd) {
+            [QWUserDefault setBool:YES key:@"expertupdatepassword"];
+        }
+        
+    }else if (NotifHiddenCircleMessage == type)
+    {
+        self.rightRedPoint.hidden = YES;
+        [QWGLOBALMANAGER.tabBar showBadgePoint:NO itemTag:Enum_TabBar_Items_ExpertMine];
+    }
+}
+
+
+- (void)didReceiveMemoryWarning {
+    [super didReceiveMemoryWarning];
+}
+
+@end

@@ -1,0 +1,38 @@
+//
+//  CreditEnhanceAlertView.h
+//  wenYao-store
+//
+//  Created by carret on 16/5/9.
+//  Copyright © 2016年 carret. All rights reserved.
+//
+
+#import <UIKit/UIKit.h>
+
+typedef NS_ENUM(NSUInteger, CreditEnhanceAlertViewType) {
+    CreditEnhanceAlertViewTypeOnce = 1,
+    CreditEnhanceAlertViewTypeDailySad,
+    CreditEnhanceAlertViewTypeDailyHappy,
+};
+
+extern const NSString *kCreditEnhanceInfoAlertType;
+extern const NSString *kCreditEnhanceInfoName;
+extern const NSString *kCreditEnhanceInfoCredits;
+extern const NSString *kCreditEnhanceInfoCreditInc;
+extern const NSString *kCreditEnhanceInfoRankNum;
+
+
+@interface CreditEnhanceAlertView : UIView
+
+@property (nonatomic, copy) void (^actionBtnClickBlock)();
+@property (nonatomic, copy) void (^dismissBlock)();
+@property (nonatomic,copy) void (^fillStoreInfoBlock)();
+@property (nonatomic, strong) NSDictionary *infoDict;
+
++ (instancetype)alertViewWithInfo:(NSDictionary *)infoDict;
+- (void)configViewWithInfo:(NSDictionary *)infoDict;
+- (void)show;
+- (void)showIn:(UIView *)view;
+- (void)dismiss;
+
+@end
+

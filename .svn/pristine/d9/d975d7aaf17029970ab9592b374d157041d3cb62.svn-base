@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="8191" systemVersion="15C50" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="8154"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="MyReceiveAddressViewController">
+            <connections>
+                <outlet property="addBtn" destination="hoF-fH-cR9" id="Epf-Tb-yPe"/>
+                <outlet property="tableView" destination="KNU-uf-jLY" id="eV2-Gl-w6T"/>
+                <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="i5M-Pr-FkT">
+            <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="none" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="KNU-uf-jLY">
+                    <rect key="frame" x="0.0" y="0.0" width="375" height="622"/>
+                    <animations/>
+                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                    <connections>
+                        <outlet property="dataSource" destination="-1" id="jOj-OE-Dax"/>
+                        <outlet property="delegate" destination="-1" id="aF0-j8-nEq"/>
+                    </connections>
+                </tableView>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="8mN-BW-Isc">
+                    <rect key="frame" x="0.0" y="622" width="375" height="45"/>
+                    <subviews>
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="hoF-fH-cR9">
+                            <rect key="frame" x="87" y="4" width="200" height="36"/>
+                            <animations/>
+                            <color key="backgroundColor" red="0.99215686270000003" green="0.62745098040000002" blue="0.027450980390000001" alpha="1" colorSpace="calibratedRGB"/>
+                            <constraints>
+                                <constraint firstAttribute="width" constant="200" id="RkG-CT-ACY"/>
+                                <constraint firstAttribute="height" constant="36" id="enG-wc-lQw"/>
+                            </constraints>
+                            <state key="normal" title="添加新地址">
+                                <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            </state>
+                            <connections>
+                                <action selector="addAddress:" destination="-1" eventType="touchUpInside" id="UDb-0z-5MT"/>
+                            </connections>
+                        </button>
+                    </subviews>
+                    <animations/>
+                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="45" id="3Fo-Ps-T9u"/>
+                        <constraint firstItem="hoF-fH-cR9" firstAttribute="centerY" secondItem="8mN-BW-Isc" secondAttribute="centerY" id="cGW-xC-URz"/>
+                        <constraint firstItem="hoF-fH-cR9" firstAttribute="centerX" secondItem="8mN-BW-Isc" secondAttribute="centerX" id="yJ6-Nc-TIF"/>
+                    </constraints>
+                </view>
+            </subviews>
+            <animations/>
+            <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+            <constraints>
+                <constraint firstItem="8mN-BW-Isc" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="3Y0-vh-VFO"/>
+                <constraint firstItem="8mN-BW-Isc" firstAttribute="top" secondItem="KNU-uf-jLY" secondAttribute="bottom" id="7wN-Bs-FQj"/>
+                <constraint firstAttribute="bottom" secondItem="8mN-BW-Isc" secondAttribute="bottom" id="aFa-6q-oqR"/>
+                <constraint firstAttribute="trailing" secondItem="8mN-BW-Isc" secondAttribute="trailing" id="rFV-KO-j40"/>
+                <constraint firstItem="KNU-uf-jLY" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" id="t1l-qz-UI9"/>
+                <constraint firstAttribute="trailing" secondItem="KNU-uf-jLY" secondAttribute="trailing" id="vXX-M8-6JV"/>
+                <constraint firstItem="KNU-uf-jLY" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="zhT-OV-psJ"/>
+            </constraints>
+            <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina47"/>
+        </view>
+    </objects>
+</document>

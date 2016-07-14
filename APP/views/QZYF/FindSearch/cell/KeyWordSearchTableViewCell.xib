@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="9531" systemVersion="15C50" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9529"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="KeyWordSearchTableViewCell" rowHeight="46" id="KGk-i7-Jjw" customClass="KeyWordSearchTableViewCell">
+            <rect key="frame" x="0.0" y="0.0" width="320" height="46"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="KGk-i7-Jjw" id="H2p-sc-9uM">
+                <rect key="frame" x="0.0" y="0.0" width="320" height="45"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dOu-E8-1qu">
+                        <rect key="frame" x="15" y="12" width="38" height="21"/>
+                        <constraints>
+                            <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="21" id="33f-d0-zve"/>
+                            <constraint firstAttribute="height" constant="21" id="xQc-6r-mTI"/>
+                        </constraints>
+                        <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                        <color key="textColor" red="0.20000000000000001" green="0.20000000000000001" blue="0.20000000000000001" alpha="1" colorSpace="calibratedRGB"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="惠" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="FXf-aw-GuV">
+                        <rect key="frame" x="61" y="15" width="15" height="15"/>
+                        <color key="backgroundColor" red="1" green="0.0" blue="0.06950727541" alpha="1" colorSpace="calibratedRGB"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="15" id="S6X-vA-nUw"/>
+                            <constraint firstAttribute="width" constant="15" id="qdS-gr-SWh"/>
+                        </constraints>
+                        <fontDescription key="fontDescription" type="system" pointSize="11"/>
+                        <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                </subviews>
+                <constraints>
+                    <constraint firstItem="FXf-aw-GuV" firstAttribute="leading" secondItem="dOu-E8-1qu" secondAttribute="trailing" constant="8" id="OIp-er-yIc"/>
+                    <constraint firstAttribute="centerY" secondItem="FXf-aw-GuV" secondAttribute="centerY" id="VaF-OL-jmV"/>
+                    <constraint firstAttribute="centerY" secondItem="dOu-E8-1qu" secondAttribute="centerY" id="bgT-sh-R73"/>
+                    <constraint firstItem="dOu-E8-1qu" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="15" id="jP0-FK-u0a"/>
+                </constraints>
+            </tableViewCellContentView>
+            <connections>
+                <outlet property="VoucherImage" destination="FXf-aw-GuV" id="nl6-MH-HDK"/>
+                <outlet property="mainLabel" destination="dOu-E8-1qu" id="u4x-oB-x07"/>
+            </connections>
+            <point key="canvasLocation" x="227" y="292"/>
+        </tableViewCell>
+    </objects>
+</document>

@@ -1,0 +1,197 @@
+//
+//  EmployInfoDetailViewController.m
+//  wenyao-store
+//
+//  Created by Meng on 15/3/13.
+//  Copyright (c) 2015年 xiezhenghong. All rights reserved.
+//
+
+#import "EmployInfoDetailViewController.h"
+#import "SVProgressHUD.h"
+#import "AppDelegate.h"
+#import "ZhPMethod.h"
+#import "Employee.h"
+#import "EmployeeModel.h"
+#import "EmployeeModelR.h"
+
+@interface EmployInfoDetailViewController ()<UITextFieldDelegate>
+{
+    UIBarButtonItem *rigthBarItem;
+}
+@property (weak, nonatomic) IBOutlet UITextField *nameField;
+@property (weak, nonatomic) IBOutlet UITextField *phoneField;
+@property (weak, nonatomic) IBOutlet UISwitch *statusSwitch;
+
+- (IBAction)swichButtonClick:(UIButton *)sender;
+@property (weak, nonatomic) IBOutlet UIButton *switchButton;
+@end
+
+@implementation EmployInfoDetailViewController
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+//    self.title = @"编辑店员信息";
+    rigthBarItem.enabled = YES;
+    self.nameField.delegate = self;
+    self.phoneField.delegate = self;
+    
+    rigthBarItem = [[UIBarButtonItem alloc] initWithTitle:@"保存" style:UIBarButtonItemStylePlain target:self action:@selector(rigthBarItemClick)];
+    self.navigationItem.rightBarButtonItem = rigthBarItem;
+    
+    NSString *employeeId = self.employQueryModel.employeeId;
+    if (employeeId && employeeId.length > 0) {
+        self.nameField.text = self.employQueryModel.employeeName;
+        self.nameField.userInteractionEnabled = NO;
+        self.phoneField.text = self.employQueryModel.employeeMobile;
+        self.phoneField.userInteractionEnabled = NO;
+        if ([self.employQueryModel.employeeValid isKindOfClass:[NSString class]]) {
+            
+            if ([self.employQueryModel.employeeValid isEqualToString:@"N"])//未开启
+            {
+                self.statusSwitch.on = NO;
+            }
+            else if ([self.employQueryModel.employeeValid isEqualToString:@"Y"])//已开启
+            {
+                self.statusSwitch.on = YES;
+            }
+        }
+    }else{
+        self.switchButton.hidden = YES;
+    }
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    
+}
+
+- (void)viewWillDisappear:(BOOL)animated
+{
+    [super viewWillDisappear:animated];
+    rigthBarItem.enabled = YES;
+}
+
+- (void)rigthBarItemClick
+{
+    
+    [self hideKeyboard];
+    
+    if (QWGLOBALMANAGER.currentNetWork == kNotReachable) {
+        [SVProgressHUD showErrorWithStatus:kWaring33 duration:DURATION_SHORT];
+        return;
+    }
+    
+    NSString *name = [QWGLOBALMANAGER removeSpace:self.nameField.text];
+    NSString *phone = [QWGLOBALMANAGER removeSpace:self.phoneField.text];
+    if (StrIsEmpty(name)) {
+        [SVProgressHUD showErrorWithStatus:@"店员姓名不能为空" duration:DURATION_SHORT];
+        return;
+    }else if (name.length > 10){
+        [SVProgressHUD showErrorWithStatus:@"店员姓名不能超过10个字" duration:DURATION_SHORT];
+        return;
+    }
+    if (StrIsEmpty(phone)) {
+        [SVProgressHUD showErrorWithStatus:@"手机号不能为空" duration:DURATION_SHORT];
+        return;
+    }
+    
+    if (!isPhoneNumber(phone)) {
+        [SVProgressHUD showErrorWithStatus:@"请输入正确的手机号" duration:DURATION_SHORT];
+        return;
+    }
+    
+    NSString *statusStr = nil;
+    if (self.statusSwitch.on) {
+        statusStr = @"Y";
+    }else{
+        statusStr = @"N";
+    }
+    if ([name isEqualToString:self.employQueryModel.employeeName] &&
+        [phone isEqualToString:self.employQueryModel.employeeMobile] &&
+        [statusStr isEqualToString:self.employQueryModel.employeeValid]) {
+        [SVProgressHUD showErrorWithStatus:kWaring49 duration:DURATION_SHORT];
+        return;
+    }
+    
+    NSString *employeeId = self.employQueryModel.employeeId;
+
+    if (!StrIsEmpty(employeeId)) {//employeeId不为空 则是修改
+        EmployeeEditModelR *editModelR = [[EmployeeEditModelR alloc] init];
+        editModelR.employeeId = StrFromObj(employeeId);
+        editModelR.employeeValid = statusStr;
+        
+        [Employee employeeEditWithParam:editModelR success:^(id responseObj) {
+            EmployeeModel *model = (EmployeeModel *)responseObj;
+            rigthBarItem.enabled = YES;
+            NSLog(@"class = %@",NSStringFromClass([model.apiStatus class]));
+            if ([model.apiStatus integerValue] == 0) {
+                [SVProgressHUD showSuccessWithStatus:@"修改成功" duration:DURATION_SHORT];
+                [self.navigationController popViewControllerAnimated:YES];
+            }else{
+                [SVProgressHUD showErrorWithStatus:model.apiMessage duration:DURATION_SHORT];
+            }
+        } failure:^(HttpException *e) {
+            rigthBarItem.enabled = YES;
+            NSLog(@"%@ -> %@",NSStringFromClass([self class]),e);
+        }];
+        
+    }else{//新增
+        EmployeeCreateModelR *creatModelR = [[EmployeeCreateModelR alloc] init];
+        creatModelR.token = QWGLOBALMANAGER.configure.userToken;
+        creatModelR.employeeName = name;
+        creatModelR.employeeMobile = phone;
+        creatModelR.employeeValid = statusStr;
+        [Employee employeeCreateWithParam:creatModelR success:^(id responseObj) {
+            rigthBarItem.enabled = YES;
+            EmployeeModel *model = (EmployeeModel *)responseObj;
+            if ([model.apiStatus integerValue] == 0) {
+                [SVProgressHUD showSuccessWithStatus:@"保存成功" duration:DURATION_SHORT];
+                [self.navigationController popViewControllerAnimated:YES];
+            }else{
+                [SVProgressHUD showErrorWithStatus:model.apiMessage duration:DURATION_SHORT];
+            }
+        } failure:^(HttpException *e) {
+            rigthBarItem.enabled = YES;
+            NSLog(@"%@ -> %@",NSStringFromClass([self class]),e);
+        }];
+    }
+    
+}
+
+- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
+{
+    [self hideKeyboard];
+}
+
+- (void)hideKeyboard
+{
+    [self.nameField resignFirstResponder];
+    [self.phoneField resignFirstResponder];
+}
+
+- (IBAction)swichButtonClick:(UIButton *)sender {
+    
+    if (self.statusSwitch.on) {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"提示"
+                                                        message:kWaring53
+                                                       delegate:self
+                                              cancelButtonTitle:@"取消"
+                                              otherButtonTitles:@"确定", nil];
+        [alert show];
+    }else{
+        [self.statusSwitch setOn:YES animated:YES];
+    }
+    
+}
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    if (buttonIndex == 0) {//取消
+        [self.statusSwitch setOn:YES animated:YES];
+    }else{//确定
+        [self.statusSwitch setOn:NO animated:YES];
+    }
+}
+
+@end

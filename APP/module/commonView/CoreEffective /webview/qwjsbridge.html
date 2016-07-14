@@ -1,0 +1,74 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta name="viewport" content="width=320; user-scalable=no" />
+<meta http-equiv="Content-type" content="text/html; charset=utf-8">
+<title>html</title>
+
+<script type="text/javascript" charset="utf-8" src="QWJSBridge-1.0.0.js"></script>
+<script type="text/javascript" charset="utf-8" src="datepicker.js"></script>
+<script type="text/javascript" charset="utf-8" src="mircomsg.js"></script>
+<script type="text/javascript" charset="utf-8" src="defray.js"></script>
+<script type="text/javascript" charset="utf-8" src="checktool.js"></script>
+
+<script type="text/javascript" charset="utf-8">
+	function getAndroidClientDate() {
+
+
+alert("detapicker ");
+			window.plugins.datepicker.showDTpicker("username", "2011-1-1",
+					"2011-12-1", "0")
+
+	}
+	function openWX() {
+		document.addEventListener("deviceready", onDeviceReady, false);
+		function onDeviceReady() {
+			window.plugins.mircomsg.openWx();
+		}
+		;
+	}
+	function atteWX() {
+	alert("dfsadfasdfasdfasd");
+		document.addEventListener("deviceready", onDeviceReady, false);
+		function onDeviceReady() {
+			window.plugins.mircomsg
+					.atteWx("http://weixin.qq.com/r/4-bs417E8mCNh0_An6PH");
+		}
+		;
+	}
+	var string;
+	function fillDate(string) {
+	 alert(string);
+	}
+
+	function callbackTest ()
+	{
+	alert("calll  bakkk  kakkkk ");
+	}
+	
+	
+	function pay(){
+		document.addEventListener("deviceready",onDeviceReady, false);
+		function onDeviceReady(){
+			window.plugins.defray.pay("ali","OrderInfo");
+		}
+	}
+	
+</script>
+</head>
+<body id="stage" class="theme">
+	<p>&nbsp; </p>
+	<p>&nbsp;</p>
+	<p>html网页</p>
+	<p>&nbsp;</p>
+	<p> 
+		  <input type="button" value="test1" onClick="getAndroidClientDate()" />
+	  
+	  <input type="button" value="test2" onClick="CheckToolsExist()" />
+	  
+	  <input type="button" value="test3" onClick="Datepicker()" />
+	  
+	  <input type="button" value="test3" onClick="Device()" />
+</p>
+</body>
+</html>

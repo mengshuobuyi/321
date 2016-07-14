@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="7531" systemVersion="14A389" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES">
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7520"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="InfomationCell" id="KGk-i7-Jjw" customClass="InfonationTableViewCell">
+            <rect key="frame" x="0.0" y="0.0" width="320" height="35"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="KGk-i7-Jjw" id="H2p-sc-9uM">
+                <rect key="frame" x="0.0" y="0.0" width="320" height="34"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="商品名称:" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="UFF-iy-pRM" customClass="QWLabel">
+                        <rect key="frame" x="13" y="6" width="61" height="21"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="21" id="1zs-md-UIN"/>
+                            <constraint firstAttribute="width" constant="61" id="jPw-PB-WvI"/>
+                        </constraints>
+                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                        <color key="textColor" red="0.40000000000000002" green="0.40000000000000002" blue="0.40000000000000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="-" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="rfZ-Cm-r1k" customClass="QWLabel">
+                        <rect key="frame" x="88" y="8" width="224" height="19"/>
+                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                        <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                </subviews>
+                <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                <constraints>
+                    <constraint firstItem="UFF-iy-pRM" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="13" id="25c-uZ-NdL"/>
+                    <constraint firstItem="rfZ-Cm-r1k" firstAttribute="leading" secondItem="UFF-iy-pRM" secondAttribute="trailing" constant="14" id="6p0-mr-DKT"/>
+                    <constraint firstAttribute="trailing" secondItem="rfZ-Cm-r1k" secondAttribute="trailing" constant="8" id="BES-YE-Nfs"/>
+                    <constraint firstItem="rfZ-Cm-r1k" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="8" id="c3d-k3-0X3"/>
+                    <constraint firstItem="UFF-iy-pRM" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="6" id="ftd-uD-DCH"/>
+                    <constraint firstAttribute="bottom" secondItem="rfZ-Cm-r1k" secondAttribute="bottom" constant="7" id="qKS-mL-26h"/>
+                </constraints>
+            </tableViewCellContentView>
+            <connections>
+                <outlet property="productDetail" destination="rfZ-Cm-r1k" id="Ypv-R4-Rx6"/>
+                <outlet property="productName" destination="UFF-iy-pRM" id="oc0-La-wOe"/>
+            </connections>
+            <point key="canvasLocation" x="353" y="211.5"/>
+        </tableViewCell>
+    </objects>
+    <simulatedMetricsContainer key="defaultSimulatedMetrics">
+        <simulatedStatusBarMetrics key="statusBar"/>
+        <simulatedOrientationMetrics key="orientation"/>
+        <simulatedScreenMetrics key="destination" type="retina4"/>
+    </simulatedMetricsContainer>
+</document>

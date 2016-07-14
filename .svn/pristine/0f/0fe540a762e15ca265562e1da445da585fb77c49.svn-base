@@ -1,0 +1,74 @@
+//
+//  CityExpressCell.m
+//  wenYao-store
+//
+//  Created by Yang Yuexia on 16/5/6.
+//  Copyright © 2016年 carret. All rights reserved.
+//
+
+#import "CityExpressCell.h"
+#import "ExpertModel.h"
+
+@implementation CityExpressCell
+
++ (CGFloat)getCellHeight:(id)data
+{
+    ShippingMethodDetailModel *model = (ShippingMethodDetailModel *)data;
+    
+    if (StrIsEmpty(model.manTip))
+    {
+        return 145-25;
+    }else
+    {
+        return 145;
+    }
+}
+
+- (void)UIGlobal
+{
+    [super UIGlobal];
+    self.contentView.backgroundColor = [UIColor clearColor];
+    self.separatorLine.hidden = YES;
+}
+
+- (void)setCell:(id)data
+{
+    [super setCell:data];
+    
+    ShippingMethodDetailModel *model = (ShippingMethodDetailModel *)data;
+        
+    //发货时间
+    self.timeLabel.text = model.timeSliceTip;
+    
+    //有快递费
+    self.EMSLabel.text = model.feeTip;
+    
+    //包邮（可有可无）
+    if (StrIsEmpty(model.manTip))
+    {
+        self.EMSOne_layout_top.constant = 81;
+        self.EMSTwo_layout_top.constant = 81;
+        self.freeTipLabel.hidden = YES;
+        self.freePostLabel.hidden = YES;
+        
+    }else
+    {
+        self.EMSOne_layout_top.constant = 106;
+        self.EMSTwo_layout_top.constant = 106;
+        self.freeTipLabel.hidden = NO;
+        self.freeTipLabel.text = @"包      邮：";
+        self.freePostLabel.hidden = NO;
+        self.freePostLabel.text = model.manTip;
+    }
+}
+
+- (IBAction)editCityExpressAction:(id)sender
+{
+    QWButton *btn = (QWButton *)sender;
+    NSIndexPath * row = (NSIndexPath *)btn.obj;
+    
+    if (self.cityExpressCellDelegate && [self.cityExpressCellDelegate respondsToSelector:@selector(editCityExpressAction:)]) {
+        [self.cityExpressCellDelegate editCityExpressAction:row];
+    }
+}
+@end

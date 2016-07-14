@@ -1,0 +1,316 @@
+<!DOCTYPE html PUBLIC "-//WAPFORUM//DTD XHTML Mobile 1.0//EN" "http://www.wapforum.org/DTD/xhtml-mobile10.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta charset="UTF-8">
+            <meta name="keywords" content="全维科技,全维问药,全维药事,苏州全维" />
+            <meta name="description" content="全维科技立足于医药健康领域，向大众、医药健康产品与服务商提供基础平台和专业支撑。" />
+            <!-- viewport -->
+            <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+                <!-- WebApp全屏模式 -->
+                <meta name="apple-mobile-web-app-capable" content="yes" />
+                <!-- 隐藏状态栏/设置状态栏颜色 -->
+                <meta name="apple-mobile-web-app-status-bar-style" content="blank" />
+                <!-- 忽略数字自动识别为电话号码 -->
+                <meta name="format-detection" content="telephone=no" />
+                <!-- 忽略识别邮箱 -->
+                <meta content="email=no" name="format-detection" />
+                <!-- 针对手持设备优化，主要是针对一些老的不识别viewport的浏览器，比如黑莓 -->
+                <meta name="HandheldFriendly" content="true">
+                    <!-- 优先使用 IE 最新版本和 Chrome -->
+                    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+                        <!-- 浏览器内核控制 -->
+                        <meta name="renderer" content="webkit|ie-comp|ie-stand">
+        <title>预约记录</title>
+        
+        <style>
+            * {
+                margin: 0;
+                padding: 0;
+            }
+        body {
+            background: #f1f1f1;
+        }
+        button {
+            color: #999999;
+            outline: none;
+            display: block;
+            float: left;
+            margin: 0 auto 1rem;
+            padding: 0;
+            background: #fff;
+            border: 0;
+            height: 3rem;
+            line-height: 3rem;
+            font-size: 0.7rem;
+            width: 7rem;
+            border-radius: 0.4rem;
+            position: relative;
+            box-shadow: inset 0 -0.3rem 0 0 rgba(0, 0, 0, 0.2), 0 0.1rem 0 0 rgba(0, 0, 0, 0.2);
+            transition: height 0.08s, margin 0.08s, box-shadow 0.08s;
+            background: -webkit-linear-gradient(90deg, #4d4d4d 0%, #4d4d4d 2%, #ffffff 2%, #ffffff 92%, #f5f5f5 92%, #f5f5f5 100%);
+            background: -moz-linear-gradient(90deg, #4d4d4d 0%, #4d4d4d 2%, #ffffff 2%, #ffffff 92%, #f5f5f5 92%, #f5f5f5 100%);
+            background: -o-linear-gradient(90deg, #4d4d4d 0%, #4d4d4d 2%, #ffffff 2%, #ffffff 92%, #f5f5f5 92%, #f5f5f5 100%);
+            background: linear-gradient(90deg, #4d4d4d 0%, #4d4d4d 2%, #ffffff 2%, #ffffff 92%, #f5f5f5 92%, #f5f5f5 100%);
+        }
+        button:active {
+            margin-top: 0.3rem;
+            height: 2.7rem;
+            box-shadow: none;
+        }
+        button.blue {
+            background: -webkit-linear-gradient(90deg, #7db2e8 0%, #7db2e8 2%, #ffffff 2%, #ffffff 92%, #f5f5f5 92%, #f5f5f5 100%);
+            background: -moz-linear-gradient(90deg, #7db2e8 0%, #7db2e8 2%, #ffffff 2%, #ffffff 92%, #f5f5f5 92%, #f5f5f5 100%);
+            background: -o-linear-gradient(90deg, #7db2e8 0%, #7db2e8 2%, #ffffff 2%, #ffffff 92%, #f5f5f5 92%, #f5f5f5 100%);
+            background: linear-gradient(90deg, #7db2e8 0%, #7db2e8 2%, #ffffff 2%, #ffffff 92%, #f5f5f5 92%, #f5f5f5 100%);
+        }
+        button.green {
+            background: -webkit-linear-gradient(90deg, #c4e87d 0%, #c4e87d 2%, #ffffff 2%, #ffffff 92%, #f5f5f5 92%, #f5f5f5 100%);
+            background: -moz-linear-gradient(90deg, #c4e87d 0%, #c4e87d 2%, #ffffff 2%, #ffffff 92%, #f5f5f5 92%, #f5f5f5 100%);
+            background: -o-linear-gradient(90deg, #c4e87d 0%, #c4e87d 2%, #ffffff 2%, #ffffff 92%, #f5f5f5 92%, #f5f5f5 100%);
+            background: linear-gradient(90deg, #c4e87d 0%, #c4e87d 2%, #ffffff 2%, #ffffff 92%, #f5f5f5 92%, #f5f5f5 100%);
+        }
+        button.red {
+            background: -webkit-linear-gradient(90deg, #e87d7d 0%, #e87d7d 2%, #ffffff 2%, #ffffff 92%, #f5f5f5 92%, #f5f5f5 100%);
+            background: -moz-linear-gradient(90deg, #e87d7d 0%, #e87d7d 2%, #ffffff 2%, #ffffff 92%, #f5f5f5 92%, #f5f5f5 100%);
+            background: -o-linear-gradient(90deg, #e87d7d 0%, #e87d7d 2%, #ffffff 2%, #ffffff 92%, #f5f5f5 92%, #f5f5f5 100%);
+            background: linear-gradient(90deg, #e87d7d 0%, #e87d7d 2%, #ffffff 2%, #ffffff 92%, #f5f5f5 92%, #f5f5f5 100%);
+        }
+        button.yellow {
+            background: -webkit-linear-gradient(90deg, #e4e8a6 0%, #e4e8a6 2%, #ffffff 2%, #ffffff 92%, #f5f5f5 92%, #f5f5f5 100%);
+            background: -moz-linear-gradient(90deg, #e4e8a6 0%, #e4e8a6 2%, #ffffff 2%, #ffffff 92%, #f5f5f5 92%, #f5f5f5 100%);
+            background: -o-linear-gradient(90deg, #e4e8a6 0%, #e4e8a6 2%, #ffffff 2%, #ffffff 92%, #f5f5f5 92%, #f5f5f5 100%);
+            background: linear-gradient(90deg, #e4e8a6 0%, #e4e8a6 2%, #ffffff 2%, #ffffff 92%, #f5f5f5 92%, #f5f5f5 100%);
+        }
+        ul,
+        li {
+            list-style-type: none;
+        }
+        h2 {
+            border-bottom: 1px #dbdbdb solid;
+            height: 35px;
+            line-height: 35px;
+            padding-left: 10px;
+            color: #1a1a1a;
+        }
+        .box {
+            margin: 10px;
+        }
+        .box:after {
+            clear: both;
+            height: 0;
+            display: block;
+            content: '';
+        }
+        #left {
+            width: 130px;
+            float: left;
+            border-right: 1px #dbdbdb solid;
+        }
+        #left ul {
+            margin-top: 1rem;
+        }
+        #left ul li {
+            width: 130px;
+        }
+        #right {
+            margin-left: 131px;
+        }
+        #right p {
+            line-height: 26px;
+            padding: 10px;
+            color: #666;
+        }
+        </style>
+        
+        <script type="text/javascript" src="./QWIOSJSBridge-1.0.0.js"></script>
+        
+        <script type="text/javascript">
+            
+            function BCOM_PAY(){
+    
+                sms.send("11233--------","cabll",smsCallback);
+            
+                function smsCallback(status,message)
+                {
+                    alert ("status"+status);
+                    alert("message"+message);
+                }
+			}
+        
+             function scan_QRCode() {
+                 
+                 alert("test qrcode");
+                 
+                 qrcode.send("open qrcode","scanQRCode",qrCallback)
+              
+                 function qrCallback(status, message) {
+                     alert(message)
+                 }
+             }
+            function LOGIN(){
+            
+                login.calloutLoginVC("123456",logincallback);
+                
+                function logincallback(status,message){
+                    alert(message);
+                }
+              
+            }
+        
+        function lijianFunction(){
+
+            lijian.calloutLijianTest("123456",lijianCallback);
+            
+            function lijianCallback(status,message){
+                alert(message);
+            }
+            
+        }
+        
+        function QUIT(){
+            
+            alert("oooooooooo");
+            
+            http.post("api/mbr/user/logout","{\"token\":\"a82f657d3a20e4de09b6d95219513e7f4\"}",quitTextCallBack);
+            
+            function quitTextCallBack(status,message){
+                alert(message);
+            }
+
+        }
+        
+           function scan_QRCode() {
+         
+               alert("test qrcode");
+         
+                qrcode.send("open qrcode","scanQRCode",qrCallback)
+                var status ;
+                var message;
+                function qrCallback(status, message) {
+                    alert(message);
+               }
+           }
+        function insert_dataBase() {
+                 
+                 alert("test insert dataBase");
+                 
+                 database.addData("insert into MessageModel (text,UUID) values (\"这是测试文本\",\"UUID-45678\")",qrCallback)
+                 
+                 function qrCallback(status, message) {
+                     alert(message)
+                 }
+             }
+        
+            function query_dataBase() {
+                
+                alert("test query dataBase");
+                
+                database.getData("select * from MessageModel",qrCallback)
+                
+                function qrCallback(status, message) {
+                    alert(message)
+                }
+            }
+            
+            function delete_dataBase() {
+                
+                alert("test delete dataBase");
+                
+                database.deleteData("delete from MessageModel",qrCallback)
+                
+                function qrCallback(status, message) {
+                    alert(message)
+                }
+            }
+        
+            function update_dataBase() {
+                
+                alert("test update dataBase");
+                
+                database.updateData("update MessageModel set UUID = \"这是新的UUID\" where UUID = \"UUID-45678\"",qrCallback)
+                
+                function qrCallback(status, message) {
+                    alert(message)
+                }
+            }
+        
+        function httpFunction(){
+            http.get("api/health/healthPrograms",null,getCallback);
+            function getCallback(status, message) {
+                alert(message);
+            }
+        
+        }
+        
+            </script>
+        
+        
+    </head>
+    
+    
+    <body>
+ 
+ 
+        <div>
+          
+        
+     
+     
+        </div>
+        <div class="box">
+            <div id="left">
+                <h2>功能</h2>
+                <ul>
+                    <li>
+                        <button type="button" class="blue" onclick="getAndroidClientDate()">消息</button>
+                    </li>
+                    <li>
+                        <button type="button" class="green" onclick="openWX()">定位</button>
+                    </li>
+                    <li>
+                        <button type="button" class="red" onclick="atteWX()">拍照</button>
+                    </li>
+                    <li>
+                        <button type="button" class="yellow" onclick="pay()">语音</button>
+                    </li>
+                    <li>
+                        <button type="button" onclick="BCOM_PAY()">淡入淡出</button>
+                    </li>
+                    <li>
+                        <button type="button" onclick="LOGIN()">登陆</button>
+                    </li>
+                    <li>
+                        <button type="button" onclick="QUIT()">退出登陆</button>
+                    </li>
+                    <li>
+                        <button type="button" onclick="scan_QRCode()">二维码</button>
+                    </li>
+                    <li>
+                        <button type="button" onclick="insert_dataBase()">数据库增</button>
+                    </li>
+                    <li>
+                        <button type="button" onclick="query_dataBase()">数据库查</button>
+                    </li>
+                    <li>
+                        <button type="button" onclick="update_dataBase()">数据库改</button>
+                    </li>
+                    <li>
+                        <button type="button" onclick="delete_dataBase()">数据库删</button>
+                    </li>
+                    <li>
+                        <button type="button" onclick="httpFunction()">登出测试</button>
+                    </li>
+                    <li>
+                        <button type="button" onclick="lijianFunction()">李坚测试</button>
+                    </li>
+
+                </ul>
+            </div>
+            <div id="right">
+                <h2>功能显示</h2>
+                <p>显示内容</p>
+            </div>
+        </div>
+
+    </body>
+</html>

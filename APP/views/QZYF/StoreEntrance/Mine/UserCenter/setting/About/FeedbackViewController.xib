@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="8191" systemVersion="14F27" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES">
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="8154"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="FeedbackViewController">
+            <connections>
+                <outlet property="limitWord" destination="uGf-EP-qvV" id="wPd-SW-LZp"/>
+                <outlet property="placeholder" destination="f9y-AK-PUN" id="5Ve-th-RRT"/>
+                <outlet property="textView" destination="snW-sJ-783" id="Xcf-UU-Cbc"/>
+                <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="i5M-Pr-FkT">
+            <rect key="frame" x="0.0" y="64" width="320" height="504"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="意见反馈_输入框" translatesAutoresizingMaskIntoConstraints="NO" id="j80-RZ-rn4">
+                    <rect key="frame" x="15" y="16" width="290" height="165"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="165" id="3Bt-82-b6E"/>
+                    </constraints>
+                </imageView>
+                <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="snW-sJ-783">
+                    <rect key="frame" x="23" y="16" width="274" height="145"/>
+                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="145" id="d0e-25-K3n"/>
+                    </constraints>
+                    <color key="textColor" red="0.20000000000000001" green="0.20000000000000001" blue="0.20000000000000001" alpha="1" colorSpace="deviceRGB"/>
+                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                    <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                </textView>
+                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="200字" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="uGf-EP-qvV">
+                    <rect key="frame" x="145" y="161" width="148" height="21"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="148" id="6Yf-PS-uNN"/>
+                        <constraint firstAttribute="height" constant="21" id="E1g-fJ-y5b"/>
+                    </constraints>
+                    <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                    <color key="textColor" red="0.34901960784313724" green="0.34901960784313724" blue="0.34901960784313724" alpha="1" colorSpace="calibratedRGB"/>
+                    <nil key="highlightedColor"/>
+                </label>
+                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="请提出您的宝贵意见，我们会及时进行解决" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" enabled="NO" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="f9y-AK-PUN">
+                    <rect key="frame" x="27" y="24" width="299" height="21"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="21" id="WAz-Yj-6EV"/>
+                        <constraint firstAttribute="width" constant="299" id="Xh8-bf-AGB"/>
+                    </constraints>
+                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                    <color key="textColor" red="0.76078431372549016" green="0.76078431372549016" blue="0.76078431372549016" alpha="1" colorSpace="deviceRGB"/>
+                    <nil key="highlightedColor"/>
+                </label>
+            </subviews>
+            <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+            <constraints>
+                <constraint firstItem="snW-sJ-783" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" constant="16" id="7h3-w9-isn"/>
+                <constraint firstItem="snW-sJ-783" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" constant="23" id="7uh-1s-fTD"/>
+                <constraint firstItem="j80-RZ-rn4" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" constant="16" id="Fg4-Kw-9Bo"/>
+                <constraint firstAttribute="trailing" secondItem="uGf-EP-qvV" secondAttribute="trailing" constant="27" id="Ifc-vP-HhJ"/>
+                <constraint firstAttribute="trailing" secondItem="j80-RZ-rn4" secondAttribute="trailing" constant="15" id="SJh-MO-UOI"/>
+                <constraint firstItem="f9y-AK-PUN" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" constant="24" id="a6h-gw-BFc"/>
+                <constraint firstItem="j80-RZ-rn4" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" constant="15" id="de3-cB-KPQ"/>
+                <constraint firstAttribute="trailing" secondItem="snW-sJ-783" secondAttribute="trailing" constant="23" id="gKJ-bW-aey"/>
+                <constraint firstItem="f9y-AK-PUN" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" constant="27" id="nDS-2v-5Od"/>
+                <constraint firstItem="uGf-EP-qvV" firstAttribute="top" secondItem="snW-sJ-783" secondAttribute="bottom" id="vV9-th-Iph"/>
+            </constraints>
+            <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" translucent="NO" prompted="NO"/>
+        </view>
+    </objects>
+    <resources>
+        <image name="意见反馈_输入框" width="300" height="186"/>
+    </resources>
+</document>

@@ -1,0 +1,850 @@
+//
+//  WebDirectViewController.m
+//  APP
+//
+//  Created by PerryChen on 8/20/15.
+//  Copyright (c) 2015 carret. All rights reserved.
+//
+
+#import "WebDirectViewController.h"
+#import "LoginViewController.h"
+#import "SendPromotionViewController.h"
+#import "GlobalManager.h"
+#import "CommonDiseaseDetailViewController.h"
+#import "QWH5Loading.h"
+#import "DiseaseMedicineListViewController.h"
+#import "ScoreRankViewController.h"
+#import "StoreCreditViewController.h"
+#import "SystemModelR.h"
+@interface WebDirectViewController ()<WebDirectCallBackDelegate>
+
+@property (weak, nonatomic) IBOutlet UIWebView *webViewDirect;
+
+
+
+@property (nonatomic, strong) NSString *phoneNumber;
+
+@property (nonatomic, assign) BOOL showCustomLoading;
+
+@property (nonatomic, assign) BOOL couponProductShare;
+
+@property (nonatomic, assign) BOOL branchLogoPreviewShare;
+
+@property (nonatomic, strong) ShareSaveLogModel *modelSaveLog;
+
+@end
+
+@implementation WebDirectViewController
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    
+    if (self.showCustomLoading) {
+        [QWH5LOADING showLoading];
+    }
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    if (self.pageType == WebLocalTypeQuestionnaireDetail || self.pageType == WebLocalTypeTrainingDetail || self.pageType == WebPageToWebTypeProDetail || self.pageType == WebPageToWebTypeMailSuccess) {
+        ((QWBaseNavigationController *)self.navigationController).canDragBack = NO;
+    }
+}
+
+- (void)viewWillDisappear:(BOOL)animated
+{
+    [super viewWillDisappear:animated];
+    if (self.pageType == WebLocalTypeQuestionnaireDetail || self.pageType == WebLocalTypeTrainingDetail || self.pageType == WebPageToWebTypeProDetail || self.pageType == WebPageToWebTypeMailSuccess) {
+        ((QWBaseNavigationController *)self.navigationController).canDragBack = YES;
+    }
+}
+
+- (void)popVCAction:(id)sender
+{
+    [[NSURLCache sharedURLCache] removeAllCachedResponses];
+    for(NSHTTPCookie *cookie in [[NSHTTPCookieStorage sharedHTTPCookieStorage] cookies]) {
+        
+        if([[cookie domain] isEqualToString:BASE_URL_V2
+            ]) {
+            
+            [[NSHTTPCookieStorage sharedHTTPCookieStorage] deleteCookie:cookie];
+        }
+        
+        if([[cookie domain] isEqualToString:H5_DOMAIN_URL]) {
+            
+            [[NSHTTPCookieStorage sharedHTTPCookieStorage] deleteCookie:cookie];
+        }
+    }
+    //快递100特殊情况
+    if (self.modelLocal.typeLocalWeb == WebLocalTypeCheckPost) {
+        [self.navigationController popViewControllerAnimated:YES];
+        return;
+    } else if (self.modelLocal.typeLocalWeb == WebLocalTypeQuestionnaireDetail) {
+        if(self.blockRefresh){
+            self.blockRefresh();
+        }
+    } else if (self.modelLocal.typeLocalWeb == WebLocalTypeTrainingDetail) {
+        if(self.blockRefresh){
+        self.blockRefresh();
+        }
+    }
+    if (self.pageType == WebPageToWebTypeOuterLink) {
+        if ([self.callBackDelegate respondsToSelector:@selector(runCallbackWithPageType:)]) {
+            [self.callBackDelegate runCallbackWithPageType:WebPageToWebTypeOuterLink];
+        }
+    }
+    if (_pageType == WebPageToWebIntegralRecord || _pageType == WebPageToWebTypeMailSuccess || _pageType == WebPageToWebTypeSuccessToRecord) {
+        //兑换列表返回 返回积分商城首页
+        WebDirectViewController *vcTemp = nil;
+        for (WebDirectViewController *vc in self.navigationController.viewControllers) {
+            
+            if ([vc respondsToSelector:@selector(pageType)]) {
+                DDLogVerbose(@"%d",vc.pageType);
+                if (vc.pageType ==  WebLocalTypeIntegraph ) {
+                    vcTemp = vc;
+                    break;
+                }
+            }
+        }
+        if (vcTemp != nil) {
+            [QWGLOBALMANAGER postNotif:NotifRefreshCurH5Page data:[NSString stringWithFormat:@"%d",self.pageType] object:nil];
+            [self.navigationController popToViewController:vcTemp animated:YES];
+        }
+    }
+    
+    else if (self.pageType == WebPageToWebTypeGuideDetail) {
+        // 列表跳转
+//        WebDirectViewController *vcTemp = nil;
+//        for (WebDirectViewController *vc in self.navigationController.viewControllers) {
+//            
+//            if ([vc respondsToSelector:@selector(pageType)]) {
+//                DDLogVerbose(@"%d",vc.pageType);
+//                if (vc.pageType == WebPageToWebTypeGuideList ) {
+//                    vcTemp = vc;
+//                    break;
+//                }
+//            }
+//        }
+//        if (vcTemp != nil) {
+//            [QWGLOBALMANAGER postNotif:NotifRefreshCurH5Page data:[NSString stringWithFormat:@"%d",self.pageType] object:nil];
+//            [self.navigationController popToViewController:vcTemp animated:YES];
+//        }
+        self.shouldNotGoback = YES;
+        [super popVCAction:sender];
+    }
+    
+//    //change by yyx
+//    else if (self.modelLocal.typeLocalWeb == WebLocalTypeOuterLink)
+//    {
+//        self.shouldNotGoback = YES;
+//        [super popVCAction:sender];
+//    }
+//    //end by yyx
+    
+    else{
+        [super popVCAction:sender];
+    }
+}
+
+#pragma mark ---- 设置 本地 跳转 H5 ----
+
+- (void)setWVWithLocalModel:(WebDirectLocalModel *)modelDir
+{
+    NSString *tokenStr = @"";
+    
+    if (QWGLOBALMANAGER.configure.userToken.length > 0) {
+        tokenStr = QWGLOBALMANAGER.configure.userToken;
+    }
+    
+    if (modelDir.typeLocalWeb == WebLocalTypeCouponCondition)
+    {
+        // 跳转优惠细则
+        
+        modelDir.title = @"优惠细则";
+        if (modelDir.modelCondition.couponId == nil) {
+            modelDir.modelCondition.couponId = @"";
+        }
+        NSString *url = [NSString stringWithFormat:@"%@QWYH/web/ruleDes/html/condition.html?type=%@&id=%@",H5_BASE_URL,modelDir.modelCondition.type,modelDir.modelCondition.couponId];
+        modelDir.url = url;
+        
+    }else if (modelDir.typeLocalWeb == WebLocalTypeExpertRegisterProtocol)
+    {
+        // 专家注册协议
+        
+        modelDir.title = @"注册协议";
+        NSString *url = [NSString stringWithFormat:@"%@QWSH/web/ruleDesc/html/expertRegist.html",H5_BASE_URL];
+        modelDir.url = url;
+        
+    }
+    else if (modelDir.typeLocalWeb == WebLocalTypeCouponProduct)
+    {
+        // 跳转优惠商品详情
+        NSString *url=@"";
+        if (modelDir.modelDrug.proDrugID == nil) {
+            modelDir.modelDrug.proDrugID = @"";
+        }
+        if (modelDir.modelDrug.promotionID == nil) {
+            modelDir.modelDrug.promotionID = @"";
+        }
+        if (modelDir.modelDrug.promotionID.length > 0) {
+            // 该页面是优惠商品页面
+            [self setupNaviItem:WebTitleTypeOnlyShare];
+            modelDir.typeShare = LocalShareTypeCouponProduct;
+            //原来的优惠商品页面
+            url = [NSString stringWithFormat:@"%@/sDrugDetail.html?id=%@&promotionId=%@&token=%@",HTML5_DIRECT_URL_WITH_VERSION,modelDir.modelDrug.proDrugID,modelDir.modelDrug.promotionID,tokenStr];
+        }else{
+            //原来的优惠商品页面
+            url = [NSString stringWithFormat:@"%@QWYH/web/drug/html/normal/nDrugDetail.html?id=%@&token=%@",H5_BASE_URL,modelDir.modelDrug.proDrugID,tokenStr];
+        }
+        
+       
+        modelDir.url = url;
+        self.showCustomLoading = YES;
+    } else if (modelDir.typeLocalWeb == WebPageToWebTypeDisease) {
+        // 跳转疾病详情
+        modelDir.typeTitle =WebTitleTypeWithFontOnly;;
+        if (modelDir.modelDisease.diseaseId == nil) {
+            modelDir.modelDisease.diseaseId = @"";
+        }
+        NSString *url = [NSString stringWithFormat:@"%@/disease.html?id=%@",HTML5_DIRECT_URL,modelDir.modelDisease.diseaseId];
+        modelDir.url = url;
+        self.showCustomLoading = YES;
+    } else if (modelDir.typeLocalWeb == WebPageToWebTypeSympton) {
+        // 跳转至症状详情
+        modelDir.typeTitle =WebTitleTypeWithFontOnly;
+        if (modelDir.modelSymptom.symptomId == nil) {
+            modelDir.modelSymptom.symptomId = @"";
+        }
+        NSString *url = [NSString stringWithFormat:@"%@/symptom.html?id=%@&token=%@",HTML5_DIRECT_URL,modelDir.modelSymptom.symptomId,tokenStr];
+        modelDir.url = url;
+        self.showCustomLoading = YES;
+    }else if (modelDir.typeLocalWeb == WebLocalTypeStatistics)
+    {
+        // 跳转优惠券消费统计详情 (未开通微商)
+        
+        if (modelDir.modelStatis.couponID == nil) {
+            modelDir.modelStatis.couponID = @"";
+        }
+        modelDir.title = @"统计详情";
+        NSString *url = [NSString stringWithFormat:@"%@/statistics.html?id=%@&token=%@&begin=%@&status=%@",HTML5_DIRECT_URL_WITH_VERSION,modelDir.modelStatis.couponID,tokenStr,modelDir.modelStatis.begin,modelDir.modelStatis.status];
+        modelDir.url = url;
+        
+    }else if (modelDir.typeLocalWeb == WebLocalTypeNewStatistics)
+    {
+        // 跳转优惠券统计详情 （开通微商）
+        
+        if (modelDir.modelStatis.couponID == nil) {
+            modelDir.modelStatis.couponID = @"";
+        }
+        modelDir.title = @"统计详情";
+        NSString *url = [NSString stringWithFormat:@"%@/newStatistics.html?id=%@&token=%@&begin=%@&status=%@",HTML5_DIRECT_URL_WITH_VERSION,modelDir.modelStatis.couponID,tokenStr,modelDir.modelStatis.begin,modelDir.modelStatis.status];
+        modelDir.url = url;
+        
+    }
+    else if (modelDir.typeLocalWeb == WebLocalTypeProSatistics)
+    {
+        // 跳转优惠商品销量统计详情
+        
+        if (modelDir.modelStatis.couponID == nil) {
+            modelDir.modelStatis.couponID = @"";
+        }
+        modelDir.title = @"统计详情";
+        NSString *url = [NSString stringWithFormat:@"%@/statistics_pro.html?id=%@&token=%@&begin=%@&status=%@",HTML5_DIRECT_URL_WITH_VERSION,modelDir.modelStatis.couponID,tokenStr,modelDir.modelStatis.begin,modelDir.modelStatis.status];
+        modelDir.url = url;
+    }
+    else if (modelDir.typeLocalWeb == WebLocalTypeHistoryOrderDetail)
+    {
+        // 跳转客户历史订单详情
+        
+        modelDir.title = @"订单详情";
+        if (modelDir.modelOrder.orderId == nil) {
+            modelDir.modelOrder.orderId = @"";
+        }
+        
+        NSString *url = [NSString stringWithFormat:@"%@QWSH/web/orderDetail/html/order_detail.html?id=%@&token=%@",H5_BASE_URL,modelDir.modelOrder.orderId,QWGLOBALMANAGER.configure.userToken];
+        
+        modelDir.url = url;
+    }
+    else if (modelDir.typeLocalWeb == WebLocalTypeBranchLogoPreview)
+    {
+        // 商家品牌宣传预览
+        
+        modelDir.title = @"品牌宣传";
+        self.branchLogoPreviewShare = YES;
+        modelDir.typeShare = LocalShareTypeBranchLogoPreview;
+        NSString *url = [NSString stringWithFormat:@"%@QWSH/web/propaganda/html/propaganda.html?id=%@",H5_BASE_URL,QWGLOBALMANAGER.configure.groupId];
+//        NSString *url = [NSString stringWithFormat:@"http://192.168.5.235:8184/QWAPP/v300/QWSH/web/propaganda/html/propaganda.html?id=%@",QWGLOBALMANAGER.configure.groupId];
+        
+        modelDir.url = url;
+    }
+    else if (modelDir.typeLocalWeb == WebLocalTypeEmployeesShareStatistics)
+    {
+        // 员工分享统计
+        
+        modelDir.title = @"员工分享统计";
+        NSString *url = [NSString stringWithFormat:@"%@QWSH/web/shareStatistics/html/shareDetail.html",H5_BASE_URL];
+//        NSString *url = [NSString stringWithFormat:@"http://192.168.5.233:8183/QWAPP/v223/QWSH/web/shareStatistics/html/shareDetail.html"];
+        modelDir.url = url;
+    }else if (modelDir.typeLocalWeb == WebLocalTypeCheckPost) {
+        //查看物流信息
+        modelDir.title = @"快递查询";
+    } else if (modelDir.typeLocalWeb == WebLocalTypeQuestionnaireDetail) {
+        // 跳转培训问卷详情/QWAPP/v320/QWSH/web/survey/html/survey.html?id=&reqChannel=
+        NSString *url = [NSString stringWithFormat:@"%@QWSH/web/survey/html/survey.html?id=%@",H5_BASE_URL,modelDir.modelQuestionnaire.trainingId];
+        modelDir.url = url;
+        self.showCustomLoading = YES;
+    } else if (modelDir.typeLocalWeb == WebLocalTypeMemberMarketHelp) {
+        NSString *url = [NSString stringWithFormat:@"%@QWSH/web/ruleDesc/html/marketDesc.html",H5_BASE_URL];
+        modelDir.url = url;//@"http://192.168.5.132:8184/QWAPP/v320/QWSH/web/guide/html/member.html";//
+        modelDir.title = @"会员营销帮助中心";
+        
+    }else if (modelDir.typeLocalWeb == WebLocalTypeIntegraph) {
+        //积分商城
+        NSString *url = [NSString stringWithFormat:@"%@QWSH/web/integral_mall/html/index.html",H5_BASE_URL];
+        modelDir.typeTitle = WebTitleTypeIntergralRecord;
+        modelDir.title = @"积分商城";
+        self.showCustomLoading = YES;
+        modelDir.url = url;
+    } else if (modelDir.typeLocalWeb == WebLocalTypeTrainingDetail) {
+        // /QWAPP/v320/QWSH/web/survey/html/surveyDetail.html?id=      -----生意经详情
+        NSString *url = [NSString stringWithFormat:@"%@QWSH/web/survey/html/surveyDetail.html?id=%@",H5_BASE_URL,modelDir.modelQuestionnaire.trainingId];
+        modelDir.url = url;
+        ((QWBaseNavigationController *)self.navigationController).canDragBack = NO;
+    }else if (modelDir.typeLocalWeb == WebPageToWebIntegralRecord){
+        //积分商城兑换记录
+        self.showCustomLoading = YES;
+        NSString *url = [NSString stringWithFormat:@"%@QWSH/web/integral_mall/html/records.html",H5_BASE_URL];
+        modelDir.title = @"兑换记录";
+        modelDir.url = url;
+    }else if (modelDir.typeLocalWeb == WebLocalTypeOuterLink) {
+        if (([modelDir.url hasPrefix:@"http://"])||([modelDir.url hasPrefix:@"https://"])) {
+//            strWebLoad = modelDir.url;
+        }else{
+            NSString *strWeb = [NSString stringWithFormat:@"%@%@",BASE_URL_V2,modelDir.url];
+            modelDir.url = strWeb;
+        }
+        if(modelDir.typeTitle == WebTitleTypeNone) {
+            modelDir.typeShare = LocalShareTypeNone;
+        }
+    } else if (modelDir.typeLocalWeb == WebLocalTypeAnswerDetail) {
+        [self setupNaviItem:WebTitleTypeWithFontOnly];
+        [self setShowCustomLoading:YES];
+        NSString *url = [NSString stringWithFormat:@"%@QWSH/web/discover/html/answers.html",H5_BASE_URL];
+        modelDir.url = url;
+    }
+    self.pageType = modelDir.typeLocalWeb;
+    self.modelLocal = modelDir;
+    self.navigationItem.title = modelDir.title;
+    NSLog(@"the url is %@",modelDir.url);
+    
+    [self setupNaviItem:modelDir.typeTitle];
+    
+    if (QWGLOBALMANAGER.currentNetWork != NotReachable) {
+        [self initWebViewWithURL:[NSURL URLWithString:modelDir.url]];
+    } else {
+        [self showInfoView:kWaring12 image:@"img_network"];
+    }
+
+}
+
+- (void)popCurVC
+{
+    [self popVCAction:nil];
+}
+
+#pragma mark ---- 设置 H5 跳转 H5 ----
+
+- (void)setWVWithModel:(WebDirectModel *)modelDir withType:(WebTitleType)enumType
+{
+    self.navigationItem.title = modelDir.title;
+    [self setupNaviItem:enumType];
+    
+    NSString *strWebDirRoot = HTML5_DIRECT_ROOT_URL;
+    NSString *strWebLoad = @"";
+    NSString *strWeb = @"";
+    
+    if ([modelDir.pageType intValue] == WebPageToWebTypeCouponDetail)
+    {
+        // 优惠细则
+        strWeb = [NSString stringWithFormat:@"%@%@?id=%@&type=%@",strWebDirRoot,modelDir.url,modelDir.params.id,modelDir.params.type];
+        
+    }else if ([modelDir.pageType intValue] == WebPageToWebTypeEmployeesShareStatistics)
+    {
+        // 员工分享统计
+        NSString *temp;
+        if (modelDir.url && ![modelDir.url isEqualToString:@""] && [[modelDir.url substringToIndex:1] isEqualToString:@"/"]){
+            temp =  [modelDir.url stringByReplacingCharactersInRange:NSMakeRange(0, 1) withString:@""];
+        }
+        strWeb = [NSString stringWithFormat:@"%@%@",H5_BASE_URL,temp];
+//        strWeb = [NSString stringWithFormat:@"http://192.168.5.233:8183%@",temp];
+    }else if ([modelDir.pageType intValue] == WebPageToWebTypeMemberMarket)
+    {
+        // 会员营销统计
+        NSString *temp;
+        if (modelDir.url && ![modelDir.url isEqualToString:@""] && [[modelDir.url substringToIndex:1] isEqualToString:@"/"]){
+            temp =  [modelDir.url stringByReplacingCharactersInRange:NSMakeRange(0, 1) withString:@""];
+        }
+        strWeb = [NSString stringWithFormat:@"%@%@",H5_BASE_URL,temp];
+        //        strWeb = [NSString stringWithFormat:@"http://192.168.5.233:8183%@",temp];
+    }else if ([modelDir.pageType intValue] == WebPageToWebTypeProductInstrumets) {
+        // 商品说明书
+        if ([modelDir.url hasPrefixWithHTTPDomain]) {
+            strWeb = modelDir.url;
+        } else {
+            strWeb = [NSString stringWithFormat:@"%@%@",H5_BASE_URL,modelDir.url];
+        }
+        enumType = WebTitleTypeWithFontOnly;
+    }else if ([modelDir.pageType intValue] == WebPageToWebTypeQuestionJumpStudyInfo) {
+        // 问卷跳转学习资料
+        if ([modelDir.url hasPrefixWithHTTPDomain]) {
+            strWeb = modelDir.url;
+        } else {
+            strWeb = [NSString stringWithFormat:@"%@%@",H5_BASE_URL,modelDir.url];
+        }
+        enumType = WebTitleTypeNone;
+    }else if ([modelDir.pageType intValue] == WebPageToWebTypeTrainingToQuiz) {
+        // 商品说明书
+        if ([modelDir.url hasPrefixWithHTTPDomain]) {
+            strWeb = modelDir.url;
+        } else {
+            strWeb = [NSString stringWithFormat:@"%@%@",H5_BASE_URL,modelDir.url];
+        }
+        enumType = WebTitleTypeNone;
+    }else if ([modelDir.pageType intValue] == WebPageToWebTypeProDetail) {
+        //积分商城商品详情页
+        if ([modelDir.url hasPrefixWithHTTPDomain]) {
+            strWeb = modelDir.url;
+        } else {
+            strWeb = [NSString stringWithFormat:@"%@%@",H5_BASE_URL,modelDir.url];
+        }
+        self.showCustomLoading = YES;
+        enumType = WebTitleTypeNone;
+    }else if ([modelDir.pageType intValue] == WebPageToWebTypeFillAddress) {
+        //积分商城实物地址填写页
+        if ([modelDir.url hasPrefixWithHTTPDomain]) {
+            strWeb = modelDir.url;
+        } else {
+            strWeb = [NSString stringWithFormat:@"%@%@",H5_BASE_URL,modelDir.url];
+        }
+        self.showCustomLoading = YES;
+        enumType = WebTitleTypeNone;
+    }else if ([modelDir.pageType intValue] == WebPageToWebTypeMailSuccess) {
+        //积分商城兑换成功页
+        if ([modelDir.url hasPrefixWithHTTPDomain]) {
+            strWeb = modelDir.url;
+        } else {
+            strWeb = [NSString stringWithFormat:@"%@%@",H5_BASE_URL,modelDir.url];
+        }
+        enumType = WebTitleTypeNone;
+    }else if ([modelDir.pageType intValue] == WebPageToWebTypeExchangeDetail) {
+        //积分商城兑换详情页
+        if ([modelDir.url hasPrefixWithHTTPDomain]) {
+            strWeb = modelDir.url;
+        } else {
+            strWeb = [NSString stringWithFormat:@"%@%@",H5_BASE_URL,modelDir.url];
+        }
+        self.showCustomLoading = YES;
+        enumType = WebTitleTypeNone;
+    }else if ([modelDir.pageType intValue] == WebPageToWebIntegralRecord || [modelDir.pageType intValue] == WebPageToWebTypeSuccessToRecord) {
+        //积分商城兑换记录
+        if ([modelDir.url hasPrefixWithHTTPDomain]) {
+            strWeb = modelDir.url;
+        } else {
+            strWeb = [NSString stringWithFormat:@"%@%@",H5_BASE_URL,modelDir.url];
+        }
+        self.showCustomLoading = YES;
+        enumType = WebTitleTypeNone;
+    }else if ([modelDir.pageType intValue] == WebPageToWebTypeTrainingDetail) {
+        //培训和生意经详情
+        if ([modelDir.url hasPrefixWithHTTPDomain]) {
+            strWeb = modelDir.url;
+        } else {
+            strWeb = [NSString stringWithFormat:@"%@%@",H5_BASE_URL,modelDir.url];
+        }
+        enumType = WebTitleTypeNone;
+    }else if ([modelDir.pageType intValue] == WebPageToWebTypeOuterLink) {
+        if (([modelDir.url hasPrefix:@"http://"])||([modelDir.url hasPrefix:@"https://"])) {
+            strWeb = modelDir.url;
+        }else{
+            strWeb = [NSString stringWithFormat:@"http://%@",modelDir.url];
+        }
+    }else if ([modelDir.pageType intValue] == WebPageToWebTypeGuideList) {
+        //选择身份跳新人引导列表
+        if ([modelDir.url hasPrefixWithHTTPDomain]) {
+            strWeb = modelDir.url;
+        } else {
+            strWeb = [NSString stringWithFormat:@"%@%@",H5_BASE_URL,modelDir.url];
+        }
+        enumType = WebTitleTypeNone;
+    }else if ([modelDir.pageType intValue] == WebPageToWebTypeGuideDetail) {
+        //新人引导列表跳详情
+        if ([modelDir.url hasPrefixWithHTTPDomain]) {
+            strWeb = modelDir.url;
+        } else {
+            strWeb = [NSString stringWithFormat:@"%@%@",H5_BASE_URL,modelDir.url];
+        }
+        enumType = WebTitleTypeNone;
+    }
+    else {
+        strWeb = [NSString stringWithFormat:@"%@%@?id=%@",strWebDirRoot,modelDir.url,modelDir.params.id];
+    }
+    self.pageType = [modelDir.pageType intValue];
+    strWebLoad = strWeb;
+    [self setupNaviItem:enumType];
+    if (QWGLOBALMANAGER.currentNetWork != NotReachable) {
+        [self initWebViewWithURL:[NSURL URLWithString:strWebLoad]];
+    } else {
+        [self showInfoView:kWaring12 image:@"img_network"];
+    }
+}
+
+#pragma mark ---- 跳转页面 ----
+- (void)jumpToLocalVC:(WebDirectModel *)modelDir
+{
+    
+    UITabBarController *vcTab = (UITabBarController *)[[UIApplication sharedApplication] keyWindow].rootViewController;
+    UINavigationController *vcNavi = (UINavigationController *)vcTab.selectedViewController;
+    if ([modelDir.pageType intValue] == WebPageTypeDisease)
+    {
+        // 跳转至本地疾病详情页面
+        CommonDiseaseDetailViewController *commonDiseaseDetail = [[CommonDiseaseDetailViewController alloc] init];
+        commonDiseaseDetail.diseaseId = [NSString stringWithFormat:@"%@",modelDir.params.id];
+        commonDiseaseDetail.title = modelDir.params.diseaseName;
+        commonDiseaseDetail.hidesBottomBarWhenPushed = YES;
+        [vcNavi pushViewController:commonDiseaseDetail animated:YES];
+    }else if ([modelDir.pageType intValue] == WebPageTypeSendStamps) {   // 优惠商品 送券
+        SendPromotionViewController *sendPromotionViewController = [[SendPromotionViewController alloc] initWithNibName:@"SendPromotionViewController" bundle:nil];
+        sendPromotionViewController.promotionType = @"2";
+        sendPromotionViewController.promotionId = StrFromObj(modelDir.params.actId);
+        [vcNavi pushViewController:sendPromotionViewController animated:YES];
+    }else if ([modelDir.pageType intValue] == WebPageTypeMedicineList) {
+        // 药品列表
+        DiseaseMedicineListViewController* vc = [[DiseaseMedicineListViewController alloc] init];
+        vc.title = modelDir.title;
+        vc.params = @{@"diseaseId":modelDir.params.id, @"formulaId":modelDir.params.zufangId};
+        [vcNavi pushViewController:vc animated:YES];
+    }else if ([modelDir.pageType intValue] == WebPageTypeJifenPaihang) {   // 积分商城跳积分排行
+        ScoreRankViewController *vc = [[UIStoryboard storyboardWithName:@"ScoreRank" bundle:nil] instantiateViewControllerWithIdentifier:@"ScoreRankViewController"];
+        vc.hidesBottomBarWhenPushed = YES;
+        [vcNavi pushViewController:vc animated:YES];
+    }else if ([modelDir.pageType intValue] == WebPageTypeMyJifen){ //积分商城跳我的积分
+        StoreCreditViewController* storeCreditVC = [[UIStoryboard storyboardWithName:@"StoreCreditViewController" bundle:nil] instantiateViewControllerWithIdentifier:@"StoreCreditViewController"];
+        storeCreditVC.hidesBottomBarWhenPushed = YES;
+        [self.navigationController pushViewController:storeCreditVC animated:YES];
+//    }else if ([modelDir.pageType intValue] == WebPageTypeDiseaseFirstLevel) {
+//        // 跳转至本地疾病详情一级页面
+//        CommonDiseaseDetailViewController *commonDiseaseDetail = [[CommonDiseaseDetailViewController alloc] init];
+//        commonDiseaseDetail.diseaseId = [NSString stringWithFormat:@"%@",modelDir.params.id];
+//        commonDiseaseDetail.title = modelDir.params.diseaseName;
+//        commonDiseaseDetail.hidesBottomBarWhenPushed = YES;
+//        [vcNavi pushViewController:commonDiseaseDetail animated:YES];
+    }
+    
+}
+
+// H5跳转H5页面
+- (void)jumpToH5Page:(WebDirectModel *)modelDir
+{
+    WebDirectViewController *vcWeb = [[UIStoryboard storyboardWithName:@"WebDirect" bundle:nil] instantiateViewControllerWithIdentifier:@"WebDirectViewController"];
+    vcWeb.modelDir = modelDir;
+    [vcWeb setWVWithModel:modelDir withType:WebTitleTypeNone];
+    vcWeb.pageType = [modelDir.pageType intValue];
+    if (vcWeb.pageType == WebPageToWebTypeOuterLink) {
+        vcWeb.callBackDelegate = self;
+    }
+    UITabBarController *vcTab = (UITabBarController *)[[UIApplication sharedApplication] keyWindow].rootViewController;
+    UINavigationController *vcNavi = (UINavigationController *)vcTab.selectedViewController;
+    [vcNavi pushViewController:vcWeb animated:YES];
+}
+
+
+#pragma mark ---- 以后弃用 ----
+
+- (void)setWVWithURL:(NSString *)strURL title:(NSString *)strTitle withType:(WebTitleType)enumType;
+{
+    self.navigationItem.title = strTitle;
+    [self setupNaviItem:enumType];
+    
+    [self initWebViewWithURL:[NSURL URLWithString:strURL]];
+}
+
+#pragma mark ---- 导航栏右侧按钮 ----
+
+- (void)setupNaviItem:(WebTitleType)enutTitle
+{
+    if (enutTitle == WebTitleTypeOnlyShare) {
+        [self setUpRightItemOnlyShare];
+    } else if (enutTitle == WebTitleTypeWithFontOnly){
+        [self setUpRightItemEight];
+    } else if (enutTitle == WebTitleTypeIntergralRecord) {
+        [self setUpRightItemSeven];
+    }
+    else {
+        
+    }
+}
+//积分商城兑换记录BTN
+-(void)setUpRightItemSeven {
+    UIButton *btn = [[UIButton alloc]initWithFrame:CGRectMake(0, 0, 80, 35)];
+    btn.titleLabel.font = fontSystem(kFontS2);
+    [btn setTitle:@"兑换记录" forState:UIControlStateNormal];
+    [btn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    [btn addTarget:self action:@selector(IntergralExchangeRecord) forControlEvents:UIControlEventTouchUpInside];
+    UIBarButtonItem *naviBtn = [[UIBarButtonItem alloc]initWithCustomView:btn];
+    if(self.modelLocal.typeShare != LocalShareTypeNone) {
+        self.navigationItem.rightBarButtonItem = naviBtn;
+    }
+}
+//积分商城兑换记录
+-(void)IntergralExchangeRecord {
+    
+    [QWGLOBALMANAGER statisticsEventId:@"积分商城_兑换纪录" withLable:@"我的-积分" withParams:nil];
+    WebDirectViewController *vcWeb = [[UIStoryboard storyboardWithName:@"WebDirect" bundle:nil] instantiateViewControllerWithIdentifier:@"WebDirectViewController"];
+    WebDirectLocalModel *modelLocal = [WebDirectLocalModel new];
+    modelLocal.typeLocalWeb = WebPageToWebIntegralRecord;
+    [vcWeb setWVWithLocalModel:modelLocal];
+    UITabBarController *vcTab = (UITabBarController *)[[UIApplication sharedApplication] keyWindow].rootViewController;
+    UINavigationController *vcNavi = (UINavigationController *)vcTab.selectedViewController;
+    [vcNavi pushViewController:vcWeb animated:YES];
+
+}
+//只有字体
+-(void)setUpRightItemEight{
+    UIView *ypDetailBarItems=[[UIView alloc]initWithFrame:CGRectMake(0, 0, 120, 55)];
+    UIButton * zoomButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+    [zoomButton setFrame:CGRectMake(23, -2, 55,55)];
+    [zoomButton addTarget:self action:@selector(setupFontAction) forControlEvents:UIControlEventTouchUpInside];
+    zoomButton.titleLabel.font = [UIFont systemFontOfSize:19.0f];
+    zoomButton.titleLabel.textColor = [UIColor whiteColor];
+    [zoomButton setTitle:@"Aa" forState:UIControlStateNormal];
+    [ypDetailBarItems addSubview:zoomButton];
+    
+    UIBarButtonItem *fixed = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace target:nil action:nil];
+    fixed.width = -48;
+    
+    self.navigationItem.rightBarButtonItems=@[fixed,[[UIBarButtonItem alloc]initWithCustomView:ypDetailBarItems]];
+    
+}
+- (void)setupFontAction
+{
+    if (self.extShare) {
+        [self.extShare runExtWithCallBackId:CallbackTypeScale];
+    }
+}
+
+- (void)setUpRightItemOnlyShare
+{
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"分享" style:UIBarButtonItemStylePlain target:self action:@selector(shareClick)];
+}
+
+- (void)shareClick
+{
+    if (self.modelLocal.typeShare == LocalShareTypeCouponProduct)
+    {
+        // 优惠商品分享
+        if (self.couponProductShare == YES) {
+            [self actionInformH5:CallbackTypeCouponProductShare];
+        }else{
+            [SVProgressHUD showErrorWithStatus:@"此商品已经设置为不可分享"];
+        }
+        
+    }else if (self.modelLocal.typeShare == LocalShareTypeBranchLogoPreview)
+    {
+        // 商家品牌宣传预览分享
+        [self actionInformH5:CallbackTypeBranchLogoPreviewShare];
+    }
+}
+
+- (void)actionInformH5:(CallbackType)typeCallback
+{
+    if (self.extShare != nil) {
+        [self.extShare runExtWithCallBackId:typeCallback];
+    }
+}
+
+// 分享功能
+
+- (void)actionShare:(WebPluginModel *)modelPlugin
+{
+    ShareContentModel *modelShare = [[ShareContentModel alloc] init];
+
+    // 分享的图片url
+    NSString *imgURL = @"";
+    if (modelPlugin.params.img_url.length > 0) {
+        if ([modelPlugin.params.img_url hasPrefix:@"http"]) {
+            imgURL = [NSString stringWithFormat:@"%@",modelPlugin.params.img_url];
+        } else {
+            imgURL = [NSString stringWithFormat:@"%@%@",HTML5_DIRECT_ROOT_URL,modelPlugin.params.img_url];
+        }
+    }
+    
+    // 分享的链接url
+    NSString *shareURL = @"";
+    if (modelPlugin.url.length > 0) {
+        if ([modelPlugin.url hasPrefix:@"http"]) {
+            shareURL = [NSString stringWithFormat:@"%@",modelPlugin.url];
+        } else {
+            shareURL = [NSString stringWithFormat:@"%@%@",HTML5_DIRECT_ROOT_URL,modelPlugin.url];
+        }
+    }
+    
+    // 根据H5返回的json，转换出相应的分享数据
+    
+    modelShare.title = modelPlugin.params.title;
+    modelShare.content = modelPlugin.params.content;
+    modelShare.imgURL = imgURL;
+    modelShare.shareLink = shareURL;
+    
+    if ([modelPlugin.params.shareType intValue] == WebPageShareTypeCouponProduct)  // 优惠商品分享
+    {
+        NSArray *arrIDs = [modelPlugin.params.objId componentsSeparatedByString:SeparateStr];
+        modelShare.typeShare = ShareTypeCouponProduct;
+        
+        ShareSaveLogModel *logModel = [ShareSaveLogModel new];
+        logModel.shareObj = @"2";
+        logModel.shareObjId = arrIDs[1];
+        logModel.city = @"";
+        modelShare.modelSavelog = logModel;
+        self.modelSaveLog = logModel;
+    }
+    else if ([modelPlugin.params.shareType intValue] == WebPageShareTypeBranchLogoPreview)  // 商家品牌宣传预览分享
+    {
+        modelShare.typeShare = ShareTypeBranchLogoPreview;
+        
+        ShareSaveLogModel *logModel = [ShareSaveLogModel new];
+        logModel.shareObj = @"7";  // 分享统计
+        logModel.shareObjId = QWGLOBALMANAGER.configure.groupId;
+        logModel.city = @"";
+        modelShare.modelSavelog = logModel;
+        self.modelSaveLog = logModel;
+    }
+    
+    [self popUpShareView:modelShare];
+}
+
+-(void)getNotifType:(Enum_Notification_Type)type data:(id)data target:(id)obj {
+    if (type == NotifRefreshCurH5Page) {
+        if (_pageType == WebLocalTypeIntegraph) {
+            NSString *pageType = (NSString *)data;
+            if (self.extShare != nil) {
+                [self.extShare runExtWithCallBackPageType:pageType];
+            }
+        }
+    }
+}
+// H5通知弹框
+
+- (void)showAlertWithMessage:(NSString *)strMsg
+{
+    [SVProgressHUD showSuccessWithStatus:strMsg duration:0.8f];
+}
+
+// H5通知打电话
+
+- (void)actionPhoneWithNumber:(NSString *)phoneNum
+{
+    if (phoneNum.length > 0) {
+        self.phoneNumber = phoneNum;
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"是否打电话" message:phoneNum delegate:self
+                                              cancelButtonTitle:@"取消" otherButtonTitles:@"确定", nil];
+        alert.tag = AlertViewTypePhoneNum;
+        [alert show];
+    }else{
+        [SVProgressHUD showErrorWithStatus:@"电话号码为空" duration:DURATION_SHORT];
+    }
+}
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    if (alertView.tag == AlertViewTypePhoneNum) {
+        if (buttonIndex == 1) {
+            [[UIApplication sharedApplication] openURL:[NSURL URLWithString:[NSString stringWithFormat:@"tel://%@",self.phoneNumber]]];
+        }
+    }
+}
+
+// 通知H5刷新
+- (void)actionInformPageType:(NSInteger)pageType
+{
+    if (self.extShare!=nil) {
+        [self.extShare runExtWithCallBackId:pageType];
+    }
+}
+
+// H5通知加分享
+- (void)rightItemNeedShare
+{
+    self.couponProductShare = YES;
+    
+    if (self.branchLogoPreviewShare) {
+        [self setupNaviItem:WebTitleTypeOnlyShare];
+        self.branchLogoPreviewShare = NO;
+    }
+}
+
+- (void)delayPopToHome{
+    [QWGLOBALMANAGER.tabBar setSelectedIndex:0];
+}
+
+- (void)didReceiveMemoryWarning {
+    [super didReceiveMemoryWarning];
+}
+
+#pragma mark - Callback delegate methods
+- (void)runCallbackWithPageType:(NSInteger)pageType
+{
+    [self actionInformPageType:pageType];
+}
+
+//分享成功回调
+- (void)didFinishGetUMSocialDataInViewController:(UMSocialResponseEntity *)response
+{
+    DDLogVerbose(@"share success = %@",response);
+    if (response.responseCode == UMSResponseCodeSuccess)//分享成功
+    {
+        NSString *strDataType = [self.m_webView stringByEvaluatingJavaScriptFromString:@"var a=document.getElementById(\"data-appType\"); var str = a.getAttribute(\"data-type\");decodeURIComponent(str)"];
+        DDLogVerbose(@"the str data type is %@",strDataType);
+        NSString *strChannel = @"";
+        NSDictionary *dicData = response.data;
+        if (dicData[@"sina"] != nil) {
+            DDLogVerbose(@"share sina");
+            strChannel = @"2";
+        } else if (dicData[@"wxtimeline"] != nil) {
+            DDLogVerbose(@"share wxtimeline");
+            strChannel = @"1";
+        } else if (dicData[@"wxsession"] != nil) {
+            DDLogVerbose(@"share wxsession");
+            strChannel = @"4";
+        }else if (dicData[@"qzone"] != nil) {
+            DDLogVerbose(@"share qzone");
+            strChannel = @"3";
+        }
+        
+        NSString *strDataID = [self.m_webView stringByEvaluatingJavaScriptFromString:@"var a=document.getElementById(\"data-appType\"); var str = a.getAttribute(\"data-id\");decodeURIComponent(str)"];
+        RptShareSaveLogModelR *modelR = [RptShareSaveLogModelR new];
+        modelR.channel = strChannel;
+        modelR.client = @"1";
+        modelR.device = @"2";
+        if (self.modelSaveLog != nil) {
+            modelR.obj = self.modelSaveLog.shareObj;
+            modelR.objId = self.modelSaveLog.shareObjId;
+        } else {
+            modelR.obj = self.modelSaveLog.shareObj;
+            modelR.objId = self.modelSaveLog.shareObjId;
+        }
+        
+        modelR.city = QWGLOBALMANAGER.configure.storeCity;
+        if (modelR.city.length == 0) {
+            modelR.city = @"苏州市";
+        }
+        NSString *strToken = QWGLOBALMANAGER.configure.userToken;
+
+        modelR.token = strToken;
+        
+        [self callSaveLogRequest:modelR];
+        
+        //需要验证
+    }
+}
+
+@end

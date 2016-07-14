@@ -1,0 +1,149 @@
+//
+//  BranchModel.h
+//  wenYao-store
+//
+//  Created by Meng on 15/4/20.
+//  Copyright (c) 2015年 carret. All rights reserved.
+//
+
+#import "BaseAPIModel.h"
+
+@interface BranchModel : BaseAPIModel
+
+@end
+
+@interface BranchItemModel : BaseModel
+
+@property (nonatomic ,strong) NSString *approveRemark;
+@property (nonatomic ,strong) NSString *approveStatus;//0 未审核 1 审核不通过  2 审核通过
+@property (nonatomic ,strong) NSString *approveTime;
+@property (nonatomic ,strong) NSString *approver;
+@property (nonatomic ,strong) NSString *columnName;
+@property (nonatomic ,strong) NSString *createTime;
+@property (nonatomic ,strong) NSString *groupId;
+@property (nonatomic ,strong) NSString *icid;
+@property (nonatomic ,strong,getter=theNewValue) NSString *newValue;
+@property (nonatomic ,strong) NSString *oldValue;
+@property (nonatomic ,strong) NSString *status;//0 正常  1 待审 2未完善
+
+@end
+
+@interface BranchSymbolVo : BaseAPIModel
+
+@property (nonatomic ,strong) NSString *symbol;
+@property (nonatomic ,strong) NSString *qrCodeImgUrl;
+
+@end
+
+
+@interface BaseInfoModel : BranchModel
+
+@property (nonatomic ,strong) BranchItemModel *address;
+@property (nonatomic ,strong) NSString *bizBegin;
+@property (nonatomic ,strong) NSString *bizEnd;
+@property (nonatomic ,strong) NSArray  *branchTagList;
+@property (nonatomic ,strong) NSString *cityName;
+@property (nonatomic ,strong) NSString *countyName;
+@property (nonatomic ,strong) BranchItemModel *desc;
+@property (nonatomic ,strong) BranchItemModel *latitude;
+@property (nonatomic ,strong) BranchItemModel *logo;
+@property (nonatomic ,strong) BranchItemModel *longitude;
+@property (nonatomic ,strong) BranchItemModel *name;
+@property (nonatomic ,strong) BranchItemModel *photo;
+@property (nonatomic ,strong) NSString *provinceName;
+@property (nonatomic ,strong) BranchItemModel *shortName;
+@property (nonatomic ,strong) NSString *star;
+@property (nonatomic ,strong) BranchItemModel *tags;
+@property (nonatomic ,strong) BranchItemModel *tel;
+
+@end
+
+@interface ContactInfoModel : BranchModel
+
+@property (nonatomic ,strong) BranchItemModel *contact;
+@property (nonatomic ,strong) BranchItemModel *mobile;
+
+@end
+
+@interface BranchInfoModel : BranchModel
+
+@property (nonatomic ,strong) BaseInfoModel *baseInfo;
+@property (nonatomic ,strong) NSString *baseStatus;
+@property (nonatomic ,strong) ContactInfoModel *contactInfo;
+@property (nonatomic ,strong) NSString *contactStatus;
+
+@end
+
+
+@interface SaveItemModel : BaseModel
+
+@property (nonatomic ,strong) NSString *oldValue; //初始化为@“”
+@property (nonatomic ,strong ,getter=theNewValue) NSString *newValue;//初始化为@“”
+@property (nonatomic ,assign) BOOL change; //初始化为 NO
+
+@end
+
+@interface SaveBranchInfoModel : BaseModel
+
+@property (nonatomic ,strong) SaveItemModel *name;
+@property (nonatomic ,strong) SaveItemModel *shortName;
+@property (nonatomic ,strong) SaveItemModel *bizBegin;
+@property (nonatomic ,strong) SaveItemModel *bizEnd;
+@property (nonatomic ,strong) SaveItemModel *provinceName;
+@property (nonatomic ,strong) SaveItemModel *cityName;
+@property (nonatomic ,strong) SaveItemModel *countyName;
+@property (nonatomic ,strong) SaveItemModel *latitude;
+@property (nonatomic ,strong) SaveItemModel *longitude;
+@property (nonatomic ,strong) SaveItemModel *tags;
+@property (nonatomic ,strong) SaveItemModel *tel;
+@property (nonatomic ,strong) SaveItemModel *logo;
+@property (nonatomic ,strong) SaveItemModel *desc;
+@property (nonatomic ,strong) SaveItemModel *address;
+@property (nonatomic ,strong) SaveItemModel *photo;
+
+@end
+
+@interface SaveBranchUserModel : BaseModel
+
+@property (nonatomic ,strong) SaveItemModel *name;
+@property (nonatomic ,strong) SaveItemModel *mobile;
+
+@end
+
+@interface BranchMapModel : BaseModel
+
+@property (nonatomic ,strong) NSString *title;
+@property (nonatomic ,strong) NSString *cityName;
+@property (nonatomic ,strong) NSString *provinceName;
+@property (nonatomic ,strong) NSString *countryName;
+@property (nonatomic ,strong) NSString *latitude;
+@property (nonatomic ,strong) NSString *longitude;
+
+@end
+
+@interface JGUserModel : BaseModel
+
+@property (nonatomic ,strong) ContactInfoModel *contactInfo;
+@property (nonatomic ,strong) NSString *contactStatus;
+
+@end
+
+@interface ProvinceAndCityModel : BaseAPIModel
+@property (strong, nonatomic) NSString *code;
+@property (strong, nonatomic) NSString *name;
+@end
+
+@interface BranchAppraisePageModel : BaseAPIModel
+@property (strong, nonatomic) NSArray * appraises; //评论列表
+@end
+
+@interface BranchAppraiseModel : BaseAPIModel
+@property (strong, nonatomic) NSString *remark;     //评价内容,
+@property (strong, nonatomic) NSString *date;       //日期,
+@property (assign, nonatomic) int stars;            //星级,
+@property (assign, nonatomic) int serviceStars;     //服务质量评级。微商评级,
+@property (assign, nonatomic) int deliveryStars;    //送货速度评级。微商评级
+@property (assign, nonatomic) int sex;              //性别。0男1女,
+@property (strong, nonatomic) NSString *nick;       //昵称
+@property (strong, nonatomic) NSString *orderCode;  //订单编号
+@end

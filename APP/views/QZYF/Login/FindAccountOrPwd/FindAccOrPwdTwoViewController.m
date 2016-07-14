@@ -1,0 +1,232 @@
+//
+//  FindAccOrPwdTwoViewController.m
+//  wenYao-store
+//
+//  Created by YYX on 15/8/18.
+//  Copyright (c) 2015年 carret. All rights reserved.
+//
+
+#import "FindAccOrPwdTwoViewController.h"
+#import "Store.h"
+#import "LoginViewController.h"
+#import "Branch.h"
+#import "LoginViewController.h"
+
+@interface FindAccOrPwdTwoViewController ()
+
+// 新密码
+@property (weak, nonatomic) IBOutlet UITextField *newwPwd;
+
+// 确认密码
+@property (weak, nonatomic) IBOutlet UITextField *rePwd;
+
+@property (weak, nonatomic) IBOutlet UIButton *completeButton;
+
+// 完成
+- (IBAction)completeAction:(id)sender;
+
+@end
+
+@implementation FindAccOrPwdTwoViewController
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    
+    self.title = @"找回密码";
+    
+    self.newwPwd.secureTextEntry = YES;
+    self.rePwd.secureTextEntry = YES;
+    
+    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(keyBoardDown)];
+    [self.view addGestureRecognizer:tap];
+    
+    self.completeButton.layer.cornerRadius = 4.0;
+    self.completeButton.layer.masksToBounds = YES;
+    
+    [self configureCompleteButtonGray];
+    
+    self.newwPwd.delegate = self;
+    self.rePwd.delegate = self;
+    self.newwPwd.tag = 1;
+    self.rePwd.tag = 2;
+    
+    [self.newwPwd addTarget:self action:@selector(textFieldDidChange:) forControlEvents:UIControlEventEditingChanged];
+    [self.rePwd addTarget:self action:@selector(textFieldDidChange:) forControlEvents:UIControlEventEditingChanged];
+    
+    [self.newwPwd setValue:RGBHex(qwColor9) forKeyPath:@"_placeholderLabel.textColor"];
+    [self.rePwd setValue:RGBHex(qwColor9) forKeyPath:@"_placeholderLabel.textColor"];
+    
+}
+
+#pragma mark ---- 完成按钮置灰 ----
+
+- (void)configureCompleteButtonGray
+{
+    self.completeButton.enabled = NO;
+    [self.completeButton setBackgroundColor:RGBHex(qwColor9)];
+    [self.completeButton setBackgroundImage:nil forState:UIControlStateNormal];
+}
+
+#pragma mark ---- 完成按钮高亮 ----
+
+- (void)ConfigureCompleteButtonBlue
+{
+    self.completeButton.enabled = YES;
+    [self.completeButton setBackgroundImage:[UIImage imageNamed:@"btn_login_notmal"] forState:UIControlStateNormal];
+    [self.completeButton setBackgroundImage:[UIImage imageNamed:@"btn_login_click"] forState:UIControlStateHighlighted];
+    [self.completeButton setBackgroundImage:[UIImage imageNamed:@"btn_login_click"] forState:UIControlStateSelected];
+}
+
+- (void)keyBoardDown
+{
+    [self.view endEditing:YES];
+}
+
+#pragma mark ---- 监听文本变化 ----
+
+- (void)textFieldDidChange:(UITextField *)textField
+{
+    UITextField *textView = textField;
+    NSString *lang = [[textView textInputMode] primaryLanguage]; // 键盘输入模式
+    
+    if ([lang isEqualToString:@"zh-Hans"]) { // 简体中文输入，包括简体拼音，健体五笔，简体手写
+        UITextRange *selectedRange = [textView markedTextRange];
+        //获取高亮部分
+        UITextPosition *position = [textView positionFromPosition:selectedRange.start offset:0];
+        // 没有高亮选择的字，则对已输入的文字进行字数统计和限制
+        if (!position) {
+            [self judgeTextFiledChange:textView];
+        }
+        // 有高亮选择的字符串，则暂不对文字进行统计和限制
+        else{
+        }
+    }
+    // 中文输入法以外的直接对其统计限制即可，不考虑其他语种情况
+    else{
+        [self judgeTextFiledChange:textView];
+    }
+}
+
+- (void)judgeTextFiledChange:(UITextField *)textField
+{
+    UITextField *textView = textField;
+    NSString *toBeString = textView.text;
+    
+    // 新密码的最小长度
+    int pwdShortLength = 0;
+    
+    if ([self.accountType integerValue] == 2) {
+        // 主账号
+        pwdShortLength = 6;
+    }else if ([self.accountType integerValue] == 3){
+        // 子账号
+        pwdShortLength = 6;
+    }
+    
+    // 新密码的最大长度
+    int pwdLongLength = 0;
+    if ([self.accountType integerValue] == 2) {
+        // 主账号
+        pwdLongLength = 16;
+    }else if ([self.accountType integerValue] == 3){
+        // 子账号
+        pwdLongLength = 16;
+    }
+    
+    if (toBeString.length > pwdLongLength) {
+        textView.text = [toBeString substringToIndex:pwdLongLength];
+    }
+    
+    if (self.rePwd.text.length>=pwdShortLength && toBeString.length>=pwdShortLength) {
+        [self ConfigureCompleteButtonBlue];
+    }else{
+        [self configureCompleteButtonGray];
+    }
+}
+
+#pragma mark ---- 完成 ----
+
+- (IBAction)completeAction:(id)sender
+{
+    // 新密码的最小长度
+    int pwdShortLength = 0;
+    
+    if ([self.accountType integerValue] == 2) {
+        // 主账号
+        pwdShortLength = 6;
+    }else if ([self.accountType integerValue] == 3){
+        // 子账号
+        pwdShortLength = 6;
+    }
+    
+    // 新密码的最大长度
+    int pwdLongLength = 0;
+    
+    if ([self.accountType integerValue] == 2) {
+        // 主账号
+        pwdLongLength = 16;
+    }else if ([self.accountType integerValue] == 3){
+        // 子账号
+        pwdLongLength = 16;
+    }
+    
+    if (QWGLOBALMANAGER.currentNetWork == kNotReachable) {
+        [SVProgressHUD showErrorWithStatus:@"网络未连接，请稍候重试！" duration:0.8];
+        return;
+    }
+    
+    if (self.newwPwd.text.length == 0) {
+        [SVProgressHUD showErrorWithStatus:@"请输入新密码" duration:0.8];
+        return;
+    }
+    
+    if (self.newwPwd.text.length >pwdLongLength || self.newwPwd.text.length <pwdShortLength || ![QWGLOBALMANAGER isContainNumOrABC:self.newwPwd.text]) {
+        [SVProgressHUD showErrorWithStatus:[NSString stringWithFormat:@"密码必须为%d至%d位数字或字母",pwdShortLength,pwdLongLength] duration:0.8];
+        return;
+    }
+    
+    if (self.rePwd.text.length == 0) {
+        [SVProgressHUD showErrorWithStatus:@"请输入确认密码" duration:0.8];
+        return;
+    }
+    if (self.rePwd.text.length >pwdLongLength || self.rePwd.text.length <pwdShortLength || ![QWGLOBALMANAGER isContainNumOrABC:self.rePwd.text]) {
+        [SVProgressHUD showErrorWithStatus:[NSString stringWithFormat:@"密码必须为%d至%d位数字或字母",pwdShortLength,pwdLongLength] duration:0.8];
+        return;
+    }
+    
+    if (![self.newwPwd.text isEqualToString:self.rePwd.text]) {
+        [SVProgressHUD showErrorWithStatus:Kwarning220N72 duration:0.8];
+        return;
+    }
+    
+    NSMutableDictionary *setting = [NSMutableDictionary dictionary];
+    setting[@"mobile"] = StrFromObj([self.mobile stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]]);
+    setting[@"password"] = StrFromObj(self.newwPwd.text);
+    setting[@"type"] = StrFromObj(self.accountType);
+    setting[@"credentials"]=[AESUtil encryptAESData:StrFromObj(self.newwPwd.text) app_key:AES_KEY];
+    [Branch PassportBranchPasswordRenewWithParams:setting success:^(id obj) {
+        
+        if ([obj[@"apiStatus"] integerValue] == 0) {
+            
+            // 跳转到登录界面
+            LoginViewController *vc = [[LoginViewController alloc] init];
+            vc.hidesBottomBarWhenPushed = YES;
+            [self.navigationController pushViewController:vc animated:YES];
+//            QWGLOBALMANAGER.configure.userName = self.accountLabel.text;
+            [QWGLOBALMANAGER saveAppConfigure];
+            
+        }else{
+            [SVProgressHUD showErrorWithStatus:obj[@"apiMessage"] duration:0.8];
+        }
+        
+    } failure:^(HttpException *e) {
+        
+    }];
+    
+}
+
+- (void)didReceiveMemoryWarning {
+    [super didReceiveMemoryWarning];
+}
+
+@end

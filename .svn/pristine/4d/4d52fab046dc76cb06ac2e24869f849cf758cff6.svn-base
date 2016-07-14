@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="8191" systemVersion="14F27" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES">
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="8154"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" id="iN0-l3-epB" customClass="TextChatBubbleView">
+            <rect key="frame" x="0.0" y="0.0" width="210" height="33"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="KyU-BY-XhB">
+                    <rect key="frame" x="12" y="8" width="178" height="17"/>
+                    <subviews>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" placeholderIntrinsicWidth="200" placeholderIntrinsicHeight="21" text="国家级风景解决" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="GD6-BR-ZBu" customClass="MLEmojiLabel">
+                            <rect key="frame" x="0.0" y="0.0" width="178" height="17"/>
+                            <color key="backgroundColor" red="1" green="0.31504420230000002" blue="0.58256596770000002" alpha="1" colorSpace="calibratedRGB"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                            <color key="textColor" red="0.20000000000000001" green="0.20000000000000001" blue="0.20000000000000001" alpha="1" colorSpace="calibratedRGB"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                    </subviews>
+                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                    <constraints>
+                        <constraint firstItem="GD6-BR-ZBu" firstAttribute="leading" secondItem="KyU-BY-XhB" secondAttribute="leading" id="6nB-kN-nEa"/>
+                        <constraint firstAttribute="trailing" secondItem="GD6-BR-ZBu" secondAttribute="trailing" id="894-7J-YhV"/>
+                        <constraint firstAttribute="bottom" secondItem="GD6-BR-ZBu" secondAttribute="bottom" id="VWo-EY-72f"/>
+                        <constraint firstItem="GD6-BR-ZBu" firstAttribute="top" secondItem="KyU-BY-XhB" secondAttribute="top" id="xmf-9E-HF9"/>
+                    </constraints>
+                </view>
+            </subviews>
+            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+            <constraints>
+                <constraint firstAttribute="trailing" secondItem="KyU-BY-XhB" secondAttribute="trailing" constant="20" id="NVV-ij-jVW"/>
+                <constraint firstItem="KyU-BY-XhB" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="12" id="Yrn-2y-Saj"/>
+                <constraint firstAttribute="bottom" secondItem="KyU-BY-XhB" secondAttribute="bottom" constant="8" id="g59-8d-3XI"/>
+                <constraint firstItem="KyU-BY-XhB" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" constant="8" id="vLS-NZ-rBP"/>
+            </constraints>
+            <nil key="simulatedStatusBarMetrics"/>
+            <nil key="simulatedTopBarMetrics"/>
+            <nil key="simulatedBottomBarMetrics"/>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <connections>
+                <outlet property="contentLable" destination="GD6-BR-ZBu" id="MPo-xW-AeE"/>
+                <outlet property="leftCon" destination="Yrn-2y-Saj" id="hs3-vf-AYB"/>
+                <outlet property="rightCon" destination="NVV-ij-jVW" id="VrO-b0-baI"/>
+            </connections>
+            <point key="canvasLocation" x="221" y="187.5"/>
+        </view>
+    </objects>
+</document>

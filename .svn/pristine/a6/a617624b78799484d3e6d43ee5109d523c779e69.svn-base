@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>New item</key>
+	<string>c_store_im_bendianzixun</string>
+	<key>New item - 2</key>
+	<string>c_store_im_daiqiangda</string>
+	<key>New item - 3</key>
+	<string>c_store_im_jiedazhong</string>
+	<key>New item - 4</key>
+	<string>c_store_im_closed</string>
+	<key>New item - 5</key>
+	<string>c_store_qwys</string>
+	<key>New item - 6</key>
+	<string>c_store_yanzheng</string>
+	<key>New item - 7</key>
+	<string>c_store_kehu</string>
+	<key>New item - 8</key>
+	<string>c_store_kehu_info</string>
+	<key>New item - 9</key>
+	<string>c_store_kehu_zixunlishi</string>
+	<key>New item - 10</key>
+	<string>c_store_my</string>
+	<key>New item - 11</key>
+	<string>c_store_my_bendianhuodong</string>
+	<key>New item - 12</key>
+	<string>c_store_my_huodong_yingxiao</string>
+	<key>New item - 13</key>
+	<string>c_store_my_huodong_youhui</string>
+	<key>New item - 14</key>
+	<string>c_store_my_dianyuan</string>
+	<key>New item - 15</key>
+	<string>c_store_my_yaoshi</string>
+	<key>New item - 16</key>
+	<string>c_store_my_ruanjianshiyongren</string>
+	<key>New item - 17</key>
+	<string>c_store_my_farenshenfenzheng</string>
+	<key>New item - 18</key>
+	<string>c_store_my_yingyezhizhao</string>
+	<key>New item - 19</key>
+	<string>c_store_my_yaopinjingyingxukezheng</string>
+	<key>New item - 20</key>
+	<string>c_store_my_gsp</string>
+	<key>New item - 21</key>
+	<string>c_store_my_hudongtongji</string>
+	<key>New item - 22</key>
+	<string>c_store_jiankangwendaku</string>
+	<key>New item - 23</key>
+	<string>c_store_yaoshizhishiku</string>
+</dict>
+</plist>

@@ -1,0 +1,319 @@
+//
+//  ComRegSetAccountViewController.m
+//  wenYao-store
+//
+//  Created by YYX on 15/8/17.
+//  Copyright (c) 2015年 carret. All rights reserved.
+//
+
+#import "ComRegSetAccountViewController.h"
+#import "Branch.h"
+#import "AppDelegate.h"
+#import "Store.h"
+#import "Circle.h"
+
+
+@interface ComRegSetAccountViewController ()
+
+{
+    BOOL isVisible; // 密码是否可见
+}
+
+@property (weak, nonatomic) IBOutlet UITextField *accountTextField;
+
+@property (weak, nonatomic) IBOutlet UITextField *passwordTextField;
+
+@property (weak, nonatomic) IBOutlet UIButton *setPwdButton;
+@property (weak, nonatomic) IBOutlet UIImageView *setPwdImage;
+
+@property (weak, nonatomic) IBOutlet UIButton *completeButton;
+
+// 设置密码是否可见
+- (IBAction)setPwdAction:(id)sender;
+
+// 完成
+- (IBAction)completeAction:(id)sender;
+
+@end
+
+@implementation ComRegSetAccountViewController
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    
+    self.title = @"注册";
+    
+    isVisible = NO;
+    self.setPwdImage.image = [UIImage imageNamed:@"login_icon_eye"];
+    self.passwordTextField.secureTextEntry = YES;
+    
+    self.completeButton.layer.cornerRadius = 3.0;
+    self.completeButton.layer.masksToBounds = YES;
+    
+    [self configureCompleteButtonGray];
+    
+    self.accountTextField.delegate = self;
+    self.passwordTextField.delegate = self;
+    self.accountTextField.tag = 1;
+    self.passwordTextField.tag = 2;
+    
+    [self.accountTextField addTarget:self action:@selector(textFieldDidChange:) forControlEvents:UIControlEventEditingChanged];
+    [self.passwordTextField addTarget:self action:@selector(textFieldDidChange:) forControlEvents:UIControlEventEditingChanged];
+    
+    [self.accountTextField setValue:RGBHex(0xaaaaaa) forKeyPath:@"_placeholderLabel.textColor"];
+    [self.passwordTextField setValue:RGBHex(0xaaaaaa) forKeyPath:@"_placeholderLabel.textColor"];
+    
+    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(keyBoardDown)];
+    [self.view addGestureRecognizer:tap];
+}
+
+#pragma mark ---- 完成按钮置灰 ----
+
+- (void)configureCompleteButtonGray
+{
+    self.completeButton.enabled = NO;
+    [self.completeButton setBackgroundColor:RGBHex(qwColor9)];
+    [self.completeButton setBackgroundImage:nil forState:UIControlStateNormal];
+}
+
+#pragma mark ---- 完成按钮高亮 ----
+
+- (void)ConfigureCompleteButtonBlue
+{
+    self.completeButton.enabled = YES;
+    [self.completeButton setBackgroundImage:[UIImage imageNamed:@"btn_login_notmal"] forState:UIControlStateNormal];
+    [self.completeButton setBackgroundImage:[UIImage imageNamed:@"btn_login_click"] forState:UIControlStateHighlighted];
+    [self.completeButton setBackgroundImage:[UIImage imageNamed:@"btn_login_click"] forState:UIControlStateSelected];
+}
+
+- (void)keyBoardDown
+{
+    [self.view endEditing:YES];
+}
+
+#pragma mark ---- 监听文本变化 ----
+
+- (void)textFieldDidChange:(UITextField *)textField
+{
+    UITextField *textView = textField;
+    NSString *lang = [[textView textInputMode] primaryLanguage]; // 键盘输入模式
+    if ([lang isEqualToString:@"zh-Hans"]) { // 简体中文输入，包括简体拼音，健体五笔，简体手写
+        UITextRange *selectedRange = [textView markedTextRange];
+        //获取高亮部分
+        UITextPosition *position = [textView positionFromPosition:selectedRange.start offset:0];
+        // 没有高亮选择的字，则对已输入的文字进行字数统计和限制
+        if (!position) {
+            [self judgeTextFieldChange:textView];
+        }
+        // 有高亮选择的字符串，则暂不对文字进行统计和限制
+        else{
+        }
+    }
+    // 中文输入法以外的直接对其统计限制即可，不考虑其他语种情况
+    else{
+        [self judgeTextFieldChange:textView];
+    }
+}
+
+- (void)judgeTextFieldChange:(UITextField *)textField
+{
+    UITextField *textView = textField;
+    NSString *toBeString = textView.text;
+    
+    int maxNum;
+    if (textView.tag == 1) {
+        maxNum = 20;
+    }else if (textView.tag == 2){
+        maxNum = 16;
+    }
+    
+    if (toBeString.length > maxNum) {
+        textView.text = [toBeString substringToIndex:maxNum];
+    }
+    
+    if (self.passwordTextField.text.length>5 && self.accountTextField.text.length>0) {
+        [self ConfigureCompleteButtonBlue];
+    }else
+    {
+        [self configureCompleteButtonGray];
+    }
+}
+
+
+- (void)didReceiveMemoryWarning {
+    [super didReceiveMemoryWarning];
+}
+
+#pragma mark ---- 设置密码是否可见 ----
+
+- (IBAction)setPwdAction:(id)sender
+{
+    if (isVisible)
+    {
+        // 密码隐藏
+        
+        self.setPwdImage.image = [UIImage imageNamed:@"login_icon_eye"];
+        self.passwordTextField.secureTextEntry = YES;
+        isVisible = NO;
+        
+    }else
+    {
+        // 密码可见
+        
+        self.setPwdImage.image = [UIImage imageNamed:@"login_icon_eye_click"];
+        self.passwordTextField.secureTextEntry = NO;
+        isVisible = YES;
+    }
+}
+
+- (IBAction)completeAction:(id)sender {
+    
+    [self.view endEditing:YES];
+
+    if (QWGLOBALMANAGER.currentNetWork == kNotReachable) {
+        [SVProgressHUD showErrorWithStatus:@"网络未连接，请重试" duration:0.8f];
+        self.completeButton.enabled = YES;
+        return;
+    }
+    
+    if (self.accountTextField.text.length > 20 || self.accountTextField.text.length <= 0 || ![QWGLOBALMANAGER isContainNumOrABC:self.accountTextField.text]) {
+        [SVProgressHUD showErrorWithStatus:Kwarning220N74 duration:DURATION_SHORT];
+        self.completeButton.enabled = YES;
+        return;
+    }
+    
+    if (self.passwordTextField.text.length > 16 || self.passwordTextField.text.length < 6 || ![QWGLOBALMANAGER isContainNumOrABC:self.passwordTextField.text]) {
+        [SVProgressHUD showErrorWithStatus:Kwarning220N73 duration:DURATION_SHORT];
+        self.completeButton.enabled = YES;
+        return;
+    }
+    
+    
+    NSMutableDictionary *setting = [NSMutableDictionary dictionary];
+    setting[@"mobile"] = StrFromObj(self.mobile);
+    setting[@"account"] = StrFromObj(self.accountTextField.text);
+    setting[@"password"] = StrFromObj(self.passwordTextField.text);
+    setting[@"credentials"]=[AESUtil encryptAESData:StrFromObj(self.passwordTextField.text) app_key:AES_KEY];
+    [Branch PassportBranchRegisterWithParams:setting success:^(id obj) {
+        if ([obj[@"apiStatus"] integerValue] == 0) {
+            
+            LoginModelR *modeR=[LoginModelR new];
+            modeR.account=[self.accountTextField.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+            modeR.password = self.passwordTextField.text;
+            modeR.deviceCode = DEVICE_IDD;
+            modeR.deviceType = @"2";
+            modeR.pushDeviceCode = [QWGLOBALMANAGER deviceToken];
+            modeR.credentials=[AESUtil encryptAESData:self.passwordTextField.text app_key:AES_KEY];
+            //成功注册后登录
+            [Store loginWithParam:modeR success:^(id obj) {
+                [QWUserDefault setObject:@"1" key:@"ENTRANCETYPE"];
+                StoreUserInfoModel *userModel = (StoreUserInfoModel *)obj;
+                
+                if ([userModel.apiStatus integerValue] == 0) {
+                    
+                    //登录成功之后，调接口判断是否开通微商
+                    NSMutableDictionary *setting = [NSMutableDictionary dictionary];
+                    setting[@"token"] = StrFromObj(userModel.token);
+                    [Circle InitByBranchWithParams:setting success:^(id obj) {
+                        CheckStoreStatuModel *model = [CheckStoreStatuModel parse:obj];
+                        if ([model.apiStatus integerValue] == 0) {
+                            if (model.type) {
+                                QWGLOBALMANAGER.configure.storeType = model.type;
+                                QWGLOBALMANAGER.configure.storeCity = model.city;
+                                QWGLOBALMANAGER.configure.shortName = model.branchName;
+                                [QWGLOBALMANAGER saveAppConfigure];
+                            }
+                        }else{
+                            QWGLOBALMANAGER.configure.storeType = 1;
+                            [QWGLOBALMANAGER saveAppConfigure];
+                        }
+                        
+                        [self saveLoginUserInfo:userModel];
+                        
+                    } failure:^(HttpException *e) {
+                        QWGLOBALMANAGER.configure.storeType = 1;
+                        [QWGLOBALMANAGER saveAppConfigure];
+                        [self saveLoginUserInfo:userModel];
+                    }];
+
+                }else
+                {
+                    [SVProgressHUD showErrorWithStatus:userModel.apiMessage duration:0.8];
+                }
+                
+            } failure:^(HttpException *e) {
+                [self showError:kWaring0];
+                self.completeButton.enabled = YES;
+            }];
+        }else
+        {
+            [SVProgressHUD showErrorWithStatus:obj[@"apiMessage"] duration:0.8];
+        }
+        
+        
+    } failure:^(HttpException *e) {
+        
+    }];
+}
+
+- (void)saveLoginUserInfo:(StoreUserInfoModel *)userModel
+{
+    NSString * str = userModel.token;
+    if (str) {
+        QWGLOBALMANAGER.configure.userToken = userModel.token;
+        QWGLOBALMANAGER.configure.passportId = userModel.passport;
+        QWGLOBALMANAGER.configure.groupId = userModel.branchId;
+        QWGLOBALMANAGER.configure.userName = self.accountTextField.text;
+        QWGLOBALMANAGER.configure.passWord = self.passwordTextField.text;
+        QWGLOBALMANAGER.configure.type = [NSString stringWithFormat:@"%@",userModel.type];
+        QWGLOBALMANAGER.configure.showName = userModel.name;
+        QWGLOBALMANAGER.configure.mobile = userModel.mobile;
+        
+        /*
+         1, 待审核  资料已提交页面
+         2, 审核不通过  带入老数据的认证流程
+         3, 审核通过    功能正常
+         4, 未提交审核  认证流程
+         */
+        QWGLOBALMANAGER.configure.approveStatus = [NSString stringWithFormat:@"%@",userModel.approveStatus];
+        
+        if ([QWGLOBALMANAGER.configure.approveStatus integerValue] == 3) {
+            // 认证通过后，清除缓存
+            [QWUserDefault removeObjectBy:[NSString stringWithFormat:@"uploadLicense+%@",QWGLOBALMANAGER.configure.passportId]];
+            [QWUserDefault removeObjectBy:[NSString stringWithFormat:@"OrganInfo+%@",QWGLOBALMANAGER.configure.passportId]];
+        }
+        
+        
+        NSString *nickName = userModel.branchName;
+        
+        if(nickName && ![nickName isEqual:[NSNull null]]){
+            QWGLOBALMANAGER.configure.nickName = nickName;
+        }else{
+            QWGLOBALMANAGER.configure.nickName = @"";
+        }
+        NSString *avatarUrl = userModel.branchImgUrl;
+        if(avatarUrl && ![avatarUrl isEqual:[NSNull null]]){
+            QWGLOBALMANAGER.configure.avatarUrl = avatarUrl;
+        }else{
+            QWGLOBALMANAGER.configure.avatarUrl = @"";
+        }
+        QWGLOBALMANAGER.loginStatus = YES;
+        [QWGLOBALMANAGER saveAppConfigure];
+        //通知登录成功
+        [QWGLOBALMANAGER postNotif:NotifLoginSuccess data:userModel object:self];
+        [QWGLOBALMANAGER loginSucess];
+        
+        [QWGLOBALMANAGER saveOperateLog:@"1"];
+        [QWGLOBALMANAGER saveOperateLog:@"2"];
+        
+    }
+    if(QWGLOBALMANAGER.tabBar){
+        [self.navigationController dismissViewControllerAnimated:NO completion:nil];
+    }else{
+        AppDelegate *appDe = (AppDelegate *)[UIApplication sharedApplication].delegate;
+        [appDe initTabBar];
+        
+    }
+}
+
+@end

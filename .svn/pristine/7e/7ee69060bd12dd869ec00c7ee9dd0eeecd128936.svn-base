@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>PluginSkipApp</key>
+	<string>QWPageRedirectExt</string>
+	<key>PluginShippingDiscovery</key>
+	<string>QWShippingDiscoveryExt</string>
+	<key>ShippingAddress</key>
+	<string>QWShippingAddressExt</string>
+	<key>PluAppPlugin</key>
+	<string>QWPluAppPluginExt</string>
+	<key>PluginLogin</key>
+	<string>QWLoginPluginExt</string>
+	<key>PluginCommon</key>
+	<string>QWCallbackPluginExt</string>
+	<key>QWDevice</key>
+	<string>QWDevicePluginExt</string>
+	<key>gToken</key>
+	<string>QWGetTokenExt</string>
+	<key>AddShare</key>
+	<string>QWShareExt</string>
+	<key>Point</key>
+	<string>QWPointExt</string>
+	<key>lijian</key>
+	<string>QWJSLoginExt</string>
+	<key>camera</key>
+	<string>QWJSCameraExt</string>
+	<key>sms</key>
+	<string>QWJSSMSExt</string>
+	<key>PluginLocation</key>
+	<string>QWJSGeolocationExt</string>
+	<key>accelerometer</key>
+	<string>QWJSAccelerometerExt</string>
+	<key>contact</key>
+	<string>QWJSContactExt</string>
+	<key>device</key>
+	<string>QWJSDeviceExt</string>
+	<key>file</key>
+	<string>QWJSFileExt</string>
+	<key>video</key>
+	<string>QWJSVideoExt</string>
+	<key>audio</key>
+	<string>QWJSAudioExt</string>
+	<key>http</key>
+	<string>QWJSHttpExt</string>
+	<key>database</key>
+	<string>QWJSDatabaseExt</string>
+	<key>window</key>
+	<string>QWJSWindowExt</string>
+	<key>bocm</key>
+	<string>QWJSBocmExt</string>
+	<key>login</key>
+	<string>QWJSLoginExt</string>
+	<key>qrcode</key>
+	<string>QWQRCodeExt</string>
+	<key>quit</key>
+	<string>QWJSQuitExt</string>
+</dict>
+</plist>

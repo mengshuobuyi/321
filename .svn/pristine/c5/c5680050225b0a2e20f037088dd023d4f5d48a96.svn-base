@@ -1,0 +1,99 @@
+//
+//  WebDirectMacro.h
+//  wenYao-store
+//
+//  Created by PerryChen on 9/22/15.
+//  Copyright (c) 2015 carret. All rights reserved.
+//
+
+#ifndef wenYao_store_WebDirectMacro_h
+#define wenYao_store_WebDirectMacro_h
+// 设置导航栏类型
+typedef NS_ENUM(NSInteger, WebTitleType) {
+    WebTitleTypeNone,                   // 没有右侧按钮
+    WebTitleTypeBackToHome,             // 没有消息盒子的右侧按钮
+    WebTitleTypeOnlyShare,              // 只有分享按钮的右侧按钮
+    WebTitleTypeWithFontOnly,           // 只有放大字体
+    WebTitleTypeIntergralRecord,        // 积分商城兑换记录按钮
+};
+
+typedef NS_ENUM(NSInteger, WebDirType) {
+    WebDirTypeH5toLocal = 1,       // H5跳转本地
+    WebDirTypeH5toH5,              // H5跳H5
+};
+// 分享类型
+typedef NS_ENUM(NSInteger, LocalShareType) {
+    LocalShareTypeNone,                 // 没有分享
+    LocalShareTypeCouponProduct,        // 优惠商品分享
+    LocalShareTypeBranchLogoPreview,    // 商家品牌宣传预览分享
+    LocalShareTypeUnknow = 10086,       // 未知情况，不作处理 addby zpx 3.2
+};
+// H5跳转H5
+typedef NS_ENUM(NSInteger, WebPageToWebType) {
+    WebPageToWebTypeCouponDetail = 2011,     // 优惠细则
+    WebPageToWebTypeEmployeesShareStatistics = 7001,     // 员工分享统计
+    WebPageToWebTypeMemberMarket = 7002,            // 会员营销
+    WebPageToWebTypeQuestionJumpStudyInfo = 7003,       // 问卷跳转学习资料
+    WebPageToWebTypeTrainingToQuiz = 7004,              // 培训-问卷详情
+    WebPageToWebIntegralRecord = 7005,                     //本地跳积分商城兑换记录
+    WebPageToWebTypeProDetail = 7006,                  //积分商城-商品详情
+    WebPageToWebTypeFillAddress = 7007,                //实物地址填写页
+    WebPageToWebTypeMailSuccess = 7008,                //兑换成功页
+    WebPageToWebTypeExchangeDetail = 7009,             //兑换详情页
+    WebPageToWebTypeSuccessToRecord = 7010,             //兑换成功跳兑换记录
+    WebLocalTypeIntegraph = 7011,                      //积分商城首页
+    WebPageToWebTypeTrainingDetail = 7012,             //培训详情，生意经详情
+    WebPageToWebTypeOuterLink      = 7013,             //H5跳转H5的外链类型
+    WebPageToWebTypeGuideList      = 7014,             //选择身份跳新人引导列表
+    WebPageToWebTypeGuideDetail    = 7015,             // 新人引导列表跳详情
+};
+
+// H5跳转本地界面的界面类型
+typedef NS_ENUM(NSInteger, WebPageType) {
+    WebPageTypeSendStamps = 6001,               // 优惠商品送券
+    WebPageTypeDisease = 1001,                  // 疾病详情
+    WebPageTypeMedicineList = 1004,             // 药品列表
+    WebPageTypeMyJifen = 6003,                  // 积分商城跳我的积分
+    WebPageTypeJifenPaihang = 6002,             // 积分商城跳积分排行
+    WebPageTypeDiseaseFirstLevel = 6004,        // 疾病详情一级页面
+};
+
+// 本地跳转H5的界面类型
+typedef NS_ENUM(NSInteger, WebLocalType) {
+    WebLocalTypeCheckPost = -1,
+    WebLocalTypeOther = 0,                      // 未定
+    WebLocalTypeCouponCondition,            // 跳转至优惠细则
+    WebLocalTypeCouponProduct = 2004,              // 优惠商品
+    WebLocalTypeStatistics = 5,                 // 跳转优惠券消费统计详情
+    WebLocalTypeProSatistics,               // 商品的统计详情
+    WebLocalTypeHistoryOrderDetail,         // 客户历史订单详情
+    WebLocalTypeBranchLogoPreview,                  // 商家品牌宣传预览
+    WebLocalTypeEmployeesShareStatistics,           // 员工分享统计
+    WebPageToWebTypeSympton = 2001,                 // 症状详情
+    WebPageToWebTypeDisease = 2002,                 // 疾病详情
+    WebPageToWebTypeProductInstrumets = 2014,       // 商品说明书
+    WebLocalTypeExpertRegisterProtocol,             // 商家注册协议
+    WebLocalTypeQuestionnaireDetail,                // 培训问卷
+    
+    WebLocalTypeMemberMarketHelp,                   // 会员营销帮助中心
+    WebLocalTypeTrainingDetail,                     // 培训详情
+    WebLocalTypeOuterLink = 7013,                          // 外链类型
+    WebLocalTypeNewStatistics,                  //开通微商，优惠券统计详情
+    WebLocalTypeAnswerDetail,                   // 问答详情页面
+};
+// 提示框类型
+typedef NS_ENUM(NSInteger, AlertViewType) {
+    AlertViewTypePhoneNum,       // 打电话
+};
+// h5分享参数返回类型
+typedef NS_ENUM(NSInteger, WebPageShareType) {
+    WebPageShareTypeCouponProduct = 1,               // 优惠商品分享
+    WebPageShareTypeBranchLogoPreview = 2,           // 商家品牌宣传预览分享
+};
+//原生返回h5参数
+typedef NS_ENUM(NSInteger, CallbackType) {
+    CallbackTypeCouponProductShare = 3003,                       // 优惠商品的分享
+    CallbackTypeBranchLogoPreviewShare = 3003,               // 商家品牌宣传预览的分享   待定，参数暂时不需要
+    CallbackTypeScale = 3007,                           // 疾病详情文字放大防小
+};
+#endif

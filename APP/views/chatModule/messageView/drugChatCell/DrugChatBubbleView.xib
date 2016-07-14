@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="10117" systemVersion="15B42" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES">
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" id="iN0-l3-epB" customClass="DrugChatBubbleView">
+            <rect key="frame" x="0.0" y="0.0" width="297" height="80"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="bXh-He-1dt">
+                    <rect key="frame" x="0.0" y="0.0" width="285" height="80"/>
+                    <subviews>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dYj-Nn-hxQ" userLabel="drugTitle">
+                            <rect key="frame" x="77" y="7" width="204" height="40"/>
+                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                            <color key="textColor" red="0.20000000000000001" green="0.20000000000000001" blue="0.20000000000000001" alpha="1" colorSpace="calibratedRGB"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="药品默认图片" translatesAutoresizingMaskIntoConstraints="NO" id="1BW-8D-a4q" userLabel="drugImage">
+                            <rect key="frame" x="8" y="10" width="60" height="60"/>
+                            <constraints>
+                                <constraint firstAttribute="width" constant="60" id="R1l-Hf-zqi"/>
+                                <constraint firstAttribute="height" constant="60" id="vra-Pw-x9u"/>
+                            </constraints>
+                        </imageView>
+                        <button hidden="YES" opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="KGm-cg-fMe">
+                            <rect key="frame" x="201" y="50" width="80" height="30"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="13"/>
+                            <state key="normal" title="查看详情 &gt;">
+                                <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                            </state>
+                            <connections>
+                                <action selector="didDrugDetail:" destination="iN0-l3-epB" eventType="touchUpInside" id="rWq-h0-zMh"/>
+                            </connections>
+                        </button>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Zhe-N7-VqM">
+                            <rect key="frame" x="76" y="49" width="205" height="21"/>
+                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="21" id="3mo-Y6-BNA"/>
+                            </constraints>
+                            <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                            <color key="textColor" red="0.59999999999999998" green="0.59999999999999998" blue="0.59999999999999998" alpha="1" colorSpace="calibratedRGB"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                    </subviews>
+                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                    <constraints>
+                        <constraint firstItem="Zhe-N7-VqM" firstAttribute="leading" secondItem="1BW-8D-a4q" secondAttribute="trailing" constant="8" id="1E3-IW-xhd"/>
+                        <constraint firstItem="dYj-Nn-hxQ" firstAttribute="top" secondItem="bXh-He-1dt" secondAttribute="top" constant="7" id="4hY-gT-F1x"/>
+                        <constraint firstAttribute="trailing" secondItem="dYj-Nn-hxQ" secondAttribute="trailing" constant="4" id="Jmo-V6-bnw"/>
+                        <constraint firstAttribute="bottom" secondItem="Zhe-N7-VqM" secondAttribute="bottom" constant="10" id="KsT-NP-vuJ"/>
+                        <constraint firstItem="1BW-8D-a4q" firstAttribute="top" secondItem="bXh-He-1dt" secondAttribute="top" constant="10" id="QyE-wt-NIq"/>
+                        <constraint firstItem="1BW-8D-a4q" firstAttribute="leading" secondItem="bXh-He-1dt" secondAttribute="leading" constant="8" id="bbv-m9-Itp"/>
+                        <constraint firstItem="Zhe-N7-VqM" firstAttribute="top" secondItem="dYj-Nn-hxQ" secondAttribute="bottom" constant="2" id="gS0-MG-MZW"/>
+                        <constraint firstAttribute="trailing" secondItem="Zhe-N7-VqM" secondAttribute="trailing" constant="4" id="sci-PK-YVZ"/>
+                        <constraint firstItem="dYj-Nn-hxQ" firstAttribute="leading" secondItem="1BW-8D-a4q" secondAttribute="trailing" constant="9" id="wbv-Ea-ybi"/>
+                    </constraints>
+                </view>
+            </subviews>
+            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+            <constraints>
+                <constraint firstItem="bXh-He-1dt" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="2wL-vV-qi3"/>
+                <constraint firstAttribute="bottom" secondItem="bXh-He-1dt" secondAttribute="bottom" id="FAY-DA-oh7"/>
+                <constraint firstAttribute="trailing" secondItem="bXh-He-1dt" secondAttribute="trailing" constant="12" id="irn-UX-J4x"/>
+                <constraint firstItem="bXh-He-1dt" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="jTx-Bv-AJh"/>
+            </constraints>
+            <nil key="simulatedStatusBarMetrics"/>
+            <nil key="simulatedTopBarMetrics"/>
+            <nil key="simulatedBottomBarMetrics"/>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <connections>
+                <outlet property="drugDetail" destination="KGm-cg-fMe" id="6C9-F0-D6C"/>
+                <outlet property="drugImage" destination="1BW-8D-a4q" id="hy2-lo-LaZ"/>
+                <outlet property="drugSpec" destination="Zhe-N7-VqM" id="DZP-m9-XYh"/>
+                <outlet property="drugTitle" destination="dYj-Nn-hxQ" id="JXi-TL-V9u"/>
+                <outlet property="leftCon" destination="2wL-vV-qi3" id="la1-Yp-IBB"/>
+                <outlet property="rightCon" destination="irn-UX-J4x" id="zz2-Mw-2ud"/>
+            </connections>
+            <point key="canvasLocation" x="233.5" y="252"/>
+        </view>
+    </objects>
+    <resources>
+        <image name="药品默认图片" width="80" height="80"/>
+    </resources>
+</document>

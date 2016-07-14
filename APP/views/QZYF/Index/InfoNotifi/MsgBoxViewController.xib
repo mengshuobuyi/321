@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="8191" systemVersion="14F27" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES">
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="8154"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="MsgBoxViewController">
+            <connections>
+                <outlet property="tableView" destination="LBT-o4-DlP" id="Pfp-AP-Jk2"/>
+                <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="i5M-Pr-FkT">
+            <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" style="grouped" separatorStyle="none" rowHeight="44" sectionHeaderHeight="18" sectionFooterHeight="18" translatesAutoresizingMaskIntoConstraints="NO" id="LBT-o4-DlP">
+                    <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                    <color key="backgroundColor" red="0.93725490199999995" green="0.93725490199999995" blue="0.95686274510000002" alpha="1" colorSpace="calibratedRGB"/>
+                    <connections>
+                        <outlet property="dataSource" destination="-1" id="so3-26-KHo"/>
+                        <outlet property="delegate" destination="-1" id="Xgk-e2-ZoG"/>
+                    </connections>
+                </tableView>
+            </subviews>
+            <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+            <constraints>
+                <constraint firstItem="LBT-o4-DlP" firstAttribute="centerY" secondItem="i5M-Pr-FkT" secondAttribute="centerY" id="AB7-SI-KI4"/>
+                <constraint firstItem="LBT-o4-DlP" firstAttribute="width" secondItem="i5M-Pr-FkT" secondAttribute="width" id="pxG-eR-db7"/>
+                <constraint firstItem="LBT-o4-DlP" firstAttribute="centerX" secondItem="i5M-Pr-FkT" secondAttribute="centerX" id="soc-O0-efp"/>
+                <constraint firstItem="LBT-o4-DlP" firstAttribute="height" secondItem="i5M-Pr-FkT" secondAttribute="height" id="tXB-U8-uvY"/>
+            </constraints>
+            <point key="canvasLocation" x="302" y="407"/>
+        </view>
+    </objects>
+</document>

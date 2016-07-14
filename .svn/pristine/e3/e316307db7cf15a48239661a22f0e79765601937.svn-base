@@ -1,0 +1,36 @@
+//
+//  ToStorePickCell.m
+//  wenYao-store
+//
+//  Created by Yang Yuexia on 16/5/6.
+//  Copyright © 2016年 carret. All rights reserved.
+//
+
+#import "ToStorePickCell.h"
+#import "ExpertModel.h"
+
+@implementation ToStorePickCell
+
++ (CGFloat)getCellHeight:(id)data
+{
+    return 100;
+}
+
+- (void)UIGlobal
+{
+    [super UIGlobal];
+    self.contentView.backgroundColor = [UIColor clearColor];
+    self.separatorLine.hidden = YES;
+}
+
+- (void)setCell:(id)data
+{
+    [super setCell:data];
+    
+    ShippingMethodDetailModel *model = (ShippingMethodDetailModel *)data;
+    
+    //营业时间
+    self.timeLabel.text = model.timeSliceTip;
+}
+
+@end

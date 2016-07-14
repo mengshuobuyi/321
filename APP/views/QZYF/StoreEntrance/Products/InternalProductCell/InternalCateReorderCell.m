@@ -1,0 +1,39 @@
+//
+//  InternalCateReorderCell.m
+//  wenYao-store
+//
+//  Created by PerryChen on 7/12/16.
+//  Copyright © 2016 carret. All rights reserved.
+//
+
+#import "InternalCateReorderCell.h"
+#import "InternalProductModel.H"
+#import "QWGlobalManager.h"
+
+@implementation InternalCateReorderCell
+
+/*
+// Only override drawRect: if you perform custom drawing.
+// An empty implementation adversely affects performance during animation.
+- (void)drawRect:(CGRect)rect {
+    // Drawing code
+}
+*/
+- (void)setCell:(id)data
+{
+    [super setCell:data];
+    InternalProductCateModel *model = (InternalProductCateModel *)data;
+    self.lblContent.text = model.className;
+    self.lblCateCount.text = [NSString stringWithFormat:@"%@",model.proCount];
+    if (AUTHORITY_ROOT) {
+        self.constraintLead.constant = 30.0f;
+        self.imgViewReorder.hidden = NO;
+    } else {
+        self.constraintLead.constant = 15.0f;
+        self.imgViewReorder.hidden = YES;
+    }
+    [self setNeedsLayout];
+    [self layoutIfNeeded];
+}
+
+@end

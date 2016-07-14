@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="6250" systemVersion="14E46" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES">
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6250"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" id="iN0-l3-epB" customClass="PhotoChatBubbleView">
+            <rect key="frame" x="0.0" y="0.0" width="60" height="40"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="NyW-8F-Who" customClass="BubblePhotoImageView">
+                    <rect key="frame" x="1" y="1" width="58" height="38"/>
+                    <subviews>
+                        <view hidden="YES" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="nef-XV-d7h" customClass="progressView">
+                            <rect key="frame" x="-130" y="-264" width="320" height="568"/>
+                            <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        </view>
+                    </subviews>
+                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                </view>
+            </subviews>
+            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+            <constraints>
+                <constraint firstItem="NyW-8F-Who" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="1" id="6oM-Vi-f6x"/>
+                <constraint firstItem="NyW-8F-Who" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" constant="1" id="Qzd-Lv-HJH"/>
+                <constraint firstAttribute="bottom" secondItem="NyW-8F-Who" secondAttribute="bottom" constant="1" id="VOW-ft-as6"/>
+                <constraint firstAttribute="trailing" secondItem="NyW-8F-Who" secondAttribute="trailing" constant="1" id="k9k-Xg-RUN"/>
+            </constraints>
+            <nil key="simulatedStatusBarMetrics"/>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <connections>
+                <outlet property="bubblePhotoImageView" destination="NyW-8F-Who" id="VHN-01-GWt"/>
+            </connections>
+            <point key="canvasLocation" x="230" y="238"/>
+        </view>
+    </objects>
+    <simulatedMetricsContainer key="defaultSimulatedMetrics">
+        <simulatedStatusBarMetrics key="statusBar"/>
+        <simulatedOrientationMetrics key="orientation"/>
+        <simulatedScreenMetrics key="destination" type="retina4"/>
+    </simulatedMetricsContainer>
+</document>

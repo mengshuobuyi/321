@@ -1,0 +1,16 @@
+//
+//  InstitutionListViewController.h
+//  wenYao-store
+//
+//  Created by qwfy0006 on 15/4/1.
+//  Copyright (c) 2015年 carret. All rights reserved.
+//
+
+#import "QWBaseVC.h"
+
+@interface InstitutionListViewController : QWBaseVC
+
+@property (assign, nonatomic) int totalPage;
+@property (strong, nonatomic) NSMutableDictionary *searchInfo;
+
+@end

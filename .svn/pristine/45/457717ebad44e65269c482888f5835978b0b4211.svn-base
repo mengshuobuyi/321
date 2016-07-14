@@ -1,0 +1,321 @@
+//
+//  EditDoorDeliveryViewController.m
+//  wenYao-store
+//
+//  Created by Yang Yuexia on 16/7/11.
+//  Copyright © 2016年 carret. All rights reserved.
+//
+
+#import "EditDoorDeliveryViewController.h"
+#import "EditDoorDeliveryCell.h"
+#import "MADateView.h"
+#import "UIViewController+LJWKeyboardHandlerHelper.h"
+#import "Bmmall.h"
+#import "BranchModel.h"
+
+@interface EditDoorDeliveryViewController ()<UITableViewDelegate,UITableViewDataSource,EditDoorDeliveryCellDelegate>
+
+@property (weak, nonatomic) IBOutlet UITableView *tableView;
+@property (strong, nonatomic) IBOutlet UIView *tableHeaderView;
+@property (strong, nonatomic) IBOutlet UIView *tableFooterView;
+
+@property (weak, nonatomic) IBOutlet UIButton *startTimeBtn;
+@property (weak, nonatomic) IBOutlet UIButton *endTimebtn;
+@property (weak, nonatomic) IBOutlet UITextField *startPriceTextField;
+@property (weak, nonatomic) IBOutlet UITextField *freeDistributionTextField;
+
+@property (strong, nonatomic) NSMutableArray *dataList;
+
+@property (strong, nonatomic) NSString *startTimeText;
+@property (strong, nonatomic) NSString *endTimeText;
+
+- (IBAction)selectTimeAction:(id)sender;
+
+- (IBAction)cancleAction:(id)sender;
+
+@end
+
+@implementation EditDoorDeliveryViewController
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    
+    self.title = @"送货上门";
+    
+    self.dataList = [NSMutableArray arrayWithObjects:@"obj", nil];
+    
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"保存" style:UIBarButtonItemStylePlain target:self action:@selector(saveAction)];
+    
+    self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+    self.tableView.tableHeaderView = self.tableHeaderView;
+    self.tableView.tableFooterView = self.tableFooterView;
+    
+    self.startPriceTextField.keyboardType = UIKeyboardTypeNumberPad;
+    self.freeDistributionTextField.keyboardType = UIKeyboardTypeNumberPad;
+    
+    self.startPriceTextField.delegate = self;
+    self.freeDistributionTextField.delegate = self;
+    
+    self.startPriceTextField.tag = 1;
+    self.freeDistributionTextField.tag = 2;
+    
+    // tableView 编辑 键盘 up down
+    [self registerLJWKeyboardHandler];
+    
+    [self checkTimeTextColor];
+}
+
+#pragma mark ---- UITableViewDelegate ----
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
+    return self.dataList.count;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return 88;
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    EditDoorDeliveryCell *cell = [tableView dequeueReusableCellWithIdentifier:@"EditDoorDeliveryCell"];
+    cell.editDoorDeliveryCellDelegate = self;
+    cell.deleteBtn.obj = indexPath;
+    cell.addBtn.obj = indexPath;
+    
+    cell.kilometerLabel.delegate = self;
+    cell.priceLabel.delegate = self;
+    
+    cell.kilometerLabel.tag = 3;
+    cell.priceLabel.tag = 4;
+    
+    [cell configureData:self.dataList indexPath:indexPath];
+    if (indexPath.row == 0) {
+        cell.topSepratorLine.hidden = YES;
+    }else{
+        cell.topSepratorLine.hidden = NO;
+    }
+    return cell;
+}
+
+- (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event
+{
+    [self.view endEditing:YES];
+}
+
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView
+{
+    [self.view endEditing:YES];
+}
+
+- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
+{
+    if (textField.tag == 1 || textField.tag == 2)
+    {
+        if (textField.text.length == 1) {
+            NSString *prefixStr = [textField.text substringWithRange:NSMakeRange(0, 1)];
+            if ([prefixStr isEqualToString:@"0"]) {
+                NSString *replaceStr = [textField.text stringByReplacingCharactersInRange:NSMakeRange(0, 1) withString:string];
+                textField.text = replaceStr;
+                return NO;
+            }
+        }
+    }else if (textField.tag == 3)
+    {
+        
+        if (textField.text.length == 0) {
+            if ([string isEqualToString:@"0"]) {
+                textField.text = @"1";
+                [SVProgressHUD showErrorWithStatus:@"公里数不能小于0"];
+                return NO;
+            }
+        }
+        
+        
+    }else if (textField.tag == 4)
+    {
+        if (textField.text.length == 1) {
+            NSString *prefixStr = [textField.text substringWithRange:NSMakeRange(0, 1)];
+            if ([prefixStr isEqualToString:@"0"]) {
+                NSString *replaceStr = [textField.text stringByReplacingCharactersInRange:NSMakeRange(0, 1) withString:string];
+                textField.text = replaceStr;
+                return NO;
+            }
+        }
+    }
+    
+    return YES;
+}
+
+
+#pragma mark ---- 选择配送时间 ----
+- (IBAction)selectTimeAction:(id)sender
+{
+    [self.view endEditing:YES];
+
+    UIButton *button = (UIButton *)sender;
+    NSString *buttonTitle = button.titleLabel.text;
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    [dateFormatter setDateFormat:@"HH:mm"];
+    NSDate *date = [dateFormatter dateFromString:buttonTitle];
+    
+    NSInteger tag = button.tag;
+    __block EditDoorDeliveryViewController *weakSelf = self;
+    [MADateView showDateViewWithDate:date Style:DateViewStyleTime CallBack:^(MyWindowClick buttonIndex, NSString *timeStr) {
+        
+        [self.tableView setContentOffset:CGPointMake(0, 0) animated:YES];
+        
+        switch (buttonIndex) {
+            case MyWindowClickForOK:
+            {
+                switch (tag) {
+                    case 333: //开始时间
+                    {
+                        self.startTimeText = timeStr;
+                        [weakSelf.startTimeBtn setTitle:timeStr forState:UIControlStateNormal];
+                        [self checkTimeTextColor];
+                    }
+                        break;
+                    case 444: //结束时间
+                    {
+                        self.endTimeText = timeStr;
+                        [weakSelf.endTimebtn setTitle:timeStr forState:UIControlStateNormal];
+                        [self checkTimeTextColor];
+                    }
+                    default:
+                        break;
+                }
+            }
+                break;
+            case MyWindowClickForCancel:
+            {
+            }
+                break;
+            default:
+                break;
+        }
+    }];
+}
+
+- (void)checkTimeTextColor
+{
+    if (StrIsEmpty(self.startTimeText))
+    {
+        [self.startTimeBtn setTitleColor:RGBHex(qwColor9) forState:UIControlStateNormal];
+        [self.startTimeBtn setTitle:@"请选择时间" forState:UIControlStateNormal];
+    }else
+    {
+        [self.startTimeBtn setTitleColor:RGBHex(qwColor6) forState:UIControlStateNormal];
+    }
+    
+    if (StrIsEmpty(self.endTimeText))
+    {
+        [self.endTimebtn setTitleColor:RGBHex(qwColor9) forState:UIControlStateNormal];
+        [self.endTimebtn setTitle:@"请选择时间" forState:UIControlStateNormal];
+    }else
+    {
+        [self.endTimebtn setTitleColor:RGBHex(qwColor6) forState:UIControlStateNormal];
+    }
+    
+}
+
+#pragma mark ---- 增加 ----
+- (void)addPriceCell:(NSIndexPath *)indexPath
+{
+    [self.dataList addObject:@"obj"];
+    [self.tableView reloadData];
+}
+
+#pragma mark ---- 删除 ----
+- (void)deletePriceCell:(NSIndexPath *)indexPath
+{
+    if (self.dataList.count == 1) {
+        [SVProgressHUD showErrorWithStatus:@"至少要保留一条配送信息"];
+        return;
+    }
+    
+    [self.dataList removeObjectAtIndex:indexPath.row];
+    [self.tableView reloadData];
+}
+
+#pragma mark ---- 取消此配送方式 ----
+- (IBAction)cancleAction:(id)sender
+{
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:@"确定要取消此配送方式吗？" delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"确定", nil];
+    [alert show];
+}
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    if (buttonIndex == 1)
+    {
+        if (QWGLOBALMANAGER.currentNetWork == kNotReachable) {
+            [SVProgressHUD showErrorWithStatus:kWaring33];
+            return;
+        }
+        
+//        if (self.postTips.count == 1) {
+//            [SVProgressHUD showErrorWithStatus:@"本店至少要有一种配送方式"];
+//        }
+        
+        //取消此配送方式 调接口
+    }
+}
+
+#pragma mark ---- 保存 ----
+- (void)saveAction
+{
+    if (QWGLOBALMANAGER.currentNetWork == kNotReachable) {
+        [SVProgressHUD showErrorWithStatus:kWaring33];
+        return;
+    }
+    
+    //设置配送时间
+    
+    if (StrIsEmpty(self.startPriceTextField.text)) {
+        [SVProgressHUD showErrorWithStatus:@"请设置起送价"];
+        return;
+    }
+    
+    if (StrIsEmpty(@"配送费")) {
+        [SVProgressHUD showErrorWithStatus:@"请设置配送费"];
+        return;
+    }
+    
+    if ([self.freeDistributionTextField.text intValue] < [self.startPriceTextField.text intValue]) {
+        [SVProgressHUD showErrorWithStatus:@"免配送费金额不能小于起送价"];
+        return;
+    }
+    
+    //配送范围不能重合，从小到打排序
+    
+    
+    //配送费数组
+    NSMutableArray *array = [NSMutableArray array];
+    
+    NSMutableDictionary *setting = [NSMutableDictionary dictionary];
+    setting[@"token"] = StrFromObj(QWGLOBALMANAGER.configure.userToken);
+    setting[@"deliveryBegin"] = StrFromObj(self.startTimeBtn.titleLabel.text);
+    setting[@"deliveryEnd"] = StrFromObj(self.endTimebtn.titleLabel.text);
+    setting[@"deliveryLimitFee"] = StrFromObj(self.startPriceTextField.text);
+    setting[@"deliveryFreeFee"] = StrFromObj(self.freeDistributionTextField.text);
+
+    [Bmmall BmmallDeliveryHomeWithParams:setting deliveryData:array success:^(id obj) {
+        
+        BaseAPIModel *model = [BaseAPIModel parse:obj];
+        if ([model.apiStatus integerValue] == 0) {
+            [self.navigationController popViewControllerAnimated:YES];
+        }else{
+            [SVProgressHUD showErrorWithStatus:model.apiMessage];
+        }
+        
+    } failure:^(HttpException *e) {
+        
+    }];
+}
+
+- (void)didReceiveMemoryWarning {
+    [super didReceiveMemoryWarning];
+}
+
+@end

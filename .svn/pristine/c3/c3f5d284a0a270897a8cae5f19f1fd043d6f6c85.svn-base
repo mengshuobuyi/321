@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="10116" systemVersion="15E65" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="ClientMemberViewController">
+            <connections>
+                <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="i5M-Pr-FkT">
+            <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Kdk-2s-zii">
+                    <rect key="frame" x="0.0" y="0.0" width="320" height="67"/>
+                    <subviews>
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="f6p-j7-vqy">
+                            <rect key="frame" x="0.0" y="0.0" width="320" height="67"/>
+                            <inset key="contentEdgeInsets" minX="32" minY="0.0" maxX="165" maxY="0.0"/>
+                            <state key="normal">
+                                <color key="titleColor" red="0.20000000000000001" green="0.20000000000000001" blue="0.20000000000000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                            </state>
+                            <state key="highlighted" image="客户_02" backgroundImage="客户_02">
+                                <color key="titleColor" red="0.20000000000000001" green="0.20000000000000001" blue="0.20000000000000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            </state>
+                            <connections>
+                                <action selector="goToMyGroup:" destination="-1" eventType="touchUpInside" id="2Zs-AY-nwp"/>
+                            </connections>
+                        </button>
+                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="icon_cuttomer" translatesAutoresizingMaskIntoConstraints="NO" id="IA1-4h-4PL">
+                            <rect key="frame" x="15" y="10" width="48" height="48"/>
+                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                            <constraints>
+                                <constraint firstAttribute="width" constant="48" id="bJK-Qv-KSU"/>
+                                <constraint firstAttribute="height" constant="48" id="xOu-Nk-iyA"/>
+                            </constraints>
+                        </imageView>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="yc9-KJ-qv8">
+                            <rect key="frame" x="0.0" y="66" width="320" height="1"/>
+                            <color key="backgroundColor" red="0.87843137250000003" green="0.87843137250000003" blue="0.87843137250000003" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="0.5" id="kof-at-tyR"/>
+                            </constraints>
+                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                            <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="会员分组" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zEP-PT-Unw">
+                            <rect key="frame" x="70" y="23" width="96" height="21"/>
+                            <constraints>
+                                <constraint firstAttribute="width" constant="96" id="jF1-9g-ggJ"/>
+                                <constraint firstAttribute="height" constant="21" id="u4M-Nk-yT3"/>
+                            </constraints>
+                            <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                            <color key="textColor" red="0.20000000000000001" green="0.20000000000000001" blue="0.20000000000000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                    </subviews>
+                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    <constraints>
+                        <constraint firstAttribute="trailing" secondItem="f6p-j7-vqy" secondAttribute="trailing" id="0be-5J-ClV"/>
+                        <constraint firstItem="IA1-4h-4PL" firstAttribute="top" secondItem="Kdk-2s-zii" secondAttribute="top" constant="10" id="2Wt-KF-0KH"/>
+                        <constraint firstAttribute="trailing" secondItem="yc9-KJ-qv8" secondAttribute="trailing" id="Azx-th-F56"/>
+                        <constraint firstItem="zEP-PT-Unw" firstAttribute="leading" secondItem="IA1-4h-4PL" secondAttribute="trailing" constant="7" id="HIf-0n-EGR"/>
+                        <constraint firstItem="f6p-j7-vqy" firstAttribute="top" secondItem="Kdk-2s-zii" secondAttribute="top" id="ImH-cA-d1e"/>
+                        <constraint firstItem="f6p-j7-vqy" firstAttribute="leading" secondItem="Kdk-2s-zii" secondAttribute="leading" id="UTL-HN-dc4"/>
+                        <constraint firstAttribute="height" constant="67" id="VgO-hL-sFp"/>
+                        <constraint firstItem="IA1-4h-4PL" firstAttribute="leading" secondItem="Kdk-2s-zii" secondAttribute="leading" constant="15" id="aYq-ha-uvY"/>
+                        <constraint firstItem="yc9-KJ-qv8" firstAttribute="leading" secondItem="Kdk-2s-zii" secondAttribute="leading" id="bng-LC-Fwc"/>
+                        <constraint firstAttribute="bottom" secondItem="f6p-j7-vqy" secondAttribute="bottom" id="i7e-li-H8i"/>
+                        <constraint firstAttribute="bottom" secondItem="yc9-KJ-qv8" secondAttribute="bottom" id="sOd-dm-pg2"/>
+                        <constraint firstItem="zEP-PT-Unw" firstAttribute="top" secondItem="Kdk-2s-zii" secondAttribute="top" constant="23" id="uH9-Ho-b2F"/>
+                    </constraints>
+                </view>
+            </subviews>
+            <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+            <constraints>
+                <constraint firstItem="Kdk-2s-zii" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="3Kb-Ou-ddb"/>
+                <constraint firstAttribute="trailing" secondItem="Kdk-2s-zii" secondAttribute="trailing" id="Qz6-vs-i56"/>
+                <constraint firstItem="Kdk-2s-zii" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" id="tGl-Kz-In0"/>
+            </constraints>
+            <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
+            <point key="canvasLocation" x="15" y="353"/>
+        </view>
+    </objects>
+    <resources>
+        <image name="icon_cuttomer" width="100" height="100"/>
+        <image name="客户_02" width="640" height="132"/>
+    </resources>
+</document>

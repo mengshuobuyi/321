@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>0ED1ADFA-1AED-47EB-A792-956DDC204DE4</string>
+	<key>IDESourceControlProjectName</key>
+	<string>wenYao-store</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>072a1dac-eb1d-446a-8ecb-06265a0c3655++1816</key>
+		<string>http://svn.qw.com/v2/platform/code/ios-store/branches/v2.2.1</string>
+		<key>072a1dac-eb1d-446a-8ecb-06265a0c3655++8167</key>
+		<string>http://svn.qw.com/v2/platform/code/ios-store/branches/v2.2.0</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>wenYao-store.xcodeproj</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>072a1dac-eb1d-446a-8ecb-06265a0c3655++1816</key>
+		<string>../..</string>
+		<key>072a1dac-eb1d-446a-8ecb-06265a0c3655++8167</key>
+		<string>../../../v2.2.0shanghu</string>
+	</dict>
+	<key>IDESourceControlProjectRepositoryRootDictionary</key>
+	<dict>
+		<key>072a1dac-eb1d-446a-8ecb-06265a0c3655++1816</key>
+		<string>http://svn.qw.com/v2/platform</string>
+		<key>072a1dac-eb1d-446a-8ecb-06265a0c3655++8167</key>
+		<string>http://svn.qw.com/v2/platform</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>http://svn.qw.com/v2/platform/code/ios-store/branches/v2.2.1/wenYao-store.xcodeproj</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>111</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>072a1dac-eb1d-446a-8ecb-06265a0c3655++1816</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.subversion</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>072a1dac-eb1d-446a-8ecb-06265a0c3655++8167</string>
+			<key>IDESourceControlWCCName</key>
+			<string>v2.2.0shanghu</string>
+		</dict>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.subversion</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>072a1dac-eb1d-446a-8ecb-06265a0c3655++1816</string>
+			<key>IDESourceControlWCCName</key>
+			<string>v2.2.1</string>
+		</dict>
+	</array>
+</dict>
+</plist>

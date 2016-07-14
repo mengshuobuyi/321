@@ -1,0 +1,344 @@
+//
+//  QWGlobalManager.h
+//  APP
+//
+//  Created by qw on 15/2/27.
+//  Copyright (c) 2015年 carret. All rights reserved.
+//
+
+#import <Foundation/Foundation.h>
+#import "Constant.h"
+#import "userDefault.h"
+#import "ReachabilityMonitor.h"
+#import "GlobalManager.h"
+#import "UserInfoModel.h"
+#import <MAMapKit/MAMapKit.h>
+
+//社会分享
+#import "UMSocial.h"
+#import "UMSocialSinaSSOHandler.h"
+#import "UMSocialQQHandler.h"
+#import "UMSocialWechatHandler.h"
+#import "MapInfoModel.h"
+
+#import "QWTabBar.h"
+#import "StoreModel.h"
+#import "StoreModelR.h"
+#import "HttpClient.h"
+#import "customAlertView.h"
+
+#import "AppFadeCover.h"
+#import "RedPointModel.h"
+#import "CocoaLumberjack.h"
+#import "QWClickEvent.h"
+#import "Countdown.h"
+#import "Order.h"
+
+@class HomePageViewController;
+@class InterlocuationViewController;
+@class ConsultationMainViewController;
+@class InterlocutionListViewController;
+
+//全局管理对象
+#define  QWGLOBALMANAGER [QWGlobalManager sharedInstance]
+
+typedef struct RedPoint RedPoint;
+typedef void (^ReadLocationBlock)(MapInfoModel *mapInfoModel);
+
+
+@interface QWGlobalManager : GlobalManager<ReachabilityDelegate, UIAlertViewDelegate,UIActionSheetDelegate>
+{
+    dispatch_source_t   pullCircleMessageTimer;
+    dispatch_source_t   pullMessageTimer;
+    dispatch_source_t   pullMessageBoxTimer;
+    dispatch_source_t   pullMessageTaskScoreTimer;
+    dispatch_source_t   CheckTokenTimer;
+    // 版本更新
+    customAlertView *myAlertView;
+    
+    NSTimeInterval lastTimeStamp;
+    NSString * installUrl;
+    
+    //药店轮询，上次节点
+    NSString *lastTimeStampMyConsulting;
+}
+
+@property (nonatomic, assign) BOOL AppraiseRedShow;
+@property (nonatomic ,assign) BOOL JGInfoCheckRedShow;
+@property (nonatomic, assign) BOOL isForceUpdating;
+@property (nonatomic, strong) NSDictionary *dicForceUpdated;
+@property (nonatomic, assign) NSTimeInterval lastTimeStamp;
+@property (nonatomic, assign) BOOL boolLoadFromFirstIn;
+#pragma mark=======药店段
+@property (nonatomic, strong) StoreUserInfoModel      *ConfigureList;
+@property (nonatomic, copy)   dispatch_source_t         heartBeatTimer;                 //心跳包定时器
+@property (nonatomic,strong)  AppFadeCover              *fadeCover;
+@property (nonatomic, assign) BOOL                      loginStatus;                    //登陆状态
+@property (nonatomic,assign)  BOOL                      isKickOff;                      //抢登状态
+@property (nonatomic, strong) UserInfoModel *           configure;                       //全局配置
+@property (nonatomic, strong) UserInfoModelPrivate  *   configureTest;
+@property (nonatomic, assign) NetworkStatus             currentNetWork;                 //当前的网络状态
+@property (nonatomic ,strong) NSString *                deviceToken;                    //令牌
+@property (nonatomic, assign) BOOL                      needShowBadge;                  //
+@property (strong, nonatomic) QWTabBar *                tabBar;                         //底部tab标签
+@property (nonatomic, strong) ReachabilityMonitor       *reachabilityMonitor;           //网络监控
+@property (nonatomic, strong) MAMapView                 *mapView;                       //全局高德地图
+@property (nonatomic, strong) MapInfoModel              *mapModel;                      //定位解析后信息
+@property (nonatomic, strong) UIImage                   *saveImage;
+@property (nonatomic ,strong) HttpClient                *imHttpClent;                   //im会话请求
+
+@property (nonatomic, assign) NSInteger                 unReadCount;                        //未读数
+@property (nonatomic, assign) BOOL                      DebugLogEnable;
+@property (nonatomic, assign) BOOL                      hadWaiting;                     //待解答
+@property (nonatomic, assign) BOOL                      hadMessage;                     //全维药事的消息
+@property (nonatomic, assign) BOOL                      hadNotice;                     //消息盒子的其他消息(除QWYS)
+@property (nonatomic, assign) BOOL                      hadMyConsult;                     //本店的消息
+@property (nonatomic, assign) BOOL                      hadOtherConsult;                     //解答中的消息
+@property (nonatomic, strong) DDFileLogger              *fileLogger;
+@property (nonatomic ,strong) NSString *                lastTimestampfortimer;                      //定时轮训加时间戳
+
+@property (nonatomic, assign) BOOL                      bInMessageShowTypeAsking;
+
+@property (nonatomic, assign) int                       getVerifyCd;                //定时器注册验证码
+@property (nonatomic, assign) int                       getChangePhoneCd;           //定时器修改手机号
+@property (nonatomic, assign) int                       getForgetPasswordCd;        //定时器忘记密码
+@property (nonatomic, assign) int                       getChangeAlipayCd;          //修改支付宝验证码
+
+@property (nonatomic, assign) int                       getCommonRegisterCd;        //定时器普通注册
+@property (nonatomic, assign) int                       getExpertLoginCd;           //定时器专家登录
+@property (nonatomic, assign) int                       getExpertRegisterCd;        //专家注册
+
+@property (nonatomic, assign) int                       getExpertForgetPwdCd;       //专家忘记密码
+@property (nonatomic, assign) int                       getStoreEditPhoneCd;        //门店账号详情修改手机号
+
+
+
+@property (nonatomic, strong) NSString *                lastQWYSTime;         // 拉取全维要是时间
+@property (nonatomic, assign) BOOL                      isShowAlert;
+@property (nonatomic, assign) BOOL                      isShowCustomAlert;
+@property (nonatomic, assign) BOOL                      isCheckToken;         // 是否校验token
+
+@property (nonatomic, strong) NSString *                lastTimestampForOrderNoti;         // 轮询拉取订单通知消息时间戳
+@property (nonatomic, strong) NSString *                lastTimestampForMsgBoxQuery;         // 轮询消息盒子
+
+@property (nonatomic, assign) HomePageViewController          *vcConsult;
+@property (nonatomic, assign) InterlocuationViewController    *vcInterlocution;
+@property (nonatomic, assign) ConsultationMainViewController  *vcConsultMain;
+@property (nonatomic, assign) InterlocutionListViewController *vcInterlocutionList;
+@property (nonatomic, assign) BOOL isLoadH5;
+@property (nonatomic, strong) NSMutableDictionary       *EventData;
+@property (strong, nonatomic) NSString                  *expertChatPushType; //1 待抢答  2 已关闭
+
+- (void)startForgetPasswordVerifyCode:(NSString *)phoneNum;
+- (void)startChangePhoneVerifyCode:(NSString *)phoneNum;
+- (void)startRgisterVerifyCode:(NSString *)phoneNum;
+- (void)startChangeAliPayAccountVerifyCode:(NSString *)phoneNum;
+- (void)startCommonRegisterVerifyCode:(NSString *)phoneNum;
+- (void)startExpertLoginVerifyCode:(NSString *)phoneNum;
+- (void)startExpertForgetPwdVerifyCode:(NSString *)phoneNum;
+- (void)startStoreEditPhoneVerifyCode:(NSString *)phoneNum;
+
++ (QWGlobalManager *)sharedInstance;
+- (void)createHeartBeatTimer;
+-(RegisterModelR*) getRegisterModel:(NSString*)account;
+- (void)getCramePrivate;
+//读取地图信息
+- (void)readLocationInformation:(ReadLocationBlock)block;
+
+//重新定位
+- (void)resetLocationInformation:(ReadLocationBlock)block;
+
+//保存上一次地理位置信息
+- (void)saveLastLocationInfo:(MapInfoModel *)mapinfo;
+
+//检查城市是否在开通城市列表,并且提供已开通的回调和未开通回调
+- (void)checkCityOpenInfo:(MapInfoModel *)mapinfo
+                openBlock:(void(^)(MapInfoModel *openMapInfo))openBlock
+               closeBlock:(void(^)(MapInfoModel *closeMapInfo))closeBlock;
+
+- (void)upLoadLogFile;
+- (void)checkLogEnable;
+
+//3.0最新的统计事件
+- (void)statisticsEventId:(NSString *)eventId withLable:(NSString*)eventLable withParams:(NSMutableDictionary *)params;
+
+//保存全局设置
+- (void)saveAppConfigure;
+- (void)clearOldCache;
+//获取私有数据库的名称 业务无需关心此处
+- (NSString*)getPrivateDBName;
+
+- (void)getConsultingConsultList;
+- (void)getWaitingConsultList;
+- (void)getClosedConsultList:(NSString *)timeStamp;
+- (void)saveOperateLog:(NSString *)type;
+
+//全量拉专家问答所有数据
+- (void)getAllExpertConsult;
+//全量待抢答
+- (void)getAllWaitingConsultData;
+//增量待抢答
+- (void)pollWaitingConsultData;
+//全量已关闭
+- (void)getAllColsedConsultData;
+//全量/增量解答中
+- (void)getAllAnsweringConsultData;
+//check问答小红点
+- (void)checkInterlocutionRedPoint;
+
+/**
+ *  发出全局通知
+ *
+ *  @param type 通知类型
+ *  @param data 数据
+ *  @param obj  通知来源对象，填self
+ */
+- (NSDictionary *)postNotif:(Enum_Notification_Type)type data:(id)data object:(id)obj;
+
+//初始化社会分享
+-(void)initsocailShare:(NSString *)urlString;
+
+/**
+ *  计算内容的显示宽高
+ *
+ *  @param text  需要计算的字符
+ *  @param font  显示的字符的字体
+ *  @param width 默认的宽度
+ *
+ *  @return 返回字符实际的宽高
+ */
+- (CGSize) getTextSizeWithContent:(NSString*)text WithUIFont:(UIFont*)font WithWidth:(CGFloat)width;
+
+/**
+ *  剔除掉特殊的字符
+ *
+ *  @return 返回剔除后的字符串
+ */
+- (NSString *)replaceSpecialStringWith:(NSString *)string;
+
+/**
+ *  根据控制返回对应药品显示用途(适应症、保健功能等)
+ *
+ *  @param Signcode 药品控制码
+ *
+ *  @return String类型
+ */
+- (NSString *)UseOfDrugByCode:(NSString *)signcode;
+/**
+ *  根据控制返回对应药品属性
+ *
+ *  @param signcode 药品控制码
+ *
+ *  @return String类型
+ */
+- (NSString *)TypeOfDrugByCode:(NSString *)signcode;
+
+
+
+#pragma mark 符号字符的替换，用于关键词净化
+- (NSString *)replaceSymbolStringWith:(NSString *)string;
+
+
+- (NSString *)updateDisplayTime:(NSDate *)date;
+- (void)checkVersion;
+- (NSString *)updateFirstPageTimeDisplayer:(NSDate *)date;
+- (NSString *)updatehomepageTime:(NSDate *)date;
+//查询未答纪录数目
+//- (NSInteger)updateUnreadCountBadge:(NSInteger)pullCount;
+- (void)releaseMessageTimer;
+- (void)checkTokenVaild:(BOOL)firstLogin;
+- (void)expertCheckTokenVaild:(BOOL)firstLogin;
+- (void)showSplash;
+
+//清除账户信息 退出登录
+- (void)clearAccountInformation;
+- (void)clearExpertAccountInformation;
+//显示机构信息完善小红点
+//- (void)showDiseaseBudge:(BOOL)show;
+
+- (void)enablePushNotification:(BOOL)enable;
+//登录成功地回调
+- (void)loginSucess;
+- (void)expertLoginSuccess;
+
+- (void)applicationDidBecomeActive;
+- (void)applicationDidEnterBackground;
+- (void)pullCircleMessage;
+/**
+ *  @brief 去掉字符串中得空格
+ *
+ *  @param string 原字符串
+ 
+ *
+ *  @return 去掉空格之后的新字符串
+ */
+- (NSString *)removeSpace:(NSString *)string;
+
+/**
+ *  @brief 封装三目运算符 如果str1存在,返回str1,否则返回str2
+ *
+ *  @param str1 优先显示的对象
+ *  @param str2 str1不存在时显示的对象
+ *
+ *  @return 如果str1存在,返回str1,否则返回str2
+ */
+- (id)compareExist:(id)str1 and:(id)str2;
+
+- (void)getConsultingnewDetail;
+
+//-(void)jumpControlWithType:(int)index;
+//-(void)jumpChatWithType:(int)index;
+//跳转全维药师
+//-(void)jumpToOffical;
+
+//向服务器回执未读数
+- (void)updateUnreadCount;
+//关闭打开推送和轮询
+- (void)closePushPull;
+- (void)openPushPull;
+
+// 订单通知
+- (OrderNotiModel *)createOrderNotiModel:(OrderMessageVo *)modelLoad;
+- (void)convertOrderModel:(OrderMessageVo *)modelOrder withModelOrderLocal:(OrderNotiModel **)modelLocal;
+- (void)syncOrderDBtoLast:(OrderMessageArrayVo *)listModel;
+
+#pragma mark - 全量拉所有Consult数据
+- (void)getAllConsult;
+#pragma mark - PTP本店
+- (void)getAllMyConsultingConsultList;
+- (void)pollMyConsultingConsultList;
+#pragma mark  全维药事
+- (void)pullOfficialMessage;
+#pragma mark - tab bar菜单一红点＋数字
+- (void)refreshAllHint;
+- (RedPointModel*)checkRedPointModel:(RedPointModel*)mode;
+- (RedPointModel*)getRedPointModel;
+- (BOOL)calculateUnreadNum;
+//全维药师红点
+- (void)checkMessage;
+
+- (void)showAlertIfNeededAndDelayed:(BOOL)delayed;
+
+/* 获取一个随机的32位UUID
+ * add By martin
+ */
+- (NSString*)randomUUID;
+/**
+ 1.	当天：
+ 1)	1分钟内，显示刚刚
+ 2)	1小时内，显示X分钟前，格式为“15分钟前”
+ 3)	5小时内，显示X小时前，格式为“3小时前”
+ 4)	5小时外，显示时分，格式为“08:30”
+ 2.	昨天：显示昨日+时分，格式为“昨日 10:19”
+ 3.	本年：显示月日+时分，格式为“12.19 10:19”
+ 4.	非本年：显示年月日+时分，格式为“2014.12.19 10:19”
+ */
+- (NSString*)timeStrSinceNowWithPastDateStr:(NSString*)pastDateStr withFormatter:(NSString*)formatterStr;
+- (NSString*)timeStrSinceNowWithPastDate:(NSDate*)pastDate;
+- (NSString *)timeStrSinceNowWithPastDate:(NSDate *)pastDate formatWithD:(NSString *)dStr andM:(NSString *)mStr andY:(NSString *)yStr;
+
+@end
+
+
+void setHistoryConfig(NSString * key , id value);
+id getHistoryConfig(NSString *key);

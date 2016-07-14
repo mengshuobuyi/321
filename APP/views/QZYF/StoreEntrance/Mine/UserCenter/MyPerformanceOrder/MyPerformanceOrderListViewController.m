@@ -1,0 +1,91 @@
+//
+//  MyPerformanceOrderListViewController.m
+//  wenYao-store
+//  我的业绩订单页面
+//  Created by qw_imac on 16/5/6.
+//  Copyright © 2016年 carret. All rights reserved.
+//
+
+#import "MyPerformanceOrderListViewController.h"
+#import "QCSlideSwitchView.h"
+#import "PerformanceOrderViewController.h"
+#import "WebDirectViewController.h"
+@interface MyPerformanceOrderListViewController ()<QCSlideSwitchViewDelegate>
+{
+    NSMutableArray *viewControllers;
+}
+@property (nonatomic,strong) QCSlideSwitchView *slideView;
+@end
+
+@implementation MyPerformanceOrderListViewController
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    self.title = @"我的分销订单";
+    viewControllers = [[NSMutableArray alloc]init];
+    UIButton *btn = [[UIButton alloc]initWithFrame:CGRectMake(0, 0, 40, 40)];
+    [btn setImage:[UIImage imageNamed:@"my_ic_ask"] forState:UIControlStateNormal];
+    [btn addTarget:self action:@selector(help) forControlEvents:UIControlEventTouchUpInside];
+    UIBarButtonItem *naviBtn = [[UIBarButtonItem alloc]initWithCustomView:btn];
+    self.navigationItem.rightBarButtonItem = naviBtn;
+    [self setViewControllers];
+}
+
+-(void)help {
+//H5帮助说明
+    WebDirectViewController *vcWebMedicine = [[UIStoryboard storyboardWithName:@"WebDirect" bundle:nil] instantiateViewControllerWithIdentifier:@"WebDirectViewController"];
+    WebDirectLocalModel *modelLocal = [WebDirectLocalModel new];
+    modelLocal.typeLocalWeb = WebLocalTypeOuterLink;
+    modelLocal.title = @"帮助";
+    modelLocal.url = [NSString stringWithFormat:@"%@QWSH/web/ruleDesc/html/achieveOrder.html",H5_BASE_URL];
+    [vcWebMedicine setWVWithLocalModel:modelLocal];
+    [self.navigationController pushViewController:vcWebMedicine animated:YES];
+}
+#pragma mark - QCSlideViewController
+-(void)setViewControllers {
+    PerformanceOrderViewController *vc1 = [[PerformanceOrderViewController alloc]initWithNibName:@"PerformanceOrderViewController" bundle:nil];
+    vc1.navi = self.navigationController;
+    vc1.title = @"线上分享统计";
+    vc1.type = 1;
+    [viewControllers addObject:vc1];
+    
+    PerformanceOrderViewController *vc2 = [[PerformanceOrderViewController alloc]initWithNibName:@"PerformanceOrderViewController" bundle:nil];
+    vc2.navi = self.navigationController;
+    vc2.title = @"线下引导转化";
+    vc2.type = 2;
+    [viewControllers addObject:vc2];
+    
+    [self setupSlide];
+}
+
+-(void)setupSlide {
+    self.slideView = [[QCSlideSwitchView alloc]initWithFrame:CGRectMake(0, 0, APP_W, APP_H-NAV_H)];
+    self.slideView.tabItemNormalColor = [QCSlideSwitchView colorFromHexRGB:@"666666"];
+    [self.slideView.topScrollView setBackgroundColor:RGBHex(0xffffff)];
+    self.slideView.tabItemSelectedColor = RGBHex(0x6ac5b6);
+    [self.slideView.rigthSideButton.titleLabel setFont:fontSystem(14)];
+    self.slideView.slideSwitchViewDelegate = self;
+    self.slideView.shadowImage = [[UIImage imageNamed:@"activity_line_show"]
+                                        stretchableImageWithLeftCapWidth:59.0f topCapHeight:0.0f];
+    self.slideView.isIndentAdjust=YES;
+    [self.slideView buildUI];
+    UIView *line = [[UIView alloc]initWithFrame:CGRectMake(0, 39, APP_W, 0.5)];
+    line.backgroundColor = RGBHex(0xe0e0e0);
+    [self.slideView addSubview:line];
+    self.slideView.rootScrollView.scrollEnabled = YES;
+    [self.view addSubview:self.slideView];
+}
+
+-(NSUInteger)numberOfTab:(QCSlideSwitchView *)view {
+    return viewControllers.count;
+}
+
+-(UIViewController *)slideSwitchView:(QCSlideSwitchView *)view viewOfTab:(NSUInteger)number {
+    return viewControllers[number];
+}
+
+- (void)slideSwitchView:(QCSlideSwitchView *)view willselectTab:(NSUInteger)number {
+    [viewControllers[number] viewWillAppear:NO];
+}
+
+@end

@@ -1,0 +1,566 @@
+//
+//  HotCircleCell.m
+//  wenYao-store
+//
+//  Created by Yang Yuexia on 15/12/17.
+//  Copyright © 2015年 carret. All rights reserved.
+//
+
+#import "HotCircleCell.h"
+#import "NSString+WPAttributedMarkup.h"
+#import "CircleModel.h"
+
+@implementation HotCircleCell
+
+- (void)awakeFromNib
+{
+    // 头像
+    self.headerIcon.layer.cornerRadius = 15;
+    self.headerIcon.layer.masksToBounds = YES;
+    
+    // 设置背景色
+    self.contentBgView.backgroundColor = [UIColor whiteColor];
+    self.topView.backgroundColor = [UIColor whiteColor];
+    self.bottomView.backgroundColor = [UIColor whiteColor];
+    self.centerView.backgroundColor = [UIColor whiteColor];
+    
+}
+
++ (CGFloat)getCellHeight:(id)data
+{
+    if ([QWGLOBALMANAGER object:data isClass:[TopicListModel class]])
+    {
+        TopicListModel *model = (TopicListModel*)data;
+        
+        NSString *title = model.postTitle;
+        NSString *content = model.postContent;
+        
+        //改变title视图
+        CGSize titleSize = [QWGLOBALMANAGER sizeText:title font:fontSystem(17) limitWidth:APP_W-34];
+        
+        //改变content视图
+        CGSize contentSize = [QWGLOBALMANAGER sizeText:content font:fontSystem(14) limitWidth:APP_W-34];
+        
+        if (titleSize.height > 42) {
+            titleSize.height = 42;
+        }
+        if (contentSize.height > 34) {
+            contentSize.height = 34;
+        }
+    
+        if (model.postImgList.count == 0) { //无图片
+            return 115 + titleSize.height + contentSize.height;
+        }else{ //有图片
+            return 195 + titleSize.height + contentSize.height - 73 + 13 + 2*(APP_W-50)/9;
+        }
+    }
+    return 0;
+}
+
+- (void)UIGlobal
+{
+    [super UIGlobal];
+    
+    self.contentView.backgroundColor = [UIColor clearColor];
+    self.separatorLine.hidden = YES;
+    self.content.lineBreakMode = NSLineBreakByTruncatingTail;
+    self.readNumLabel.backgroundColor = [UIColor whiteColor];
+    self.commentNumLabel.backgroundColor = [UIColor whiteColor];
+    
+    //点击头像
+    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapHeaderIcon:)];
+    [self.topView addGestureRecognizer:tap];
+    
+    //适配图片宽高
+    self.imageOne_layout_width.constant = (APP_W-50)/3;
+    self.imageTwo_layout_width.constant = (APP_W-50)/3;
+    self.imageThree_layout_width.constant = (APP_W-50)/3;
+    self.imageOne_layout_height.constant = 67*(APP_W-50)/270;
+    self.imageTwo_layout_height.constant = 67*(APP_W-50)/270;
+    self.imageThree_layout_height.constant = 67*(APP_W-50)/270;
+    
+    self.expertBrandName.layer.cornerRadius = 4.0;
+    self.expertBrandName.layer.masksToBounds = YES;
+
+}
+
+#pragma mark ---- 点击头像进入专栏 ----
+- (void)tapHeaderIcon:(UITapGestureRecognizer *)tap
+{
+    QWView *vi = (QWView *)tap.view;
+    NSIndexPath *indexPath = (NSIndexPath *)vi.obj;
+    if (self.hotCircleCellDelegate && [self.hotCircleCellDelegate respondsToSelector:@selector(tapHeader:)]) {
+        [self.hotCircleCellDelegate tapHeader:indexPath];
+    }
+}
+
+#pragma mark ---- 我的圈／热门帖 ----
+- (void)configureData:(id)data type:(int)type;
+{
+    [super setCell:data];
+    
+    TopicListModel *model = (TopicListModel *)data;
+    
+    self.topView_layout_height.constant = 50;
+    
+    //头像
+    if (model.flagAnon){//匿名
+        [self.headerIcon setImage:[UIImage imageNamed:@"expert_ic_people"]];
+    }else{
+        [self.headerIcon setImageWithURL:[NSURL URLWithString:model.headUrl] placeholderImage:[UIImage imageNamed:@"expert_ic_people"]];
+    }
+    
+    
+    //姓名
+    NSString *name = @"";
+    if (model.flagAnon) {
+        name = @"匿名用户";
+    }else{
+        name = model.nickname;
+    }
+    
+    if (model.posterType == 3 || model.posterType == 4)
+    {
+        //专家 显示专家logo
+        self.lvlBgview.hidden = YES;
+        self.expertBrandName.hidden = NO;
+        self.expertLogoLabel.hidden = NO;
+        
+        NSString *logoName;
+        NSString *store;
+        if (model.posterType == 3)
+        {
+            //药师 标识显示药师logo及所属商家
+            store = model.brandName;
+            logoName = @"药师";
+        }else if (model.posterType == 4)
+        {
+            //营养师 标识显示营养师logo及“营养师”
+            store = @"";
+            logoName = @"营养师";
+        }
+               
+        CGSize nameSize = [name sizeWithFont:fontSystem(14) constrainedToSize:CGSizeMake(APP_W-85, CGFLOAT_MAX)];
+        self.name_layout_width.constant = nameSize.width+2;
+        CGSize brandSize = [store sizeWithFont:fontSystem(12) constrainedToSize:CGSizeMake(APP_W-85-nameSize.width-13, CGFLOAT_MAX)];
+        
+        self.expertBrand_layout_width.constant = brandSize.width+7;
+        self.name.text = name;
+        self.expertLogoLabel.text = logoName;
+        
+        if (StrIsEmpty(store)) {
+            self.expertBrandName.hidden = YES;
+        }else{
+            self.expertBrandName.hidden = NO;
+            self.expertBrandName.text = store;
+        }
+        
+    }else
+    {
+        //普通用户 标识显示用户当前等级
+        self.expertLogoLabel.hidden = YES;
+        self.expertBrandName.hidden = YES;
+        self.lvlBgview.hidden = NO;
+        self.name.text = name;
+        CGSize size=[name sizeWithFont:fontSystem(14) constrainedToSize:CGSizeMake(APP_W-100, CGFLOAT_MAX)];
+        self.name_layout_width.constant = size.width+2;
+        self.lvlLabel.text = [NSString stringWithFormat:@"V%d",model.mbrLvl];
+    }
+    
+    //标题 已回标签
+    NSString *titleStr = model.postTitle;
+    CGSize titleSize;
+    
+    if (type == 1)
+    {
+        //我的圈 热门 已回
+        if (model.flagReply || model.isHot)
+        {
+            NSString *imageName = @"";
+            if (model.flagReply){
+                imageName = @"ic_back";
+            }else if (model.isHot){
+                imageName = @"ic_hot";
+            }
+            NSDictionary* titleStyle = @{@"thumb":[UIImage imageNamed:imageName]};
+            self.title.attributedText = [[NSString stringWithFormat:@"<thumb> </thumb>  %@",titleStr] attributedStringWithStyleBook:titleStyle];
+            titleSize = [QWGLOBALMANAGER sizeText:[NSString stringWithFormat:@"你好你%@",model.postTitle] font:fontSystem(17) limitWidth:APP_W-34];
+        }else
+        {
+            titleSize = [QWGLOBALMANAGER sizeText:[NSString stringWithFormat:@"%@",model.postTitle] font:fontSystem(17) limitWidth:APP_W-34];
+            self.title.text = titleStr;
+        }
+    }else if (type == 2)
+    {
+        //热门帖 已回
+        if (model.flagReply)
+        {
+            NSDictionary* titleStyle = @{@"thumb":[UIImage imageNamed:@"ic_back"]};
+            self.title.attributedText = [[NSString stringWithFormat:@"<thumb> </thumb>  %@",titleStr] attributedStringWithStyleBook:titleStyle];
+            titleSize = [QWGLOBALMANAGER sizeText:[NSString stringWithFormat:@"你好你%@",model.postTitle] font:fontSystem(17) limitWidth:APP_W-34];
+        }else
+        {
+            titleSize = [QWGLOBALMANAGER sizeText:[NSString stringWithFormat:@"%@",model.postTitle] font:fontSystem(17) limitWidth:APP_W-34];
+            self.title.text = titleStr;
+        }
+    }
+    
+    if (titleSize.height > 42) {
+        titleSize.height = 42;
+    }
+    self.title_layout_height.constant = titleSize.height;
+    
+    //内容
+    self.content.text = model.postContent;
+    NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
+    paragraphStyle.lineSpacing = 3;
+    paragraphStyle.lineBreakMode = NSLineBreakByTruncatingTail;
+    NSDictionary *attributes = @{NSFontAttributeName:fontSystem(14),NSParagraphStyleAttributeName:paragraphStyle};
+    self.content.attributedText = [[NSAttributedString alloc] initWithString:self.content.text attributes:attributes];
+    
+    //图片
+    if (model.postImgList.count == 0)
+    {
+        self.imageOne.image = nil;
+        self.imageTwo.image = nil;
+        self.imageThree.image = nil;
+        self.imageBg_layout_height.constant = 1;
+    }else if (model.postImgList.count == 1)
+    {
+        [self.imageOne setImageWithURL:[NSURL URLWithString:model.postImgList[0]]];
+        self.imageTwo.image = nil;
+        self.imageThree.image = nil;
+        self.imageBg_layout_height.constant = 13 + 2*(APP_W-50)/9;
+    }else if (model.postImgList.count == 2)
+    {
+        [self.imageOne setImageWithURL:[NSURL URLWithString:model.postImgList[0]]];
+        [self.imageTwo setImageWithURL:[NSURL URLWithString:model.postImgList[1]]];
+        self.imageThree.image = nil;
+        self.imageBg_layout_height.constant = 13 + 2*(APP_W-50)/9;
+    }else if (model.postImgList.count == 3)
+    {
+        [self.imageOne setImageWithURL:[NSURL URLWithString:model.postImgList[0]]];
+        [self.imageTwo setImageWithURL:[NSURL URLWithString:model.postImgList[1]]];
+        [self.imageThree setImageWithURL:[NSURL URLWithString:model.postImgList[2]]];
+        self.imageBg_layout_height.constant = 13 + 2*(APP_W-50)/9;
+    }
+    
+    self.imageOne.contentMode = UIViewContentModeScaleAspectFill;
+    self.imageOne.clipsToBounds = YES;
+    
+    self.imageTwo.contentMode = UIViewContentModeScaleAspectFill;
+    self.imageTwo.clipsToBounds = YES;
+    
+    self.imageThree.contentMode = UIViewContentModeScaleAspectFill;
+    self.imageThree.clipsToBounds = YES;
+
+    //阅读数
+    NSString *str1 = [NSString stringWithFormat:@"%d",model.readCount];
+    NSString *str2 = [NSString stringWithFormat:@"%d",model.replyCount];
+    
+    CGSize readSize = [str1 sizeWithFont:fontSystem(12) constrainedToSize:CGSizeMake(APP_W, CGFLOAT_MAX)];
+    CGSize commentSize = [str2 sizeWithFont:fontSystem(12) constrainedToSize:CGSizeMake(APP_W, CGFLOAT_MAX)];
+    
+    self.readNum_layout_width.constant = readSize.width+3;
+    self.commentNum_layout_width.constant = commentSize.width+3;
+    
+    self.readNumLabel.text = str1;
+    self.commentNumLabel.text = str2;
+    
+    //时间
+    self.time.text = model.postStrDate;
+}
+
+#pragma mark ---- 我的发帖列表 ----
+- (void)myPostTopic:(id)data
+{
+    TopicListModel *model = (TopicListModel *)data;
+    
+    self.topView_layout_height.constant = 10;
+    self.headerIcon.hidden = YES;
+    self.name.hidden = YES;
+    self.expertBrandName.hidden = YES;
+    self.expertLogoLabel.hidden = YES;
+    self.lvlBgview.hidden = YES;
+    self.lvlLabel.hidden = YES;
+    
+    [self commonData:model];
+    
+    //姓名 阅读数
+    [self nameAndReadCount:model circleDetail:NO];
+    
+    [self.headerIcon setImageWithURL:[NSURL URLWithString:model.headUrl] placeholderImage:[UIImage imageNamed:@"expert_ic_people"]];
+    
+    //标题 置顶 热门标签
+    NSString *imageName;
+    
+    if (model.flagTopExpert)
+    {
+        //置顶
+        imageName = @"ic_top";
+        [self haveTagTitle:model imageName:imageName];
+        
+    }else if (model.isHot)
+    {
+        //热帖
+        imageName = @"ic_hot";
+        [self haveTagTitle:model imageName:imageName];
+        
+    }else
+    {
+        //no
+        [self noTagTitle:model];
+    }
+}
+
+#pragma mark ---- 圈子详情帖子列表 ----
+- (void)circleDetailList:(id)data type:(int)type flagGroup:(BOOL)flagGroup
+{
+    TopicListModel *model = (TopicListModel *)data;
+    
+    self.topView_layout_height.constant = 50;
+    
+    [self commonData:model];
+    
+    //姓名 阅读数
+    [self nameAndReadCount:model circleDetail:YES];
+    
+    //头像
+    if (model.flagAnon)
+    {
+        [self.headerIcon setImage:[UIImage imageNamed:@"expert_ic_people"]];
+    }else
+    {
+        [self.headerIcon setImageWithURL:[NSURL URLWithString:model.headUrl] placeholderImage:[UIImage imageNamed:@"expert_ic_people"]];
+    }
+    
+    //是否显示本商家外的商家品牌
+    
+    if (flagGroup)
+    {
+        if (model.groupShowFlag) {
+            self.expertBrandName.hidden = NO;
+        }else{
+            self.expertBrandName.hidden = YES;
+        }
+    }
+    
+    //标题
+    
+    NSString *imageName;
+    
+    if (type == 1)
+    {
+        //全部（置顶，热门）
+        if (model.flagTopTeam)
+        {
+            imageName = @"reyi_ic_top";
+            [self haveTagTitle:model imageName:imageName];
+            
+        }else if (model.isHot)
+        {
+            imageName = @"ic_hot";
+            [self haveTagTitle:model imageName:imageName];
+        }else
+        {
+            //没有 任何标签
+            [self noTagTitle:model];
+        }
+        
+        
+        
+    }else if (type == 2)
+    {
+        //专家帖（热门）
+        if (model.isHot)
+        {
+            imageName = @"ic_hot";
+            [self haveTagTitle:model imageName:imageName];
+        }else
+        {
+            //没有 任何标签
+            [self noTagTitle:model];
+        }
+        
+    }else if (type == 3)
+    {
+        //热门帖 （无）
+        [self noTagTitle:model];
+        
+    }else if (type == 4)
+    {
+        //用户帖（无）
+        [self noTagTitle:model];
+    }
+}
+
+#pragma mark ---- 设置姓名 阅读数 ----
+- (void)nameAndReadCount:(id)data circleDetail:(BOOL)fromCircleDetail
+{
+    TopicListModel *model = (TopicListModel *)data;
+    
+    //姓名
+    NSString *name = @"";
+    
+    if (fromCircleDetail)
+    {
+        //圈子详情页面 如果是匿名用户，name 显示匿名用户
+        if (model.flagAnon) {
+            name = @"匿名用户";
+        }else{
+            name = model.nickname;
+        }
+    }else
+    {
+        name = model.nickname;
+    }
+    
+    if (model.posterType == 3 || model.posterType == 4)
+    {
+        //专家
+        self.lvlBgview.hidden = YES;
+        CGSize nameSize = [name sizeWithFont:fontSystem(15) constrainedToSize:CGSizeMake(APP_W-85, CGFLOAT_MAX)];
+        self.name_layout_width.constant = nameSize.width+6;
+        self.name.text = name;
+        
+        NSString *store;
+        NSString *imageName;
+        if (model.posterType == 3) { //药师
+            store = model.brandName;
+            imageName = @"药师";
+        }else if (model.posterType == 4){ //营养师
+            store = @"";
+            imageName = @"营养师";
+        }
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            self.expertLogoLabel.hidden = NO;
+            self.expertLogoLabel.text = StrFromObj(imageName);
+        });
+        
+        CGSize brandSize = [store sizeWithFont:fontSystem(12) constrainedToSize:CGSizeMake(APP_W-85-nameSize.width-13, CGFLOAT_MAX)];
+        self.expertBrand_layout_width.constant = brandSize.width+7;
+        if (StrIsEmpty(store)) {
+            self.expertBrandName.hidden = YES;
+        }else{
+            self.expertBrandName.hidden = NO;
+            self.expertBrandName.text = store;
+        }
+        
+    }else
+    {
+        //普通用户 标识显示用户当前等级
+        self.name.text = name;
+        self.expertLogoLabel.hidden = YES;
+        self.expertBrandName.hidden = YES;
+        self.lvlBgview.hidden = NO;
+        
+        CGSize size=[name sizeWithFont:fontSystem(15) constrainedToSize:CGSizeMake(APP_W-98, CGFLOAT_MAX)];
+        self.name_layout_width.constant = size.width+3;
+        self.lvlLabel.text = [NSString stringWithFormat:@"V%d",model.mbrLvl];
+    }
+    
+    //阅读数
+    NSString *str1 = [NSString stringWithFormat:@"%d",model.readCount];
+    NSString *str2 = [NSString stringWithFormat:@"%d",model.replyCount];
+    
+    CGSize readSize = [str1 sizeWithFont:fontSystem(12) constrainedToSize:CGSizeMake(APP_W, CGFLOAT_MAX)];
+    CGSize commentSize = [str2 sizeWithFont:fontSystem(12) constrainedToSize:CGSizeMake(APP_W, CGFLOAT_MAX)];
+    
+    self.readNum_layout_width.constant = readSize.width+2;
+    self.commentNum_layout_width.constant = commentSize.width+2;
+    
+    self.readNumLabel.text = str1;
+    self.commentNumLabel.text = str2;
+}
+
+#pragma mark ---- 有标签的标题 ----
+- (void)noTagTitle:(id)data
+{
+    TopicListModel *model = (TopicListModel *)data;
+    
+    CGSize titleSize = [QWGLOBALMANAGER sizeText:[NSString stringWithFormat:@"%@",model.postTitle] font:fontSystem(17) limitWidth:APP_W-30];
+    if (titleSize.height > 42) {
+        titleSize.height = 42;
+    }
+    dispatch_async(dispatch_get_main_queue(), ^{
+        self.title_layout_height.constant = titleSize.height;
+    });
+    self.title.text = model.postTitle;
+}
+
+#pragma mark ---- 无标签的标题 ----
+- (void)haveTagTitle:(id)data imageName:(NSString *)name
+{
+    TopicListModel *model = (TopicListModel *)data;
+    
+    NSDictionary* titleStyle = @{@"thumb":[UIImage imageNamed:name]};
+    self.title.attributedText = [[NSString stringWithFormat:@"<thumb> </thumb>  %@",model.postTitle] attributedStringWithStyleBook:titleStyle];
+    CGSize titleSize = [QWGLOBALMANAGER sizeText:[NSString stringWithFormat:@"你好你%@",model.postTitle] font:fontSystem(17) limitWidth:APP_W-30];
+    if (titleSize.height > 42) {
+        titleSize.height = 42;
+    }
+    dispatch_async(dispatch_get_main_queue(), ^{
+        self.title_layout_height.constant = titleSize.height;
+    });
+}
+
+#pragma mark ---- 基本信息设置 ----
+- (void)commonData:(id)data
+{
+    TopicListModel *model = (TopicListModel *)data;
+    
+    //时间
+    self.time.text = model.postStrDate;
+    
+    //内容
+    self.content.text = model.postContent;
+    NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
+    paragraphStyle.lineSpacing = 3;
+    paragraphStyle.lineBreakMode = NSLineBreakByTruncatingTail;
+    NSDictionary *attributes = @{NSFontAttributeName:fontSystem(14),NSParagraphStyleAttributeName:paragraphStyle};
+    self.content.attributedText = [[NSAttributedString alloc] initWithString:self.content.text attributes:attributes];
+    
+    //图片
+    if (model.postImgList.count == 0)
+    {
+        self.imageOne.image = nil;
+        self.imageTwo.image = nil;
+        self.imageThree.image = nil;
+        self.imageBg_layout_height.constant = 1;
+        
+    }else if (model.postImgList.count == 1)
+    {
+        [self.imageOne setImageWithURL:[NSURL URLWithString:model.postImgList[0]]];
+        self.imageTwo.image = nil;
+        self.imageThree.image = nil;
+        self.imageBg_layout_height.constant = 13 + 2*(APP_W-50)/9;
+        
+    }else if (model.postImgList.count == 2)
+    {
+        [self.imageOne setImageWithURL:[NSURL URLWithString:model.postImgList[0]]];
+        [self.imageTwo setImageWithURL:[NSURL URLWithString:model.postImgList[1]]];
+        self.imageThree.image = nil;
+        self.imageBg_layout_height.constant = 13 + 2*(APP_W-50)/9;
+        
+    }else if (model.postImgList.count == 3)
+    {
+        [self.imageOne setImageWithURL:[NSURL URLWithString:model.postImgList[0]]];
+        [self.imageTwo setImageWithURL:[NSURL URLWithString:model.postImgList[1]]];
+        [self.imageThree setImageWithURL:[NSURL URLWithString:model.postImgList[2]]];
+        self.imageBg_layout_height.constant = 13 + 2*(APP_W-50)/9;
+    }
+    
+    self.imageOne.contentMode = UIViewContentModeScaleAspectFill;
+    self.imageOne.clipsToBounds = YES;
+    
+    self.imageTwo.contentMode = UIViewContentModeScaleAspectFill;
+    self.imageTwo.clipsToBounds = YES;
+    
+    self.imageThree.contentMode = UIViewContentModeScaleAspectFill;
+    self.imageThree.clipsToBounds = YES;
+    
+}
+
+
+@end

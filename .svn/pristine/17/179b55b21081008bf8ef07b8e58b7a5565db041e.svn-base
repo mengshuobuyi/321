@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="10117" systemVersion="15F34" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="KGk-i7-Jjw" customClass="SimpleCircleTableCell">
+            <rect key="frame" x="0.0" y="0.0" width="320" height="90"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="KGk-i7-Jjw" id="H2p-sc-9uM">
+                <rect key="frame" x="0.0" y="0.0" width="320" height="89.5"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="bg_tx_circletouxiang" translatesAutoresizingMaskIntoConstraints="NO" id="p8d-tS-agL">
+                        <rect key="frame" x="15" y="15" width="60" height="60"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="60" id="6Gb-UO-yp2"/>
+                            <constraint firstAttribute="width" constant="60" id="g5P-h8-Pr3"/>
+                        </constraints>
+                    </imageView>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="W2q-Em-N6Y">
+                        <rect key="frame" x="90" y="35" width="37.5" height="18"/>
+                        <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                        <color key="textColor" red="0.20000000000000001" green="0.20000000000000001" blue="0.20000000000000001" alpha="1" colorSpace="calibratedRGB"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <button opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" selected="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="rrG-jw-U8z">
+                        <rect key="frame" x="284" y="34" width="21" height="22"/>
+                        <state key="selected" image="ic_postchoose_hook"/>
+                    </button>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="BSB-2h-cIs" customClass="MAHrLineWithOnePix">
+                        <rect key="frame" x="0.0" y="88.5" width="320" height="1"/>
+                        <color key="backgroundColor" red="0.89411764705882346" green="0.89411764705882346" blue="0.89411764705882346" alpha="1" colorSpace="calibratedRGB"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="1" id="qtX-E5-xeQ"/>
+                        </constraints>
+                    </view>
+                </subviews>
+                <constraints>
+                    <constraint firstItem="W2q-Em-N6Y" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" id="4Ru-oW-4HN"/>
+                    <constraint firstAttribute="trailing" secondItem="rrG-jw-U8z" secondAttribute="trailing" constant="15" id="E3M-Fi-ljx"/>
+                    <constraint firstAttribute="rightMargin" secondItem="BSB-2h-cIs" secondAttribute="right" id="Fwd-qT-kCj"/>
+                    <constraint firstAttribute="trailing" secondItem="BSB-2h-cIs" secondAttribute="trailing" id="WHZ-pc-WeU"/>
+                    <constraint firstItem="rrG-jw-U8z" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" id="Xa9-FW-4CY"/>
+                    <constraint firstItem="p8d-tS-agL" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" id="Z67-xq-7L2"/>
+                    <constraint firstItem="BSB-2h-cIs" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" id="aO7-nx-P5V"/>
+                    <constraint firstAttribute="bottom" secondItem="BSB-2h-cIs" secondAttribute="bottom" id="imK-CW-3v3"/>
+                    <constraint firstItem="W2q-Em-N6Y" firstAttribute="leading" secondItem="p8d-tS-agL" secondAttribute="trailing" constant="15" id="lWg-5W-ZdP"/>
+                    <constraint firstItem="rrG-jw-U8z" firstAttribute="leading" secondItem="BSB-2h-cIs" secondAttribute="trailing" id="tJO-5l-IIj"/>
+                    <constraint firstItem="p8d-tS-agL" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="15" id="w6n-x0-wTU"/>
+                </constraints>
+                <variation key="default">
+                    <mask key="constraints">
+                        <exclude reference="Fwd-qT-kCj"/>
+                        <exclude reference="tJO-5l-IIj"/>
+                    </mask>
+                </variation>
+            </tableViewCellContentView>
+            <connections>
+                <outlet property="chooseBtn" destination="rrG-jw-U8z" id="EOk-YO-sKL"/>
+                <outlet property="circleImageView" destination="p8d-tS-agL" id="ObW-sX-REY"/>
+                <outlet property="circleNameLabel" destination="W2q-Em-N6Y" id="60p-PT-lQG"/>
+            </connections>
+        </tableViewCell>
+    </objects>
+    <resources>
+        <image name="bg_tx_circletouxiang" width="60" height="60"/>
+        <image name="ic_postchoose_hook" width="21" height="16"/>
+    </resources>
+</document>

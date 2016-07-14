@@ -1,0 +1,27 @@
+//
+//  ToStorePickCell.h
+//  wenYao-store
+//
+//  Created by Yang Yuexia on 16/5/6.
+//  Copyright © 2016年 carret. All rights reserved.
+//
+
+#import "QWBaseTableCell.h"
+
+@protocol ToStorePickCellDelegate <NSObject>
+
+- (void)editToStorePickAction;
+
+@end
+
+@interface ToStorePickCell : QWBaseTableCell
+
+@property (assign, nonatomic) id <ToStorePickCellDelegate> toStorePickCellDelegate;
+
+@property (weak, nonatomic) IBOutlet UILabel *timeLabel;  //营业时间
+
+@property (weak, nonatomic) IBOutlet UIImageView *rightIcon;
+
+- (IBAction)editToStorePickAction:(id)sender;
+
+@end
